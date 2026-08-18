@@ -5,16 +5,20 @@ import {
   browserLocalPersistence,
   GoogleAuthProvider,
   signInWithPopup,
-  signInAnonymously,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
+const getAuthDomain = () => {
+  if (typeof window !== "undefined" && window.location.hostname.endsWith("vercel.app")) {
+    return window.location.hostname;
+  }
+  return import.meta.env["VITE_FIREBASE_AUTH_DOMAIN"] || "medguide-ai-e3b90.firebaseapp.com";
+};
+
 const firebaseConfig = {
   apiKey: import.meta.env["VITE_FIREBASE_API_KEY"] || "AIzaSyBKvCMt4r_5gOtTLMyc2-1siNILWX_l8SM",
-  authDomain: import.meta.env["VITE_FIREBASE_AUTH_DOMAIN"] || "medguide-ai-e3b90.firebaseapp.com",
+  authDomain: getAuthDomain(),
   projectId: import.meta.env["VITE_FIREBASE_PROJECT_ID"] || "medguide-ai-e3b90",
   storageBucket:
     import.meta.env["VITE_FIREBASE_STORAGE_BUCKET"] || "medguide-ai-e3b90.firebasestorage.app",
@@ -38,41 +42,6 @@ export const loginWithGoogle = async () => {
   return await signInWithPopup(auth, provider);
 };
 
-export const loginWithEmail = async (email: string, pass: string) => {
-  try {
-    return await signInWithEmailAndPassword(auth, email, pass);
-  } catch (err: unknown) {
-    const e = err as { code?: string };
-    if (e?.code === "auth/user-not-found" || e?.code === "auth/invalid-credential") {
-      try {
-        return await createUserWithEmailAndPassword(auth, email, pass);
-      } catch {
-        throw err;
-      }
-    }
-    throw err;
-  }
-};
-
-export const loginDemoClinician = async () => {
-  try {
-    return await signInAnonymously(auth);
-  } catch {
-    // If anonymous auth is disabled in Firebase console, return a mock user credential
-    return {
-      user: {
-        uid: "demo-clinician-workspace",
-        email: "clinician@medguide.ai",
-        displayName: "Dr. Clinician",
-        photoURL: null,
-      },
-    };
-  }
-};
-
 export const logout = async () => {
-  if (typeof window !== "undefined") {
-    localStorage.removeItem("medguide_guest_session");
-  }
-  return await signOut(auth).catch(() => {});
+  return await signOut(auth);
 };

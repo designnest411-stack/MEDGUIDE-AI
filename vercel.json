@@ -1,15 +1,11 @@
 {
   "buildCommand": "vite build",
   "installCommand": "npm install",
-  "headers": [
+  "rewrites": [
     {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "Cross-Origin-Opener-Policy",
-          "value": "same-origin-allow-popups"
-        }
-      ]
+      "source": "/__/auth/:path*",
+      "destination": "https://medguide-ai-e3b90.firebaseapp.com/__/auth/:path*"
     }
   ]
 }
+
