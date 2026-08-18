@@ -170,58 +170,89 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               explainable AI.
             </p>
 
-            <div className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2">
-              <div className="flex items-start gap-4 group cursor-default">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-card shadow-sm border border-border/60 transition-colors group-hover:border-primary/40 group-hover:bg-primary/5">
-                  <Library className="h-5 w-5 text-primary transition-transform group-hover:scale-110" />
+            <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {/* Evidence Retrieval */}
+              <div className="group relative overflow-hidden rounded-2xl border border-cyan-500/30 bg-gradient-to-br from-cyan-500/10 via-card/90 to-card p-4 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/50 hover:shadow-md hover:shadow-cyan-500/10">
+                <div className="flex items-center gap-3.5">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-600 text-white shadow-sm ring-2 ring-cyan-400/30">
+                    <Library className="h-5 w-5 transition-transform group-hover:scale-110" />
+                  </div>
+                  <div>
+                    <span className="font-mono text-[0.62rem] uppercase tracking-wider text-cyan-600 dark:text-cyan-400 font-bold">
+                      PubMed & WHO
+                    </span>
+                    <p className="font-display text-base font-bold tracking-tight text-foreground">
+                      Evidence Retrieval
+                    </p>
+                  </div>
                 </div>
-                <div className="pt-1">
-                  <p className="font-display text-lg font-semibold tracking-tight text-foreground">
-                    Evidence Retrieval
-                  </p>
-                  <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-                    Sources fetched from PubMed & guidelines.
-                  </p>
-                </div>
+                <p className="mt-2.5 text-xs leading-relaxed text-muted-foreground">
+                  Live evidence fetched from PubMed peer-reviewed research and global clinical
+                  guidelines.
+                </p>
               </div>
-              <div className="flex items-start gap-4 group cursor-default">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-card shadow-sm border border-border/60 transition-colors group-hover:border-[#A073D9]/40 group-hover:bg-[#A073D9]/5">
-                  <GitBranch className="h-5 w-5 text-[#A073D9] transition-transform group-hover:scale-110" />
+
+              {/* Knowledge Graph */}
+              <div className="group relative overflow-hidden rounded-2xl border border-purple-500/30 bg-gradient-to-br from-purple-500/10 via-card/90 to-card p-4 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-purple-500/50 hover:shadow-md hover:shadow-purple-500/10">
+                <div className="flex items-center gap-3.5">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 text-white shadow-sm ring-2 ring-purple-400/30">
+                    <GitBranch className="h-5 w-5 transition-transform group-hover:scale-110" />
+                  </div>
+                  <div>
+                    <span className="font-mono text-[0.62rem] uppercase tracking-wider text-purple-600 dark:text-purple-400 font-bold">
+                      Ontology Graph
+                    </span>
+                    <p className="font-display text-base font-bold tracking-tight text-foreground">
+                      Knowledge Graph
+                    </p>
+                  </div>
                 </div>
-                <div className="pt-1">
-                  <p className="font-display text-lg font-semibold tracking-tight text-foreground">
-                    Knowledge Graph
-                  </p>
-                  <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-                    Cross-references diseases and drugs.
-                  </p>
-                </div>
+                <p className="mt-2.5 text-xs leading-relaxed text-muted-foreground">
+                  Traverses verified relationships between diseases, symptoms, risk factors, and
+                  medications.
+                </p>
               </div>
-              <div className="flex items-start gap-4 group cursor-default">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-card shadow-sm border border-border/60 transition-colors group-hover:border-success/40 group-hover:bg-success/5">
-                  <ShieldCheck className="h-5 w-5 text-success transition-transform group-hover:scale-110" />
+
+              {/* Safety Audit */}
+              <div className="group relative overflow-hidden rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 via-card/90 to-card p-4 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-emerald-500/50 hover:shadow-md hover:shadow-emerald-500/10">
+                <div className="flex items-center gap-3.5">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-700 text-white shadow-sm ring-2 ring-emerald-400/30">
+                    <ShieldCheck className="h-5 w-5 transition-transform group-hover:scale-110" />
+                  </div>
+                  <div>
+                    <span className="font-mono text-[0.62rem] uppercase tracking-wider text-emerald-600 dark:text-emerald-400 font-bold">
+                      Safety Guardrail
+                    </span>
+                    <p className="font-display text-base font-bold tracking-tight text-foreground">
+                      Safety Audit
+                    </p>
+                  </div>
                 </div>
-                <div className="pt-1">
-                  <p className="font-display text-lg font-semibold tracking-tight text-foreground">
-                    Safety Audit
-                  </p>
-                  <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-                    Flags contraindications & red flags.
-                  </p>
-                </div>
+                <p className="mt-2.5 text-xs leading-relaxed text-muted-foreground">
+                  Flags contraindications, drug interactions, red flags, and verifies reasoning
+                  boundaries.
+                </p>
               </div>
-              <div className="flex items-start gap-4 group cursor-default">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-card shadow-sm border border-border/60 transition-colors group-hover:border-info/40 group-hover:bg-info/5">
-                  <ScanEye className="h-5 w-5 text-info transition-transform group-hover:scale-110" />
+
+              {/* Explainable Insights */}
+              <div className="group relative overflow-hidden rounded-2xl border border-amber-500/30 bg-gradient-to-br from-amber-500/10 via-card/90 to-card p-4 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-amber-500/50 hover:shadow-md hover:shadow-amber-500/10">
+                <div className="flex items-center gap-3.5">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-sm ring-2 ring-amber-400/30">
+                    <ScanEye className="h-5 w-5 transition-transform group-hover:scale-110" />
+                  </div>
+                  <div>
+                    <span className="font-mono text-[0.62rem] uppercase tracking-wider text-amber-600 dark:text-amber-400 font-bold">
+                      Transparent AI
+                    </span>
+                    <p className="font-display text-base font-bold tracking-tight text-foreground">
+                      Explainable Insights
+                    </p>
+                  </div>
                 </div>
-                <div className="pt-1">
-                  <p className="font-display text-lg font-semibold tracking-tight text-foreground">
-                    Explainable Insights
-                  </p>
-                  <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-                    Confidence bands & full reasoning paths.
-                  </p>
-                </div>
+                <p className="mt-2.5 text-xs leading-relaxed text-muted-foreground">
+                  Provides qualitative confidence bands and full reasoning paths with attached
+                  citations.
+                </p>
               </div>
             </div>
           </div>
