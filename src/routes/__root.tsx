@@ -113,14 +113,16 @@ function RootShell({ children }: { children: ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body className="min-h-screen antialiased bg-background text-foreground" suppressHydrationWarning>
+      <body
+        className="min-h-screen antialiased bg-background text-foreground"
+        suppressHydrationWarning
+      >
         {children}
         <Scripts />
       </body>
     </html>
   );
 }
-
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
