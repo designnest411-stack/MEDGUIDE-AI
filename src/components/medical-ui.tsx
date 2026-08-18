@@ -23,7 +23,7 @@ export function GlassCard({ className, children }: { className?: string; childre
   return (
     <Card
       className={cn(
-        "relative overflow-hidden rounded-lg border-border/70 bg-card/70 shadow-[0_1px_0_0_oklch(1_0_0/6%)_inset,0_18px_40px_-24px_oklch(0_0_0/70%)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-[2px] hover:shadow-[0_1px_0_0_oklch(1_0_0/6%)_inset,0_24px_50px_-24px_oklch(0_0_0/80%)]",
+        "relative overflow-hidden rounded-xl border border-border/80 bg-card shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-[1px] hover:shadow-md",
         className,
       )}
     >

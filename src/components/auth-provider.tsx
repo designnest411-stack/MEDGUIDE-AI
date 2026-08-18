@@ -228,7 +228,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         </div>
 
         {/* Right Panel: Auth Card */}
-        <div className="z-20 flex flex-1 flex-col items-center justify-center border-l border-border/40 bg-card/80 p-8 shadow-[-20px_0_40px_-15px_rgba(0,0,0,0.5)] backdrop-blur-xl lg:p-12">
+        <div className="z-20 flex flex-1 flex-col items-center justify-center border-l border-border/70 bg-card/90 p-8 shadow-sm backdrop-blur-xl lg:p-12">
           <div className="w-full max-w-[420px] animate-in fade-in duration-200 ease-out">
             <h2 className="font-display text-3xl font-semibold tracking-tight text-foreground">
               Welcome back
