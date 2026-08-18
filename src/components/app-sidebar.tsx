@@ -145,7 +145,6 @@ export function AppSidebar() {
                     "D"
                   ).toUpperCase()}
                 </div>
-
               )}
               <div className="min-w-0 flex-1">
                 <p className="truncate text-xs font-semibold text-foreground">
