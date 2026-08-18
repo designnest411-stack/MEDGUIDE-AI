@@ -1,10 +1,11 @@
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
+  setPersistence,
+  browserLocalPersistence,
   GoogleAuthProvider,
   signInWithPopup,
-  signInWithRedirect,
-  getRedirectResult,
+  signInAnonymously,
   signOut,
 } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
@@ -24,21 +25,19 @@ export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 
+if (typeof window !== "undefined") {
+  setPersistence(auth, browserLocalPersistence).catch(() => {});
+}
+
 const provider = new GoogleAuthProvider();
 provider.setCustomParameters({ prompt: "select_account" });
 
 export const loginWithGoogle = async () => {
-  try {
-    return await signInWithPopup(auth, provider);
-  } catch (err: unknown) {
-    const error = err as { code?: string };
-    // Only fall back to redirect if popup was strictly blocked by the browser
-    if (error?.code === "auth/popup-blocked") {
-      return await signInWithRedirect(auth, provider);
-    }
-    throw err;
-  }
+  return await signInWithPopup(auth, provider);
 };
 
-export { getRedirectResult };
+export const loginDemoClinician = async () => {
+  return await signInAnonymously(auth);
+};
+
 export const logout = () => signOut(auth);

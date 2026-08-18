@@ -13,7 +13,7 @@ import {
   ScanEye,
 } from "lucide-react";
 
-import { auth, loginWithGoogle, getRedirectResult } from "@/lib/firebase";
+import { auth, loginWithGoogle, loginDemoClinician } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -21,6 +21,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = React.useState(true);
   const [mounted, setMounted] = React.useState(false);
   const [isLoggingIn, setIsLoggingIn] = React.useState(false);
+  const [isDemoLoggingIn, setIsDemoLoggingIn] = React.useState(false);
   const [authError, setAuthError] = React.useState<string | null>(null);
 
   React.useEffect(() => {
@@ -33,6 +34,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setLoading(false);
         if (currentUser) {
           setIsLoggingIn(false);
+          setIsDemoLoggingIn(false);
           setAuthError(null);
         }
       },
@@ -40,31 +42,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setAuthError(err.message);
         setLoading(false);
         setIsLoggingIn(false);
+        setIsDemoLoggingIn(false);
       },
     );
-
-    getRedirectResult(auth)
-      .then((cred) => {
-        if (cred?.user) {
-          setUser(cred.user);
-          setIsLoggingIn(false);
-          setAuthError(null);
-        }
-      })
-      .catch((err: unknown) => {
-        const e = err as { code?: string; message?: string };
-        if (e?.code === "auth/unauthorized-domain") {
-          setAuthError(
-            `This domain (${window.location.hostname}) is not yet added to your Firebase Console > Authentication > Settings > Authorized Domains.`,
-          );
-        } else if (e?.code && e.code !== "auth/popup-closed-by-user") {
-          setAuthError(e.message ?? "Authentication failed.");
-        }
-      })
-      .finally(() => {
-        setLoading(false);
-        setIsLoggingIn(false);
-      });
 
     return () => unsubscribe();
   }, []);
@@ -84,12 +64,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           `Domain "${window.location.hostname}" is not authorized in Firebase Console. Please add "${window.location.hostname}" under Firebase Auth > Settings > Authorized domains.`,
         );
       } else if (e?.code === "auth/popup-closed-by-user") {
-        // User closed popup; do not show error
+        // User closed popup
       } else if (e?.message) {
         setAuthError(e.message);
       }
     } finally {
       setIsLoggingIn(false);
+    }
+  };
+
+  const handleDemoLogin = async () => {
+    setIsDemoLoggingIn(true);
+    setAuthError(null);
+    try {
+      const res = await loginDemoClinician();
+      if (res?.user) {
+        setUser(res.user);
+      }
+    } catch (err: unknown) {
+      const e = err as { code?: string; message?: string };
+      if (e?.message) {
+        setAuthError(e.message);
+      }
+    } finally {
+      setIsDemoLoggingIn(false);
     }
   };
 
@@ -254,6 +252,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 )}
                 {isLoggingIn ? "Connecting to Google..." : "Continue with Google"}
               </Button>
+
+              <div className="my-5 flex items-center gap-3">
+                <div className="h-px flex-1 bg-border/60" />
+                <span className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
+                  or
+                </span>
+                <div className="h-px flex-1 bg-border/60" />
+              </div>
+
+              <Button
+                className="h-11 w-full border border-primary/40 bg-primary/10 text-sm font-semibold text-primary shadow-sm transition-all hover:scale-[1.01] hover:bg-primary/20"
+                variant="outline"
+                disabled={isDemoLoggingIn || isLoggingIn}
+                onClick={handleDemoLogin}
+              >
+                {isDemoLoggingIn ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin text-primary" />
+                ) : (
+                  <Brain className="mr-2 h-4 w-4 text-primary" />
+                )}
+                {isDemoLoggingIn ? "Entering Workspace..." : "Instant Demo Clinician Access"}
+              </Button>
+
               {authError && (
                 <div className="mt-4 rounded-lg bg-destructive/10 p-3 border border-destructive/30">
                   <p className="text-center text-xs leading-relaxed font-medium text-destructive">
