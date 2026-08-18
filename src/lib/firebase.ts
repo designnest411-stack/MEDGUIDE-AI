@@ -5,20 +5,15 @@ import {
   browserLocalPersistence,
   GoogleAuthProvider,
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   signOut,
 } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
-const getAuthDomain = () => {
-  if (typeof window !== "undefined" && window.location.hostname.endsWith("vercel.app")) {
-    return window.location.hostname;
-  }
-  return import.meta.env["VITE_FIREBASE_AUTH_DOMAIN"] || "medguide-ai-e3b90.firebaseapp.com";
-};
-
 const firebaseConfig = {
   apiKey: import.meta.env["VITE_FIREBASE_API_KEY"] || "AIzaSyBKvCMt4r_5gOtTLMyc2-1siNILWX_l8SM",
-  authDomain: getAuthDomain(),
+  authDomain: import.meta.env["VITE_FIREBASE_AUTH_DOMAIN"] || "medguide-ai-e3b90.firebaseapp.com",
   projectId: import.meta.env["VITE_FIREBASE_PROJECT_ID"] || "medguide-ai-e3b90",
   storageBucket:
     import.meta.env["VITE_FIREBASE_STORAGE_BUCKET"] || "medguide-ai-e3b90.firebasestorage.app",
@@ -39,9 +34,18 @@ const provider = new GoogleAuthProvider();
 provider.setCustomParameters({ prompt: "select_account" });
 
 export const loginWithGoogle = async () => {
-  return await signInWithPopup(auth, provider);
+  try {
+    return await signInWithPopup(auth, provider);
+  } catch (err: unknown) {
+    const e = err as { code?: string };
+    if (e?.code === "auth/popup-blocked" || e?.code === "auth/cancelled-popup-request") {
+      return await signInWithRedirect(auth, provider);
+    }
+    throw err;
+  }
 };
 
+export { getRedirectResult };
 export const logout = async () => {
   return await signOut(auth);
 };

@@ -13,7 +13,7 @@ import {
   ScanEye,
 } from "lucide-react";
 
-import { auth, loginWithGoogle } from "@/lib/firebase";
+import { auth, loginWithGoogle, getRedirectResult } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -42,6 +42,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setIsLoggingIn(false);
       },
     );
+
+    getRedirectResult(auth)
+      .then((cred) => {
+        if (cred?.user) {
+          setUser(cred.user);
+          setIsLoggingIn(false);
+          setAuthError(null);
+        }
+      })
+      .catch((err: unknown) => {
+        const e = err as { code?: string; message?: string };
+        if (e?.code === "auth/unauthorized-domain") {
+          setAuthError(
+            `Domain "${window.location.hostname}" is not authorized in Firebase Console. Please add "${window.location.hostname}" under Firebase Auth > Settings > Authorized domains.`,
+          );
+        } else if (e?.code && e.code !== "auth/popup-closed-by-user") {
+          setAuthError(e.message ?? "Authentication failed.");
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
 
     return () => unsubscribe();
   }, []);
