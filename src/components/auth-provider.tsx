@@ -23,25 +23,44 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = React.useState(false);
   const [isLoggingIn, setIsLoggingIn] = React.useState(false);
   const [authError, setAuthError] = React.useState<string | null>(null);
+  const [detailedError, setDetailedError] = React.useState<string | null>(null);
+  const [diagnostics, setDiagnostics] = React.useState<string[]>([]);
 
   const navigate = useNavigate();
   const location = useRouterState({ select: (s) => s.location });
 
+  const addLog = (msg: string) => {
+    const time = new Date().toLocaleTimeString();
+    const entry = `[${time}] ${msg}`;
+    console.log(`%c[MEDGUIDE AUTH] ${entry}`, "color: #06b6d4; font-weight: bold;");
+    setDiagnostics((prev) => [...prev.slice(-20), entry]);
+  };
+
   React.useEffect(() => {
     setMounted(true);
+    addLog(`Origin: ${typeof window !== "undefined" ? window.location.origin : "server"}`);
+    addLog(`Firebase Auth Domain: ${auth.config.authDomain || "default"}`);
 
     const unsubscribe = onAuthStateChanged(
       auth,
       (currentUser) => {
-        setUser(currentUser);
-        setLoading(false);
         if (currentUser) {
+          addLog(`Auth state changed: Logged in as ${currentUser.email || currentUser.uid}`);
+          setUser(currentUser);
           setIsLoggingIn(false);
           setAuthError(null);
+        } else {
+          addLog("Auth state changed: No user session active (null)");
+          setUser(null);
         }
+        setLoading(false);
       },
       (err) => {
+        const msg = `onAuthStateChanged Error: ${err.name} - ${err.message}`;
+        console.error("[MEDGUIDE AUTH ERROR]", err);
+        addLog(msg);
         setAuthError(err.message);
+        setDetailedError(JSON.stringify(err, Object.getOwnPropertyNames(err), 2));
         setLoading(false);
         setIsLoggingIn(false);
       },
@@ -50,13 +69,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     getRedirectResult(auth)
       .then((cred) => {
         if (cred?.user) {
+          addLog(`getRedirectResult resolved: Logged in as ${cred.user.email}`);
           setUser(cred.user);
           setIsLoggingIn(false);
           setAuthError(null);
+        } else {
+          addLog("getRedirectResult: No pending redirect token found");
         }
       })
       .catch((err: unknown) => {
-        const e = err as { code?: string; message?: string };
+        const e = err as { code?: string; message?: string; stack?: string };
+        const msg = `getRedirectResult Error: ${e.code || "unknown"} - ${e.message || String(err)}`;
+        console.error("[MEDGUIDE AUTH REDIRECT ERROR]", err);
+        addLog(msg);
+        setDetailedError(JSON.stringify(err, Object.getOwnPropertyNames(err), 2));
         if (e?.code === "auth/unauthorized-domain") {
           setAuthError(
             `Domain "${window.location.hostname}" is not authorized in Firebase Console. Please add "${window.location.hostname}" under Firebase Auth > Settings > Authorized domains.`,
@@ -74,6 +100,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   React.useEffect(() => {
     if (user && location.pathname === "/") {
+      addLog("User authenticated on root route, redirecting to /dashboard");
       navigate({ to: "/dashboard" });
     }
   }, [user, location.pathname, navigate]);
@@ -81,13 +108,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const handleLogin = async () => {
     setIsLoggingIn(true);
     setAuthError(null);
+    setDetailedError(null);
+    addLog("User clicked Continue with Google");
+
     try {
+      addLog("Invoking loginWithGoogle()...");
       const res = await loginWithGoogle();
       if (res?.user) {
+        addLog(`Popup completed successfully: ${res.user.email}`);
         setUser(res.user);
+      } else {
+        addLog("loginWithGoogle returned without immediate user object (redirect flow initiated)");
       }
     } catch (err: unknown) {
-      const e = err as { code?: string; message?: string };
+      const e = err as { code?: string; message?: string; stack?: string; name?: string };
+      const rawDetails = JSON.stringify(err, Object.getOwnPropertyNames(err), 2);
+      console.error("[MEDGUIDE AUTH LOGIN ERROR]", err);
+      addLog(`Login Failed: Code=${e.code || "N/A"} Message=${e.message || String(err)}`);
+      setDetailedError(rawDetails);
+
       if (e?.code === "auth/popup-blocked") {
         setAuthError(
           "Your browser blocked the Google popup window. Please click the popup icon in your browser address bar to allow popups.",
@@ -97,7 +136,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           `Domain "${window.location.hostname}" is not authorized in Firebase Console. Please add "${window.location.hostname}" under Firebase Auth > Settings > Authorized domains.`,
         );
       } else if (e?.code === "auth/popup-closed-by-user") {
-        // User closed popup
+        addLog("User closed popup window before completing sign-in");
       } else if (e?.message) {
         setAuthError(e.message);
       }
@@ -269,12 +308,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               </Button>
 
               {authError && (
-                <div className="mt-4 rounded-lg bg-destructive/10 p-3 border border-destructive/30">
-                  <p className="text-center text-xs leading-relaxed font-medium text-destructive">
+                <div className="mt-4 rounded-lg bg-destructive/10 p-3.5 border border-destructive/30 text-left">
+                  <p className="text-xs leading-relaxed font-semibold text-destructive">
                     {authError}
                   </p>
+                  {detailedError && (
+                    <pre className="mt-2 p-2 rounded bg-black/40 text-[10px] font-mono text-destructive/90 overflow-x-auto whitespace-pre-wrap">
+                      {detailedError}
+                    </pre>
+                  )}
                 </div>
               )}
+
+              {/* Live Auth Diagnostics Feed */}
+              <div className="mt-5 rounded-lg border border-border/60 bg-black/30 p-3 text-left">
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-[10px] uppercase font-mono font-semibold tracking-wider text-muted-foreground">
+                    Live Auth Trace
+                  </span>
+                  <span className="inline-flex h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
+                </div>
+                <div className="max-h-32 overflow-y-auto space-y-1 font-mono text-[10px] text-muted-foreground/90 select-all">
+                  {diagnostics.map((log, idx) => (
+                    <div
+                      key={idx}
+                      className="leading-tight break-all border-b border-border/20 pb-0.5 last:border-none"
+                    >
+                      {log}
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>
