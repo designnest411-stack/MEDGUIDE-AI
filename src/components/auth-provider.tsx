@@ -15,6 +15,7 @@ import {
 
 import { auth, loginWithGoogle, getRedirectResult } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
+import { useNavigate, useRouterState } from "@tanstack/react-router";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = React.useState<User | null>(null);
@@ -22,6 +23,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = React.useState(false);
   const [isLoggingIn, setIsLoggingIn] = React.useState(false);
   const [authError, setAuthError] = React.useState<string | null>(null);
+
+  const navigate = useNavigate();
+  const location = useRouterState({ select: (s) => s.location });
 
   React.useEffect(() => {
     setMounted(true);
@@ -67,6 +71,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     return () => unsubscribe();
   }, []);
+
+  React.useEffect(() => {
+    if (user && location.pathname === "/") {
+      navigate({ to: "/dashboard" });
+    }
+  }, [user, location.pathname, navigate]);
 
   const handleLogin = async () => {
     setIsLoggingIn(true);
