@@ -316,6 +316,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 </div>
               )}
 
+              {/* Step-by-Step Popup Unblock Guide */}
+              {authError && authError.includes("blocked") && (
+                <div className="mt-3 rounded-xl border border-amber-500/40 bg-amber-500/10 p-3.5 text-left text-xs">
+                  <p className="font-semibold text-amber-300 mb-1.5 flex items-center gap-1.5">
+                    💡 How to allow popups in 5 seconds:
+                  </p>
+                  <ol className="list-decimal list-inside space-y-1 text-muted-foreground leading-relaxed text-[11px]">
+                    <li>
+                      Look at the right side of your browser URL bar for the{" "}
+                      <strong className="text-foreground font-mono">🚫 / 🪟</strong> icon.
+                    </li>
+                    <li>
+                      Click it and select{" "}
+                      <strong className="text-foreground">
+                        "Always allow pop-ups and redirects from this site"
+                      </strong>
+                      .
+                    </li>
+                    <li>
+                      Click <strong className="text-foreground">Done</strong>, then click the button
+                      below.
+                    </li>
+                  </ol>
+                  <Button
+                    onClick={handleLogin}
+                    size="sm"
+                    className="mt-3 w-full h-8 text-xs font-semibold bg-amber-500/20 text-amber-200 border border-amber-500/40 hover:bg-amber-500/30"
+                    variant="outline"
+                  >
+                    Try Google Sign-In Again
+                  </Button>
+                </div>
+              )}
+
               {/* Live Auth Diagnostics Feed */}
               <div className="mt-5 rounded-lg border border-border/60 bg-black/30 p-3 text-left">
                 <div className="flex items-center justify-between mb-1.5">
