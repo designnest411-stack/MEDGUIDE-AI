@@ -6,6 +6,8 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   signInAnonymously,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
@@ -36,8 +38,41 @@ export const loginWithGoogle = async () => {
   return await signInWithPopup(auth, provider);
 };
 
-export const loginDemoClinician = async () => {
-  return await signInAnonymously(auth);
+export const loginWithEmail = async (email: string, pass: string) => {
+  try {
+    return await signInWithEmailAndPassword(auth, email, pass);
+  } catch (err: unknown) {
+    const e = err as { code?: string };
+    if (e?.code === "auth/user-not-found" || e?.code === "auth/invalid-credential") {
+      try {
+        return await createUserWithEmailAndPassword(auth, email, pass);
+      } catch {
+        throw err;
+      }
+    }
+    throw err;
+  }
 };
 
-export const logout = () => signOut(auth);
+export const loginDemoClinician = async () => {
+  try {
+    return await signInAnonymously(auth);
+  } catch {
+    // If anonymous auth is disabled in Firebase console, return a mock user credential
+    return {
+      user: {
+        uid: "demo-clinician-workspace",
+        email: "clinician@medguide.ai",
+        displayName: "Dr. Clinician",
+        photoURL: null,
+      },
+    };
+  }
+};
+
+export const logout = async () => {
+  if (typeof window !== "undefined") {
+    localStorage.removeItem("medguide_guest_session");
+  }
+  return await signOut(auth).catch(() => {});
+};

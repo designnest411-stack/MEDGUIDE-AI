@@ -33,7 +33,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { auth } from "@/lib/firebase";
+import { logout } from "@/lib/firebase";
 
 const clinical = [
   { title: "Platform Overview", url: "/", icon: Sparkles },
@@ -134,7 +134,7 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton
                   tooltip="Sign out"
-                  onClick={() => auth.signOut()}
+                  onClick={() => logout()}
                   className="text-destructive hover:bg-destructive/10 hover:text-destructive"
                 >
                   <LogOut className="h-4 w-4 shrink-0" />
@@ -145,7 +145,7 @@ export function AppSidebar() {
           ) : (
             <div className="rounded border border-sidebar-border/80 px-2.5 py-2">
               <button
-                onClick={() => auth.signOut()}
+                onClick={() => logout()}
                 className="group flex w-full items-center gap-2 rounded-md bg-destructive/10 px-2 py-1.5 text-xs font-medium text-destructive transition-colors hover:bg-destructive hover:text-destructive-foreground"
               >
                 <LogOut className="h-3.5 w-3.5" />

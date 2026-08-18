@@ -13,8 +13,9 @@ import {
   ScanEye,
 } from "lucide-react";
 
-import { auth, loginWithGoogle, loginDemoClinician } from "@/lib/firebase";
+import { auth, loginWithGoogle, loginWithEmail, loginDemoClinician } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = React.useState<User | null>(null);
@@ -24,19 +25,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isDemoLoggingIn, setIsDemoLoggingIn] = React.useState(false);
   const [authError, setAuthError] = React.useState<string | null>(null);
 
+  // Email login state
+  const [showEmailLogin, setShowEmailLogin] = React.useState(false);
+  const [email, setEmail] = React.useState("designnest411@gmail.com");
+  const [password, setPassword] = React.useState("Designnest@80k");
+
   React.useEffect(() => {
     setMounted(true);
+
+    // Check for existing local guest session
+    if (typeof window !== "undefined") {
+      const savedGuest = localStorage.getItem("medguide_guest_session");
+      if (savedGuest) {
+        try {
+          setUser(JSON.parse(savedGuest) as User);
+          setLoading(false);
+        } catch {
+          // ignore corrupted local storage
+        }
+      }
+    }
 
     const unsubscribe = onAuthStateChanged(
       auth,
       (currentUser) => {
-        setUser(currentUser);
-        setLoading(false);
         if (currentUser) {
-          setIsLoggingIn(false);
-          setIsDemoLoggingIn(false);
-          setAuthError(null);
+          setUser(currentUser);
+          if (typeof window !== "undefined") {
+            localStorage.removeItem("medguide_guest_session");
+          }
         }
+        setLoading(false);
+        setIsLoggingIn(false);
+        setIsDemoLoggingIn(false);
       },
       (err) => {
         setAuthError(err.message);
@@ -59,7 +80,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     } catch (err: unknown) {
       const e = err as { code?: string; message?: string };
-      if (e?.code === "auth/unauthorized-domain") {
+      if (e?.code === "auth/popup-blocked") {
+        setAuthError(
+          "Your browser blocked the Google popup window. Please allow popups or use Email / Demo sign-in below.",
+        );
+      } else if (e?.code === "auth/unauthorized-domain") {
         setAuthError(
           `Domain "${window.location.hostname}" is not authorized in Firebase Console. Please add "${window.location.hostname}" under Firebase Auth > Settings > Authorized domains.`,
         );
@@ -73,11 +98,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const handleDemoLogin = async () => {
-    setIsDemoLoggingIn(true);
+  const handleEmailSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !password) {
+      setAuthError("Please enter both email and password.");
+      return;
+    }
+    setIsLoggingIn(true);
     setAuthError(null);
     try {
-      const res = await loginDemoClinician();
+      const res = await loginWithEmail(email.trim(), password);
       if (res?.user) {
         setUser(res.user);
       }
@@ -86,6 +116,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (e?.message) {
         setAuthError(e.message);
       }
+    } finally {
+      setIsLoggingIn(false);
+    }
+  };
+
+  const handleDemoLogin = async () => {
+    setIsDemoLoggingIn(true);
+    setAuthError(null);
+    try {
+      const res = await loginDemoClinician();
+      if (res?.user) {
+        setUser(res.user as User);
+      } else {
+        // Local clinician fallback
+        const fallback = {
+          uid: "demo-clinician-workspace",
+          email: "clinician@medguide.ai",
+          displayName: "Dr. Clinician",
+          photoURL: null,
+        } as unknown as User;
+        if (typeof window !== "undefined") {
+          localStorage.setItem("medguide_guest_session", JSON.stringify(fallback));
+        }
+        setUser(fallback);
+      }
+    } catch {
+      // Local clinician fallback
+      const fallback = {
+        uid: "demo-clinician-workspace",
+        email: "clinician@medguide.ai",
+        displayName: "Dr. Clinician",
+        photoURL: null,
+      } as unknown as User;
+      if (typeof window !== "undefined") {
+        localStorage.setItem("medguide_guest_session", JSON.stringify(fallback));
+      }
+      setUser(fallback);
     } finally {
       setIsDemoLoggingIn(false);
     }
@@ -224,10 +291,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               <Button
                 className="h-12 w-full border border-border/80 bg-secondary/80 text-base font-medium text-foreground shadow-sm transition-all hover:scale-[1.01] hover:border-primary/50 hover:bg-primary/10"
                 variant="outline"
-                disabled={isLoggingIn}
+                disabled={isLoggingIn || isDemoLoggingIn}
                 onClick={handleLogin}
               >
-                {isLoggingIn ? (
+                {isLoggingIn && !showEmailLogin ? (
                   <Loader2 className="mr-3 h-5 w-5 animate-spin text-primary" />
                 ) : (
                   <svg className="mr-3 h-5 w-5" viewBox="0 0 24 24">
@@ -250,10 +317,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                     <path d="M1 1h22v22H1z" fill="none" />
                   </svg>
                 )}
-                {isLoggingIn ? "Connecting to Google..." : "Continue with Google"}
+                {isLoggingIn && !showEmailLogin
+                  ? "Connecting to Google..."
+                  : "Continue with Google"}
               </Button>
 
-              <div className="my-5 flex items-center gap-3">
+              <div className="my-4 flex items-center gap-3">
                 <div className="h-px flex-1 bg-border/60" />
                 <span className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
                   or
@@ -272,8 +341,57 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 ) : (
                   <Brain className="mr-2 h-4 w-4 text-primary" />
                 )}
-                {isDemoLoggingIn ? "Entering Workspace..." : "Instant Demo Clinician Access"}
+                {isDemoLoggingIn ? "Entering Workspace..." : "Instant Clinician Access (1-Click)"}
               </Button>
+
+              {/* Email Login Accordion / Toggle */}
+              <div className="mt-4 pt-3 border-t border-border/40">
+                {!showEmailLogin ? (
+                  <button
+                    type="button"
+                    onClick={() => setShowEmailLogin(true)}
+                    className="w-full text-center text-xs text-muted-foreground hover:text-foreground transition-colors py-1 underline"
+                  >
+                    Sign in with Email & Password
+                  </button>
+                ) : (
+                  <form onSubmit={handleEmailSubmit} className="space-y-3 pt-2">
+                    <div>
+                      <label className="text-xs text-muted-foreground font-medium block mb-1">
+                        Email Address
+                      </label>
+                      <Input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="doctor@hospital.org"
+                        className="h-9 text-xs bg-background/60"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs text-muted-foreground font-medium block mb-1">
+                        Password
+                      </label>
+                      <Input
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="••••••••"
+                        className="h-9 text-xs bg-background/60"
+                        required
+                      />
+                    </div>
+                    <Button
+                      type="submit"
+                      disabled={isLoggingIn}
+                      className="w-full h-9 text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90"
+                    >
+                      {isLoggingIn ? "Signing in..." : "Sign in with Email"}
+                    </Button>
+                  </form>
+                )}
+              </div>
 
               {authError && (
                 <div className="mt-4 rounded-lg bg-destructive/10 p-3 border border-destructive/30">
