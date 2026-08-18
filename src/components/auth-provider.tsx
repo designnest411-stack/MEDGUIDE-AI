@@ -53,6 +53,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setUser(cred.user);
           setIsLoggingIn(false);
           setAuthError(null);
+          if (location.pathname === "/") {
+            void navigate({ to: "/dashboard" });
+          }
         }
       })
       .catch((err: unknown) => {
@@ -70,13 +73,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
 
     return () => unsubscribe();
-  }, []);
-
-  React.useEffect(() => {
-    if (user && location.pathname === "/") {
-      navigate({ to: "/dashboard" });
-    }
-  }, [user, location.pathname, navigate]);
+  }, [location.pathname, navigate]);
 
   const handleLogin = () => {
     setIsLoggingIn(true);
@@ -86,9 +83,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       .then((res) => {
         if (res?.user) {
           setUser(res.user);
+          if (location.pathname === "/") {
+            void navigate({ to: "/dashboard" });
+          }
         }
         setIsLoggingIn(false);
       })
+
       .catch((err: unknown) => {
         const e = err as { code?: string; message?: string };
         if (e?.code === "auth/popup-blocked") {
