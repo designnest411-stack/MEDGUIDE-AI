@@ -30,19 +30,11 @@ if (typeof window !== "undefined") {
   setPersistence(auth, browserLocalPersistence).catch(() => {});
 }
 
-const provider = new GoogleAuthProvider();
-provider.setCustomParameters({ prompt: "select_account" });
+export const googleProvider = new GoogleAuthProvider();
+googleProvider.setCustomParameters({ prompt: "select_account" });
 
-export const loginWithGoogle = async () => {
-  try {
-    return await signInWithPopup(auth, provider);
-  } catch (err: unknown) {
-    const e = err as { code?: string };
-    if (e?.code === "auth/popup-blocked" || e?.code === "auth/cancelled-popup-request") {
-      return await signInWithRedirect(auth, provider);
-    }
-    throw err;
-  }
+export const loginWithGoogle = () => {
+  return signInWithPopup(auth, googleProvider);
 };
 
 export { getRedirectResult };

@@ -105,44 +105,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [user, location.pathname, navigate]);
 
-  const handleLogin = async () => {
+  const handleLogin = () => {
     setIsLoggingIn(true);
     setAuthError(null);
     setDetailedError(null);
-    addLog("User clicked Continue with Google");
+    addLog("Opening Google Sign-In popup synchronously...");
 
-    try {
-      addLog("Invoking loginWithGoogle()...");
-      const res = await loginWithGoogle();
-      if (res?.user) {
+    loginWithGoogle()
+      .then((res) => {
         addLog(`Popup completed successfully: ${res.user.email}`);
         setUser(res.user);
-      } else {
-        addLog("loginWithGoogle returned without immediate user object (redirect flow initiated)");
-      }
-    } catch (err: unknown) {
-      const e = err as { code?: string; message?: string; stack?: string; name?: string };
-      const rawDetails = JSON.stringify(err, Object.getOwnPropertyNames(err), 2);
-      console.error("[MEDGUIDE AUTH LOGIN ERROR]", err);
-      addLog(`Login Failed: Code=${e.code || "N/A"} Message=${e.message || String(err)}`);
-      setDetailedError(rawDetails);
+        setIsLoggingIn(false);
+      })
+      .catch((err: unknown) => {
+        const e = err as { code?: string; message?: string };
+        const rawDetails = JSON.stringify(err, Object.getOwnPropertyNames(err), 2);
+        console.error("[MEDGUIDE AUTH LOGIN ERROR]", err);
+        addLog(`Login Failed: Code=${e?.code || "N/A"} Message=${e?.message || String(err)}`);
+        setDetailedError(rawDetails);
 
-      if (e?.code === "auth/popup-blocked") {
-        setAuthError(
-          "Your browser blocked the Google popup window. Please click the popup icon in your browser address bar to allow popups.",
-        );
-      } else if (e?.code === "auth/unauthorized-domain") {
-        setAuthError(
-          `Domain "${window.location.hostname}" is not authorized in Firebase Console. Please add "${window.location.hostname}" under Firebase Auth > Settings > Authorized domains.`,
-        );
-      } else if (e?.code === "auth/popup-closed-by-user") {
-        addLog("User closed popup window before completing sign-in");
-      } else if (e?.message) {
-        setAuthError(e.message);
-      }
-    } finally {
-      setIsLoggingIn(false);
-    }
+        if (e?.code === "auth/popup-blocked") {
+          setAuthError(
+            "Your browser blocked the popup window. Please click the popup icon in your browser address bar to allow popups.",
+          );
+        } else if (e?.code === "auth/unauthorized-domain") {
+          setAuthError(
+            `Domain "${window.location.hostname}" is not authorized in Firebase Console. Please add "${window.location.hostname}" under Firebase Auth > Settings > Authorized domains.`,
+          );
+        } else if (e?.code === "auth/popup-closed-by-user") {
+          addLog("Popup closed by user");
+        } else if (e?.message) {
+          setAuthError(e.message);
+        }
+        setIsLoggingIn(false);
+      });
   };
 
   if (!mounted || loading) {
