@@ -1,5 +1,6 @@
 import React from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
+import type { User } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import {
   Brain,
   Loader2,
@@ -16,17 +17,38 @@ import { auth, loginWithGoogle, getRedirectResult } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, loading, error] = useAuthState(auth);
+  const [user, setUser] = React.useState<User | null>(null);
+  const [loading, setLoading] = React.useState(true);
   const [mounted, setMounted] = React.useState(false);
   const [isLoggingIn, setIsLoggingIn] = React.useState(false);
   const [authError, setAuthError] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     setMounted(true);
+
+    const unsubscribe = onAuthStateChanged(
+      auth,
+      (currentUser) => {
+        setUser(currentUser);
+        setLoading(false);
+        if (currentUser) {
+          setIsLoggingIn(false);
+          setAuthError(null);
+        }
+      },
+      (err) => {
+        setAuthError(err.message);
+        setLoading(false);
+        setIsLoggingIn(false);
+      },
+    );
+
     getRedirectResult(auth)
       .then((cred) => {
         if (cred?.user) {
+          setUser(cred.user);
           setIsLoggingIn(false);
+          setAuthError(null);
         }
       })
       .catch((err: unknown) => {
@@ -35,18 +57,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setAuthError(
             `This domain (${window.location.hostname}) is not yet added to your Firebase Console > Authentication > Settings > Authorized Domains.`,
           );
-        } else if (e?.message) {
-          setAuthError(e.message);
+        } else if (e?.code && e.code !== "auth/popup-closed-by-user") {
+          setAuthError(e.message ?? "Authentication failed.");
         }
+      })
+      .finally(() => {
+        setLoading(false);
         setIsLoggingIn(false);
       });
+
+    return () => unsubscribe();
   }, []);
 
   const handleLogin = async () => {
     setIsLoggingIn(true);
     setAuthError(null);
     try {
-      await loginWithGoogle();
+      const res = await loginWithGoogle();
+      if (res?.user) {
+        setUser(res.user);
+      }
     } catch (err: unknown) {
       const e = err as { code?: string; message?: string };
       if (e?.code === "auth/unauthorized-domain") {
@@ -54,7 +84,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           `Domain "${window.location.hostname}" is not authorized in Firebase Console. Please add "${window.location.hostname}" under Firebase Auth > Settings > Authorized domains.`,
         );
       } else if (e?.code === "auth/popup-closed-by-user") {
-        setAuthError("Sign-in was cancelled. Please try again.");
+        // User closed popup; do not show error
       } else if (e?.message) {
         setAuthError(e.message);
       }
@@ -224,10 +254,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 )}
                 {isLoggingIn ? "Connecting to Google..." : "Continue with Google"}
               </Button>
-              {(authError || error?.message) && (
+              {authError && (
                 <div className="mt-4 rounded-lg bg-destructive/10 p-3 border border-destructive/30">
                   <p className="text-center text-xs leading-relaxed font-medium text-destructive">
-                    {authError || error?.message}
+                    {authError}
                   </p>
                 </div>
               )}

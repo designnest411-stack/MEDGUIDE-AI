@@ -32,11 +32,8 @@ export const loginWithGoogle = async () => {
     return await signInWithPopup(auth, provider);
   } catch (err: unknown) {
     const error = err as { code?: string };
-    if (
-      error?.code === "auth/popup-blocked" ||
-      error?.code === "auth/popup-closed-by-user" ||
-      error?.code === "auth/cancelled-popup-request"
-    ) {
+    // Only fall back to redirect if popup was strictly blocked by the browser
+    if (error?.code === "auth/popup-blocked") {
       return await signInWithRedirect(auth, provider);
     }
     throw err;
