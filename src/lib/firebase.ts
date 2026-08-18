@@ -4,6 +4,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   signInWithRedirect,
+  getRedirectResult,
   signOut,
 } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
@@ -23,17 +24,23 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 
 const provider = new GoogleAuthProvider();
+provider.setCustomParameters({ prompt: "select_account" });
 
 export const loginWithGoogle = async () => {
   try {
     return await signInWithPopup(auth, provider);
   } catch (err: unknown) {
     const error = err as { code?: string };
-    if (error?.code === "auth/popup-blocked" || error?.code === "auth/popup-closed-by-user") {
+    if (
+      error?.code === "auth/popup-blocked" ||
+      error?.code === "auth/popup-closed-by-user" ||
+      error?.code === "auth/cancelled-popup-request"
+    ) {
       return await signInWithRedirect(auth, provider);
     }
     throw err;
   }
 };
 
+export { getRedirectResult };
 export const logout = () => signOut(auth);
