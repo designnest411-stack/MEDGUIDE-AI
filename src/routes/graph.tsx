@@ -130,9 +130,9 @@ function GraphPage() {
                 key={d.id}
                 type="button"
                 onClick={() => setSelected(d.id)}
-                className={`w-full rounded-lg border px-3 py-2 text-left text-xs transition-colors ${
+                className={`w-full rounded-lg border px-3 py-2.5 text-left text-xs transition-colors touch-manipulation active:scale-[0.99] ${
                   selected === d.id
-                    ? "border-primary/50 bg-primary/10 text-primary"
+                    ? "border-primary/50 bg-primary/10 text-primary font-medium"
                     : "border-border/60 bg-card/40 hover:border-primary/30"
                 }`}
               >
@@ -160,7 +160,7 @@ function GraphPage() {
         </GlassCard>
 
         <GlassCard>
-          <CardContent className="h-[70vh] p-2">
+          <CardContent className="h-[52vh] sm:h-[70vh] p-2">
             <ReactFlow nodes={nodes} edges={edges} fitView proOptions={{ hideAttribution: true }}>
               <Background color="rgba(120,170,255,0.15)" gap={22} />
               <Controls className="!bg-card/80 !text-foreground" />

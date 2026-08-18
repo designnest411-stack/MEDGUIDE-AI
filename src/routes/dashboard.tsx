@@ -86,14 +86,16 @@ function Dashboard() {
         </Button>
       }
     >
-      <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-5">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
         {stats.map((s) => (
           <Link key={s.label} to={s.to}>
             <GlassCard className="h-full transition-transform hover:-translate-y-0.5">
-              <CardContent className="p-4">
+              <CardContent className="p-3.5 sm:p-4">
                 <s.icon className="h-4 w-4 text-primary" />
-                <p className="mt-3 font-display text-2xl font-semibold">{s.value}</p>
-                <p className="text-xs text-muted-foreground">{s.label}</p>
+                <p className="mt-2 sm:mt-3 font-display text-xl sm:text-2xl font-semibold">
+                  {s.value}
+                </p>
+                <p className="text-[11px] sm:text-xs text-muted-foreground">{s.label}</p>
               </CardContent>
             </GlassCard>
           </Link>
@@ -128,17 +130,23 @@ function Dashboard() {
                     key={c.id}
                     to="/explainability"
                     search={{ id: String(c.id ?? "") }}
-                    className="flex items-start gap-3 rounded-lg border border-border/60 bg-card/40 p-3 transition-colors hover:border-primary/40"
+                    className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 rounded-lg border border-border/60 bg-card/40 p-3 transition-colors hover:border-primary/40"
                   >
-                    <Stethoscope className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm">{c.question}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {new Date(c.createdAt).toLocaleString()} · {c.result?.evidence?.length ?? 0}{" "}
-                        sources
-                      </p>
+                    <div className="flex items-center gap-2.5 min-w-0 flex-1 w-full">
+                      <Stethoscope className="h-4 w-4 shrink-0 text-primary" />
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-medium">{c.question}</p>
+                        <p className="text-[11px] sm:text-xs text-muted-foreground">
+                          {new Date(c.createdAt).toLocaleString()} ·{" "}
+                          {c.result?.evidence?.length ?? 0} sources
+                        </p>
+                      </div>
                     </div>
-                    {c.result?.confidence && <ConfidenceBadge band={c.result.confidence.band} />}
+                    {c.result?.confidence && (
+                      <div className="self-end sm:self-center shrink-0">
+                        <ConfidenceBadge band={c.result.confidence.band} />
+                      </div>
+                    )}
                   </Link>
                 ))}
               </div>

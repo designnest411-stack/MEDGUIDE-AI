@@ -143,13 +143,13 @@ function Landing() {
               safety and generating explainable reports — with every conclusion traced back to its
               source.
             </p>
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <Button asChild size="lg">
+            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+              <Button asChild size="lg" className="w-full sm:w-auto">
                 <Link to="/consultation">
                   Start a consultation <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline">
+              <Button asChild size="lg" variant="outline" className="w-full sm:w-auto">
                 <Link to="/research">See the research bench</Link>
               </Button>
             </div>
@@ -159,12 +159,12 @@ function Landing() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.15 }}
-            className="mt-14 grid gap-2 sm:grid-cols-3 lg:grid-cols-4"
+            className="mt-12 sm:mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5"
           >
             {AGENTS.map((a) => (
               <div
                 key={a.id}
-                className="glass rounded-xl px-3 py-3 text-left transition-transform hover:-translate-y-0.5"
+                className="glass rounded-xl px-3.5 py-3 text-left transition-transform hover:-translate-y-0.5"
               >
                 <p className="font-display text-xs font-semibold text-primary">{a.short}</p>
                 <p className="mt-1 text-[0.7rem] leading-snug text-muted-foreground">

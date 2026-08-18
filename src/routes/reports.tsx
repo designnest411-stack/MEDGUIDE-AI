@@ -150,9 +150,14 @@ function ReportsPage() {
                   title={selected.title}
                   hint={new Date(selected.createdAt).toLocaleString()}
                   right={
-                    <div className="flex gap-2">
-                      <Button size="sm" variant="outline" onClick={() => exportPdf(selected)}>
-                        <QrCode className="mr-1.5 h-4 w-4" /> PDF + QR
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => exportPdf(selected)}
+                        className="text-xs"
+                      >
+                        <QrCode className="mr-1.5 h-3.5 w-3.5" /> PDF + QR
                       </Button>
                       <Button
                         size="sm"
@@ -166,15 +171,16 @@ function ReportsPage() {
                           a.click();
                           URL.revokeObjectURL(url);
                         }}
+                        className="text-xs"
                       >
-                        <Download className="mr-1.5 h-4 w-4" /> Markdown
+                        <Download className="mr-1.5 h-3.5 w-3.5" /> Markdown
                       </Button>
                     </div>
                   }
                 />
               </CardHeader>
               <CardContent>
-                <div className="prose prose-sm dark:prose-invert max-w-none rounded-lg bg-card/40 p-5 border border-border/50 backdrop-blur-md leading-relaxed text-foreground prose-headings:font-display prose-headings:text-foreground prose-h1:text-xl prose-h2:text-base prose-h3:text-sm prose-p:my-2 prose-li:my-1 prose-code:text-primary prose-a:text-primary">
+                <div className="prose prose-sm dark:prose-invert max-w-none rounded-lg bg-card/40 p-4 sm:p-5 border border-border/50 backdrop-blur-md leading-relaxed text-foreground prose-headings:font-display prose-headings:text-foreground prose-h1:text-xl prose-h2:text-base prose-h3:text-sm prose-p:my-2 prose-li:my-1 prose-code:text-primary prose-a:text-primary overflow-x-auto break-words">
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>{selected.markdown}</ReactMarkdown>
                 </div>
               </CardContent>

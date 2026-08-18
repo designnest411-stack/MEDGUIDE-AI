@@ -61,9 +61,15 @@ const insight = [
 ];
 
 export function AppSidebar() {
-  const { state } = useSidebar();
+  const { state, isMobile, setOpenMobile } = useSidebar();
   const collapsed = state === "collapsed";
   const pathname = useRouterState({ select: (r) => r.location.pathname });
+
+  const handleLinkClick = () => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  };
 
   const group = (label: string, items: typeof clinical) => (
     <SidebarGroup>
@@ -80,7 +86,11 @@ export function AppSidebar() {
             return (
               <SidebarMenuItem key={item.url}>
                 <SidebarMenuButton asChild isActive={active} tooltip={item.title}>
-                  <Link to={item.url} className="group/nav relative flex items-center gap-3">
+                  <Link
+                    to={item.url}
+                    onClick={handleLinkClick}
+                    className="group/nav relative flex items-center gap-3"
+                  >
                     <span
                       className={
                         active
@@ -103,7 +113,7 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon" className="border-r border-sidebar-border">
       <SidebarHeader>
-        <Link to="/" className="group flex items-center gap-2 px-2 py-2">
+        <Link to="/" onClick={handleLinkClick} className="group flex items-center gap-2 px-2 py-2">
           <div className="relative flex aspect-square size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-[#A073D9]/20 shadow-sm ring-1 ring-primary/30 overflow-hidden">
             <div className="absolute inset-0 bg-primary/10 group-hover:animate-pulse" />
             <Brain className="size-6 text-primary transition-transform duration-700 group-hover:scale-110 group-hover:rotate-12" />

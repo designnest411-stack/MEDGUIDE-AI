@@ -91,26 +91,30 @@ function DrugsPage() {
           <SectionTitle icon={Pill} title="Medication list" hint="Add generic or brand names" />
         </CardHeader>
         <CardContent>
-          <div className="flex gap-2">
-            <Input
-              value={entry}
-              onChange={(e) => setEntry(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  add();
-                }
-              }}
-              placeholder="e.g. warfarin"
-            />
-            <Button variant="outline" onClick={add}>
-              Add
-            </Button>
-            <Button onClick={check} disabled={loading}>
+          <div className="flex flex-col sm:flex-row gap-2">
+            <div className="flex flex-1 gap-2">
+              <Input
+                value={entry}
+                onChange={(e) => setEntry(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    add();
+                  }
+                }}
+                placeholder="e.g. warfarin, lisinopril"
+                className="flex-1"
+              />
+              <Button variant="outline" onClick={add} className="shrink-0">
+                Add
+              </Button>
+            </div>
+            <Button onClick={check} disabled={loading} className="w-full sm:w-auto shrink-0">
               {loading ? <Loader2 className="mr-1.5 h-4 w-4 animate-spin" /> : null}
               Check safety
             </Button>
           </div>
+
           {drugs.length > 0 && (
             <div className="mt-3 flex flex-wrap gap-2">
               {drugs.map((d) => (
