@@ -68,15 +68,15 @@ function TimelinePage() {
   const [user] = useAuthState(auth);
   const cols = user ? getCollections(user.uid) : null;
 
-  // Patient selection and filtering
-  const [selectedPatient, setSelectedPatient] = useState<string>("");
+  // Patient selection and filtering (use "all" instead of empty string for Radix Select)
+  const [selectedPatient, setSelectedPatient] = useState<string>("all");
   const [patients] = useTypedCollection<PatientRecord>(
     cols ? query(cols.patients, orderBy("createdAt", "desc")) : null,
   );
 
-  // Events filtered by selected patient (or all if none selected)
+  // Events filtered by selected patient (or all if "all" selected)
   const [events] = useTypedCollection<TimelineEvent>(
-    cols && selectedPatient
+    cols && selectedPatient && selectedPatient !== "all"
       ? query(cols.timeline, where("patientId", "==", selectedPatient), orderBy("date", "desc"))
       : cols
         ? query(cols.timeline, orderBy("date", "desc"))
@@ -99,7 +99,7 @@ function TimelinePage() {
         kind,
         title,
         detail,
-        ...(selectedPatient ? { patientId: selectedPatient } : {}),
+        ...(selectedPatient && selectedPatient !== "all" ? { patientId: selectedPatient } : {}),
         createdAt: Date.now(),
       });
     }
@@ -118,7 +118,7 @@ function TimelinePage() {
             <SelectValue placeholder="All patients" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All patients</SelectItem>
+            <SelectItem value="all">All patients</SelectItem>
             {patients.map((p) => (
               <SelectItem key={p.id} value={String(p.id)}>
                 {p.name}
@@ -142,7 +142,7 @@ function TimelinePage() {
                     <SelectValue placeholder="All timeline (no patient)" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All timeline (no patient)</SelectItem>
+                    <SelectItem value="all">All timeline (no patient)</SelectItem>
                     {patients.map((p) => (
                       <SelectItem key={p.id} value={String(p.id)}>
                         {p.name}
