@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { query, orderBy } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -9,6 +10,7 @@ import {
   Image as ImageIcon,
   Library,
   Pill,
+  Search,
   Stethoscope,
   UserRound,
 } from "lucide-react";
@@ -18,6 +20,7 @@ import { AppShell } from "@/components/app-shell";
 import { GlassCard, EmptyState, SectionTitle, ConfidenceBadge } from "@/components/medical-ui";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
   getCollections,
   useTypedCollection,
@@ -51,6 +54,7 @@ export const Route = createFileRoute("/dashboard")({
 function Dashboard() {
   const [user] = useAuthState(auth);
   const cols = user ? getCollections(user.uid) : null;
+  const [searchQuery, setSearchQuery] = useState("");
 
   const [consultations] = useTypedCollection<ConsultationRecord>(
     cols ? query(cols.consultations, orderBy("createdAt", "desc")) : null,
@@ -58,6 +62,12 @@ function Dashboard() {
   const [patients] = useTypedCollection<PatientRecord>(cols?.patients);
   const [reports] = useTypedCollection<ReportRecord>(cols?.reports);
   const [imaging] = useTypedCollection<ImagingRecord>(cols?.imaging);
+
+  const filteredConsultations = searchQuery.trim()
+    ? consultations.filter((c) =>
+        c.question.toLowerCase().includes(searchQuery.toLowerCase()),
+      )
+    : consultations;
 
   const evidenceCount = consultations.reduce((n, c) => n + (c.result?.evidence?.length ?? 0), 0);
 
@@ -112,6 +122,17 @@ function Dashboard() {
             />
           </CardHeader>
           <CardContent>
+            {consultations.length > 0 && (
+              <div className="relative mb-3">
+                <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search consultations…"
+                  className="h-8 pl-8 text-xs"
+                />
+              </div>
+            )}
             {consultations.length === 0 ? (
               <EmptyState
                 icon={Stethoscope}
@@ -123,9 +144,13 @@ function Dashboard() {
                   </Button>
                 }
               />
+            ) : filteredConsultations.length === 0 ? (
+              <p className="py-6 text-center text-xs text-muted-foreground">
+                No consultations match &quot;{searchQuery}&quot;.
+              </p>
             ) : (
               <div className="space-y-2">
-                {consultations.slice(0, 6).map((c) => (
+                {filteredConsultations.slice(0, 8).map((c) => (
                   <Link
                     key={c.id}
                     to="/explainability"

@@ -7,9 +7,9 @@ import { toast } from "sonner";
 
 import { AppShell } from "@/components/app-shell";
 import { EmptyState, GlassCard, SectionTitle } from "@/components/medical-ui";
+import { FormArea, FormField } from "@/components/form-fields";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { getCollections, useTypedCollection, type PatientRecord } from "@/lib/db";
@@ -176,17 +176,17 @@ function PatientPage() {
             </div>
 
             <div className="grid gap-3 sm:grid-cols-3">
-              <F label="Name / ID" value={form.name} onChange={set("name")} />
-              <F label="Age" value={form.age} onChange={set("age")} />
-              <F label="Sex" value={form.sex} onChange={set("sex")} />
+              <FormField label="Name / ID" value={form.name} onChange={set("name")} />
+              <FormField label="Age" value={form.age} onChange={set("age")} />
+              <FormField label="Sex" value={form.sex} onChange={set("sex")} />
             </div>
-            <A label="Past medical history" value={form.history} onChange={set("history")} />
-            <A label="Current medications" value={form.medications} onChange={set("medications")} />
+            <FormArea label="Past medical history" value={form.history} onChange={set("history")} />
+            <FormArea label="Current medications" value={form.medications} onChange={set("medications")} />
             <div className="grid gap-3 sm:grid-cols-2">
-              <A label="Allergies" value={form.allergies} onChange={set("allergies")} rows={2} />
-              <A label="Vitals" value={form.vitals} onChange={set("vitals")} rows={2} />
+              <FormArea label="Allergies" value={form.allergies} onChange={set("allergies")} rows={2} />
+              <FormArea label="Vitals" value={form.vitals} onChange={set("vitals")} rows={2} />
             </div>
-            <A label="Labs" value={form.labs} onChange={set("labs")} rows={3} />
+            <FormArea label="Labs" value={form.labs} onChange={set("labs")} rows={3} />
             <Button onClick={save}>{editingId !== null ? "Update patient" : "Save patient"}</Button>
           </CardContent>
         </GlassCard>
@@ -250,43 +250,3 @@ function PatientPage() {
   );
 }
 
-function F({
-  label,
-  value,
-  onChange,
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-}) {
-  return (
-    <div>
-      <Label className="text-xs text-muted-foreground">{label}</Label>
-      <Input className="mt-1" value={value} onChange={(e) => onChange(e.target.value)} />
-    </div>
-  );
-}
-
-function A({
-  label,
-  value,
-  onChange,
-  rows = 3,
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  rows?: number;
-}) {
-  return (
-    <div>
-      <Label className="text-xs text-muted-foreground">{label}</Label>
-      <Textarea
-        className="mt-1"
-        rows={rows}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-      />
-    </div>
-  );
-}

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useRef, useSyncExternalStore } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { query, orderBy, limit } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -24,6 +24,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader } from "@/components/ui/card";
+import { FormArea, FormField } from "@/components/form-fields";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -44,13 +45,7 @@ import {
 } from "@/lib/db";
 import { auth } from "@/lib/firebase";
 import { consultRunStore, emptyPatientDraft } from "@/lib/consult-run-store";
-import {
-  AGENTS,
-  type AgentId,
-  type AgentStatus,
-  type ConsultationInput,
-  type ConsultationResult,
-} from "@/lib/agents/types";
+import { type ConsultationInput, type ConsultationResult } from "@/lib/agents/types";
 
 export const Route = createFileRoute("/consultation")({
   head: () => ({
@@ -81,7 +76,7 @@ function Consultation() {
     consultRunStore.getSnapshot,
     consultRunStore.getServerSnapshot,
   );
-  const { question, patient, answers, running, statuses, result, selectedPatient } = run$;
+  const { question, patient, answers, running, result, selectedPatient } = run$;
 
   const setQuestion = consultRunStore.setQuestion;
   const setPatient = consultRunStore.setPatient;
@@ -132,7 +127,7 @@ function Consultation() {
     loadPatient(patientParam);
   }, [patientParam, patients, loadPatient]);
 
-  const agentList = useMemo(() => AGENTS.filter((a) => a.id !== "research"), []);
+  // agentList unused in render; pipeline page shows live status instead
 
   const run = useCallback(async () => {
     if (!question.trim()) {
@@ -260,41 +255,41 @@ function Consultation() {
               </div>
 
               <div className="grid grid-cols-2 gap-2">
-                <Field
+                <FormField
                   label="Age"
                   value={patient.age}
                   onChange={(v) => setPatient({ ...patient, age: v })}
                 />
-                <Field
+                <FormField
                   label="Sex"
                   value={patient.sex}
                   onChange={(v) => setPatient({ ...patient, sex: v })}
                 />
               </div>
-              <Area
+              <FormArea
                 label="History"
                 value={patient.history}
                 onChange={(v) => setPatient({ ...patient, history: v })}
               />
-              <Area
+              <FormArea
                 label="Current medications"
                 value={patient.medications}
                 onChange={(v) => setPatient({ ...patient, medications: v })}
                 placeholder="Comma separated — triggers drug safety checks"
               />
-              <Area
+              <FormArea
                 label="Allergies"
                 value={patient.allergies}
                 onChange={(v) => setPatient({ ...patient, allergies: v })}
                 rows={2}
               />
-              <Area
+              <FormArea
                 label="Vitals"
                 value={patient.vitals}
                 onChange={(v) => setPatient({ ...patient, vitals: v })}
                 rows={2}
               />
-              <Area
+              <FormArea
                 label="Labs"
                 value={patient.labs}
                 onChange={(v) => setPatient({ ...patient, labs: v })}
@@ -549,50 +544,6 @@ function Consultation() {
         </div>
       </div>
     </AppShell>
-  );
-}
-
-function Field({
-  label,
-  value,
-  onChange,
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-}) {
-  return (
-    <div>
-      <Label className="text-xs text-muted-foreground">{label}</Label>
-      <Input className="mt-1" value={value} onChange={(e) => onChange(e.target.value)} />
-    </div>
-  );
-}
-
-function Area({
-  label,
-  value,
-  onChange,
-  rows = 3,
-  placeholder,
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  rows?: number;
-  placeholder?: string;
-}) {
-  return (
-    <div>
-      <Label className="text-xs text-muted-foreground">{label}</Label>
-      <Textarea
-        className="mt-1"
-        rows={rows}
-        value={value}
-        placeholder={placeholder ?? ""}
-        onChange={(e) => onChange(e.target.value)}
-      />
-    </div>
   );
 }
 

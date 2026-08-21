@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { query, orderBy, addDoc, doc, deleteDoc } from "firebase/firestore";
+import { query, orderBy, where, addDoc, doc, deleteDoc } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
 import {
-  Activity,
   AlertCircle,
   CheckCircle,
   FileSearch,
@@ -17,6 +16,7 @@ import { toast } from "sonner";
 
 import { AppShell } from "@/components/app-shell";
 import { EmptyState, GlassCard, SectionTitle } from "@/components/medical-ui";
+import { FormArea, FormField } from "@/components/form-fields";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -28,8 +28,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { getCollections, useTypedCollection, type TimelineEvent } from "@/lib/db";
+import {
+  getCollections,
+  useTypedCollection,
+  type PatientRecord,
+  type TimelineEvent,
+} from "@/lib/db";
 import { auth } from "@/lib/firebase";
 
 export const Route = createFileRoute("/timeline")({
@@ -51,7 +55,7 @@ export const Route = createFileRoute("/timeline")({
   component: TimelinePage,
 });
 
-const kinds: { value: TimelineEvent["kind"]; icon: typeof Activity }[] = [
+const kinds: { value: TimelineEvent["kind"]; icon: typeof AlertCircle }[] = [
   { value: "symptom", icon: AlertCircle },
   { value: "test", icon: FileSearch },
   { value: "medication", icon: Pill },
@@ -63,9 +67,22 @@ const kinds: { value: TimelineEvent["kind"]; icon: typeof Activity }[] = [
 function TimelinePage() {
   const [user] = useAuthState(auth);
   const cols = user ? getCollections(user.uid) : null;
-  const [events] = useTypedCollection<TimelineEvent>(
-    cols ? query(cols.timeline, orderBy("date", "desc")) : null,
+
+  // Patient selection and filtering
+  const [selectedPatient, setSelectedPatient] = useState<string>("");
+  const [patients] = useTypedCollection<PatientRecord>(
+    cols ? query(cols.patients, orderBy("createdAt", "desc")) : null,
   );
+
+  // Events filtered by selected patient (or all if none selected)
+  const [events] = useTypedCollection<TimelineEvent>(
+    cols && selectedPatient
+      ? query(cols.timeline, where("patientId", "==", selectedPatient), orderBy("date", "desc"))
+      : cols
+        ? query(cols.timeline, orderBy("date", "desc"))
+        : null,
+  );
+
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [kind, setKind] = useState<TimelineEvent["kind"]>("symptom");
   const [title, setTitle] = useState("");
@@ -77,7 +94,14 @@ function TimelinePage() {
       return;
     }
     if (cols) {
-      await addDoc(cols.timeline, { date, kind, title, detail, createdAt: Date.now() });
+      await addDoc(cols.timeline, {
+        date,
+        kind,
+        title,
+        detail,
+        ...(selectedPatient ? { patientId: selectedPatient } : {}),
+        createdAt: Date.now(),
+      });
     }
     setTitle("");
     setDetail("");
@@ -85,13 +109,49 @@ function TimelinePage() {
   };
 
   return (
-    <AppShell title="Clinical Timeline" subtitle="Chronological view of the patient's course">
+    <AppShell
+      title="Clinical Timeline"
+      subtitle="Chronological view of the patient's course"
+      actions={
+        <Select value={selectedPatient} onValueChange={setSelectedPatient}>
+          <SelectTrigger className="w-[180px] h-9 text-xs">
+            <SelectValue placeholder="All patients" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="">All patients</SelectItem>
+            {patients.map((p) => (
+              <SelectItem key={p.id} value={String(p.id)}>
+                {p.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      }
+    >
       <div className="grid gap-4 lg:grid-cols-[340px_1fr]">
         <GlassCard>
           <CardHeader className="pb-2">
             <SectionTitle icon={Timer} title="Add event" />
           </CardHeader>
           <CardContent className="space-y-3">
+            {patients.length > 0 && (
+              <div>
+                <Label className="text-sm text-muted-foreground">Patient (optional)</Label>
+                <Select value={selectedPatient} onValueChange={setSelectedPatient}>
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="All timeline (no patient)" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">All timeline (no patient)</SelectItem>
+                    {patients.map((p) => (
+                      <SelectItem key={p.id} value={String(p.id)}>
+                        {p.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
             <div>
               <Label className="text-sm text-muted-foreground">Date</Label>
               <Input
@@ -116,19 +176,8 @@ function TimelinePage() {
                 </SelectContent>
               </Select>
             </div>
-            <div>
-              <Label className="text-sm text-muted-foreground">Title</Label>
-              <Input className="mt-1" value={title} onChange={(e) => setTitle(e.target.value)} />
-            </div>
-            <div>
-              <Label className="text-sm text-muted-foreground">Detail</Label>
-              <Textarea
-                className="mt-1"
-                rows={3}
-                value={detail}
-                onChange={(e) => setDetail(e.target.value)}
-              />
-            </div>
+            <FormField label="Title" value={title} onChange={setTitle} />
+            <FormArea label="Detail" value={detail} onChange={setDetail} />
             <Button onClick={add}>Add to timeline</Button>
           </CardContent>
         </GlassCard>

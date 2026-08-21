@@ -1,10 +1,8 @@
 import { useMemo } from "react";
 import {
   collection,
-  doc,
   writeBatch,
   getDocs,
-  deleteDoc,
   type CollectionReference,
   type DocumentReference,
   type Query,

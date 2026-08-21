@@ -1,7 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Background, Controls, ReactFlow, type Edge, type Node } from "@xyflow/react";
-import "@xyflow/react/dist/style.css";
 import { GitBranch } from "lucide-react";
 
 import { AppShell } from "@/components/app-shell";
@@ -14,6 +12,10 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { getCollections, useTypedCollection, type ConsultationRecord } from "@/lib/db";
 import { auth } from "@/lib/firebase";
 import { DISEASES, NODE_COLORS, buildGraph, matchDiseases } from "@/lib/medical/graph";
+import type { Edge, Node } from "@xyflow/react";
+
+// Lazy-load React Flow — it's a large bundle (~350 kB) only needed on this page
+const ReactFlowGraph = lazy(() => import("@/components/react-flow-graph"));
 
 export const Route = createFileRoute("/graph")({
   head: () => ({
@@ -45,7 +47,6 @@ function GraphPage() {
   );
   const lastConsult = consultationsDocs?.[0];
 
-  // Jump to the conditions from your most recent consultation, if we know them.
   const syncedRef = useRef(false);
   useEffect(() => {
     if (syncedRef.current || !lastConsult) return;
@@ -161,10 +162,15 @@ function GraphPage() {
 
         <GlassCard>
           <CardContent className="h-[52vh] sm:h-[70vh] p-2">
-            <ReactFlow nodes={nodes} edges={edges} fitView proOptions={{ hideAttribution: true }}>
-              <Background color="rgba(120,170,255,0.15)" gap={22} />
-              <Controls className="!bg-card/80 !text-foreground" />
-            </ReactFlow>
+            <Suspense
+              fallback={
+                <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
+                  Loading graph…
+                </div>
+              }
+            >
+              <ReactFlowGraph nodes={nodes} edges={edges} />
+            </Suspense>
           </CardContent>
         </GlassCard>
       </div>
