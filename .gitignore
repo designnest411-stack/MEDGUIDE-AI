@@ -35,4 +35,9 @@ dist-ssr
 *.ntvs*
 *.njsproj
 *.sln
-*.sw?
+.sw?
+
+# Academic Report & Assets (Local only)
+project_report.*
+PROJECT_REPORT_README.md
+img/
