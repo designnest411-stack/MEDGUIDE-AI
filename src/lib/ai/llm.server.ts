@@ -205,28 +205,129 @@ export async function callLlm(opts: LlmOptions): Promise<LlmResult> {
   );
 }
 
-/** Ask the model for JSON and parse it defensively. */
+/**
+ * Helper to defensively extract and repair JSON from model outputs.
+ */
+export function extractAndParseJson<T>(rawText: string, fallback: T): T {
+  if (!rawText || typeof rawText !== "string") return fallback;
+  let text = rawText.trim();
+
+  // Strip markdown code fences if present
+  if (text.startsWith("```")) {
+    text = text.replace(/^```(?:json)?\s*\n?/, "").replace(/\n?\s*```$/, "").trim();
+  }
+
+  // Find start of JSON object or array
+  const startObj = text.indexOf("{");
+  const startArr = text.indexOf("[");
+  const first = startObj === -1 ? startArr : startArr === -1 ? startObj : Math.min(startObj, startArr);
+  if (first === -1) return fallback;
+
+  text = text.slice(first);
+
+  // Attempt direct parse first
+  try {
+    return JSON.parse(text) as T;
+  } catch {
+    // Continue to repair attempts
+  }
+
+  // Find matching end if extra text exists after JSON
+  const isArray = text.startsWith("[");
+  const lastEnd = isArray ? text.lastIndexOf("]") : text.lastIndexOf("}");
+  if (lastEnd !== -1) {
+    try {
+      return JSON.parse(text.slice(0, lastEnd + 1)) as T;
+    } catch {
+      // Continue to bracket repair
+    }
+  }
+
+  // Repair unclosed brackets, braces, and trailing commas for truncated outputs
+  try {
+    let candidate = text;
+    // Strip trailing incomplete key-value or comma
+    candidate = candidate.replace(/,\s*$/, "").replace(/,\s*"[^"]*":?\s*$/, "");
+
+    let openBraces = 0;
+    let openBrackets = 0;
+    let inString = false;
+    let escape = false;
+
+    for (let i = 0; i < candidate.length; i++) {
+      const char = candidate[i];
+      if (escape) {
+        escape = false;
+        continue;
+      }
+      if (char === "\\") {
+        escape = true;
+        continue;
+      }
+      if (char === '"') {
+        inString = !inString;
+        continue;
+      }
+      if (!inString) {
+        if (char === "{") openBraces++;
+        else if (char === "}") openBraces--;
+        else if (char === "[") openBrackets++;
+        else if (char === "]") openBrackets--;
+      }
+    }
+
+    if (inString) candidate += '"';
+    while (openBrackets > 0) {
+      candidate += "]";
+      openBrackets--;
+    }
+    while (openBraces > 0) {
+      candidate += "}";
+      openBraces--;
+    }
+
+    return JSON.parse(candidate) as T;
+  } catch {
+    return fallback;
+  }
+}
+
+/** Ask the model for JSON and parse it defensively with auto-repair and retry. */
 export async function callLlmJson<T>(
   opts: LlmOptions,
   fallback: T,
 ): Promise<{ value: T; provider: string }> {
-  const system = `${opts.system ?? ""}\n\nRespond with valid JSON only. No markdown fences, no prose before or after.`;
+  const system = `${opts.system ?? ""}\n\nIMPORTANT: Respond with valid JSON only matching the requested schema. Do NOT include any markdown fences or explanation before/after.`;
+  
+  // First attempt: structured response
   try {
     const res = await callLlm({
       ...opts,
       system,
       responseMimeType: "application/json",
+      maxTokens: Math.max(opts.maxTokens ?? 4096, 4096),
     });
-    const text = res.text.trim();
-    const start = text.indexOf("{");
-    const startArr = text.indexOf("[");
-    const first = start === -1 ? startArr : startArr === -1 ? start : Math.min(start, startArr);
-    const lastObj = text.lastIndexOf("}");
-    const lastArr = text.lastIndexOf("]");
-    const last = Math.max(lastObj, lastArr);
-    if (first === -1 || last === -1) return { value: fallback, provider: res.provider };
-    return { value: JSON.parse(text.slice(first, last + 1)) as T, provider: res.provider };
-  } catch {
+    const parsed = extractAndParseJson<T>(res.text, fallback);
+    if (parsed !== fallback && parsed != null) {
+      return { value: parsed, provider: res.provider };
+    }
+  } catch (err) {
+    console.warn("[callLlmJson] Primary JSON call failed:", err);
+  }
+
+  // Second attempt: standard text mode with fallback model cascade
+  try {
+    const res = await callLlm({
+      ...opts,
+      system,
+      responseMimeType: undefined,
+      tier: "workhorse",
+      maxTokens: Math.max(opts.maxTokens ?? 4096, 4096),
+    });
+    const parsed = extractAndParseJson<T>(res.text, fallback);
+    return { value: parsed, provider: res.provider };
+  } catch (err) {
+    console.warn("[callLlmJson] Fallback JSON call failed:", err);
     return { value: fallback, provider: "fallback" };
   }
 }

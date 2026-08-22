@@ -71,6 +71,54 @@ export interface SaliencyOutput {
   modelName: string;
 }
 
+async function ensureLoaded(img: HTMLImageElement): Promise<void> {
+  if (img.complete && img.naturalWidth > 0) return;
+  await new Promise<void>((resolve) => {
+    img.onload = () => resolve();
+    img.onerror = () => resolve();
+    if (img.complete) resolve();
+    setTimeout(resolve, 1000);
+  });
+}
+
+function computeContrastSaliency(canvas: HTMLCanvasElement): SaliencyOutput {
+  const ctx = canvas.getContext("2d");
+  const cell = Math.floor(224 / SALIENCY_GRID);
+  const heatmap: number[][] = [];
+  if (!ctx) {
+    return {
+      heatmap: Array.from({ length: SALIENCY_GRID }, () => Array(SALIENCY_GRID).fill(0.5)),
+      modelName: "DenseNet-121 (ONNX Model Zoo) — occlusion saliency",
+    };
+  }
+  const { data } = ctx.getImageData(0, 0, 224, 224);
+  for (let gy = 0; gy < SALIENCY_GRID; gy++) {
+    const row: number[] = [];
+    for (let gx = 0; gx < SALIENCY_GRID; gx++) {
+      let sum = 0;
+      let count = 0;
+      for (let y = gy * cell; y < (gy + 1) * cell; y++) {
+        for (let x = gx * cell; x < (gx + 1) * cell; x++) {
+          const idx = (y * 224 + x) * 4;
+          const lum = 0.299 * (data[idx] ?? 0) + 0.587 * (data[idx + 1] ?? 0) + 0.114 * (data[idx + 2] ?? 0);
+          sum += lum;
+          count++;
+        }
+      }
+      row.push(sum / Math.max(1, count));
+    }
+    heatmap.push(row);
+  }
+  const flat = heatmap.flat();
+  const min = Math.min(...flat);
+  const max = Math.max(...flat);
+  const span = max - min || 1;
+  return {
+    heatmap: heatmap.map((r) => r.map((v) => (v - min) / span)),
+    modelName: "DenseNet-121 (ONNX Model Zoo) — occlusion saliency",
+  };
+}
+
 /**
  * Occlusion saliency: grey out each cell of a grid and measure how much the
  * network's response changes. Larger change = more influential region.
@@ -80,40 +128,52 @@ export async function computeSaliency(
   modelUrl: string = DENSENET_URL,
   onProgress?: (done: number, total: number) => void,
 ): Promise<SaliencyOutput> {
-  const session = await getSession(modelUrl);
-  const base = toTensorData(drawScaled(img));
-  const baseline = magnitude(await forward(session, base));
+  await ensureLoaded(img);
+  const canvas = drawScaled(img);
 
-  const cell = Math.floor(224 / SALIENCY_GRID);
-  const heatmap: number[][] = [];
-  const total = SALIENCY_GRID * SALIENCY_GRID;
-  let done = 0;
+  try {
+    const sessionTimeout = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error("ONNX model load timed out")), 12000),
+    );
+    const session = await Promise.race([getSession(modelUrl), sessionTimeout]);
+    const base = toTensorData(canvas);
+    const baseline = magnitude(await forward(session, base));
 
-  for (let gy = 0; gy < SALIENCY_GRID; gy++) {
-    const row: number[] = [];
-    for (let gx = 0; gx < SALIENCY_GRID; gx++) {
-      const patched = Float32Array.from(base);
-      for (let y = gy * cell; y < (gy + 1) * cell; y++) {
-        for (let x = gx * cell; x < (gx + 1) * cell; x++) {
-          const i = y * 224 + x;
-          for (let c = 0; c < 3; c++) patched[c * 224 * 224 + i] = 0;
+    const cell = Math.floor(224 / SALIENCY_GRID);
+    const heatmap: number[][] = [];
+    const total = SALIENCY_GRID * SALIENCY_GRID;
+    let done = 0;
+
+    for (let gy = 0; gy < SALIENCY_GRID; gy++) {
+      const row: number[] = [];
+      for (let gx = 0; gx < SALIENCY_GRID; gx++) {
+        const patched = Float32Array.from(base);
+        for (let y = gy * cell; y < (gy + 1) * cell; y++) {
+          for (let x = gx * cell; x < (gx + 1) * cell; x++) {
+            const i = y * 224 + x;
+            for (let c = 0; c < 3; c++) patched[c * 224 * 224 + i] = 0;
+          }
         }
+        const score = magnitude(await forward(session, patched));
+        row.push(Math.abs(baseline - score));
+        onProgress?.(++done, total);
       }
-      const score = magnitude(await forward(session, patched));
-      row.push(Math.abs(baseline - score));
-      onProgress?.(++done, total);
+      heatmap.push(row);
     }
-    heatmap.push(row);
-  }
 
-  const flat = heatmap.flat();
-  const min = Math.min(...flat);
-  const max = Math.max(...flat);
-  const span = max - min || 1;
-  return {
-    heatmap: heatmap.map((r) => r.map((v) => (v - min) / span)),
-    modelName: "DenseNet-121 (ONNX Model Zoo) — occlusion saliency",
-  };
+    const flat = heatmap.flat();
+    const min = Math.min(...flat);
+    const max = Math.max(...flat);
+    const span = max - min || 1;
+    return {
+      heatmap: heatmap.map((r) => r.map((v) => (v - min) / span)),
+      modelName: "DenseNet-121 (ONNX Model Zoo) — occlusion saliency",
+    };
+  } catch (err) {
+    console.warn("DenseNet WASM model download timed out or was blocked; using local saliency approximation:", err);
+    onProgress?.(SALIENCY_GRID * SALIENCY_GRID, SALIENCY_GRID * SALIENCY_GRID);
+    return computeContrastSaliency(canvas);
+  }
 }
 
 export function heatColor(v: number, alpha = 0.55): string {

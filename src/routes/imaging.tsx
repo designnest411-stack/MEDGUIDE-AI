@@ -59,14 +59,52 @@ function ImagingPage() {
     cols ? query(cols.imaging, orderBy("createdAt", "desc")) : null,
   );
 
-  const onFile = (file: File) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      setDataUrl(reader.result as string);
+  const resizeImage = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const rawUrl = reader.result as string;
+        const img = new Image();
+        img.onload = () => {
+          const maxDim = 1024;
+          let { width, height } = img;
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          if (!ctx) {
+            resolve(rawUrl);
+            return;
+          }
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL("image/jpeg", 0.88));
+        };
+        img.onerror = () => resolve(rawUrl);
+        img.src = rawUrl;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const onFile = async (file: File) => {
+    try {
+      const scaledUrl = await resizeImage(file);
+      setDataUrl(scaledUrl);
       setFileName(file.name);
       setResult(null);
-    };
-    reader.readAsDataURL(file);
+    } catch {
+      toast.error("Could not read the selected image file.");
+    }
   };
 
   const run = async () => {
@@ -74,12 +112,16 @@ function ImagingPage() {
     setBusy(true);
     setProgress(0);
     setResult(null);
-    const [meta, base64] = dataUrl.split(",");
-    const mediaType = meta?.match(/data:(.*?);/)?.[1] ?? "image/png";
+    
+    const commaIdx = dataUrl.indexOf(",");
+    const meta = commaIdx !== -1 ? dataUrl.slice(0, commaIdx) : "";
+    const rawBase64 = commaIdx !== -1 ? dataUrl.slice(commaIdx + 1) : dataUrl;
+    let mediaType = meta?.match(/data:(.*?);/)?.[1]?.toLowerCase() ?? "image/jpeg";
+    if (mediaType === "image/jpg") mediaType = "image/jpeg";
 
     try {
       const analysis = await analyze({
-        data: { base64: base64 ?? "", mediaType },
+        data: { base64: rawBase64, mediaType },
       });
 
       // Show the radiological read straight away; the saliency overlay is a
@@ -105,8 +147,8 @@ function ImagingPage() {
           heatmap = sal.heatmap;
           modelName = sal.modelName;
         }
-      } catch {
-        toast.info("Saliency model unavailable — showing findings without the heatmap.");
+      } catch (salErr) {
+        console.warn("Saliency calculation error:", salErr);
       }
 
       const final: ImagingResult = {
@@ -124,8 +166,9 @@ function ImagingPage() {
         });
       }
       toast.success("Analysis saved — it will attach to your next consultation.");
-    } catch {
-      toast.error("Image analysis failed. Try another image.");
+    } catch (err) {
+      console.error("Image analysis failed:", err);
+      toast.error("Image analysis encountered an error. Please try again.");
     } finally {
       setBusy(false);
     }

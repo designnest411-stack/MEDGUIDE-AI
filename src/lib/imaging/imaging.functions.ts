@@ -29,6 +29,16 @@ export const analyzeXray = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<XrayAnalysis> => {
     const { callLlmJson } = await import("@/lib/ai/llm.server");
 
+    // Clean and validate MIME type for Gemini Vision
+    let mediaType = (data.mediaType || "image/jpeg").toLowerCase().trim();
+    if (mediaType === "image/jpg") mediaType = "image/jpeg";
+    if (!["image/png", "image/jpeg", "image/webp", "image/heic", "image/heif"].includes(mediaType)) {
+      mediaType = "image/jpeg";
+    }
+
+    // Clean raw base64 data
+    const cleanBase64 = data.base64.replace(/^data:image\/[a-z]+;base64,/, "").trim();
+
     const { value, provider } = await callLlmJson<XrayAnalysis>(
       {
         system:
@@ -55,8 +65,8 @@ export const analyzeXray = createServerFn({ method: "POST" })
               (data.context ? `Clinical context: ${data.context}` : ""),
           },
         ],
-        image: { mediaType: data.mediaType, base64: data.base64 },
-        maxTokens: 2000,
+        image: { mediaType, base64: cleanBase64 },
+        maxTokens: 4096,
       },
       FALLBACK,
     );
