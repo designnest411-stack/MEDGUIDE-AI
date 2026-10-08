@@ -9,6 +9,8 @@ export interface AssistantMessage {
   role: "user" | "assistant";
   content: string;
   createdAt: number;
+  model?: string;
+  failovers?: number;
 }
 
 export interface AssistantThread {

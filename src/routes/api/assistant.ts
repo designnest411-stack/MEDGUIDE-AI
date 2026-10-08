@@ -64,9 +64,17 @@ export const Route = createFileRoute("/api/assistant")({
         try {
           const { callLlm } = await import("@/lib/ai/llm.server");
           const res = await callLlm({ system, messages, maxTokens: 1200 });
-          return new Response(JSON.stringify({ text: res.text }), {
-            headers: { "Content-Type": "application/json", "Cache-Control": "no-store" },
-          });
+          return new Response(
+            JSON.stringify({
+              text: res.text,
+              model: res.model,
+              failovers: res.failoverHistory?.length ?? 0,
+              poolCapacity: res.totalPoolCapacityRpd,
+            }),
+            {
+              headers: { "Content-Type": "application/json", "Cache-Control": "no-store" },
+            },
+          );
         } catch (err) {
           return new Response(
             JSON.stringify({ error: (err as Error).message ?? "Assistant unavailable" }),

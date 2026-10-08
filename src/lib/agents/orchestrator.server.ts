@@ -524,6 +524,7 @@ Return JSON: {"why":"why this conclusion, 3-5 sentences","supporting":["evidence
   // ---------- 11. Report ----------
   start("report");
   const report = await callLlm({
+    tier: "reasoning",
     system: SYSTEM,
     messages: [
       {
@@ -549,7 +550,9 @@ End with the exact line: ${DISCLAIMER}`,
   }).catch(() => ({ text: "", provider: "fallback" as const, model: "" }));
   finish("report", "Clinical report drafted", report.text.slice(0, 200));
 
-  result.provider = report.provider !== "fallback" ? report.provider : provider;
+  result.provider = report.provider !== "fallback" && report.model
+    ? `Google AI Studio (${report.model})`
+    : provider;
   result.reportMarkdown = report.text;
   emit({ type: "partial", key: "provider", value: result.provider });
   return result;

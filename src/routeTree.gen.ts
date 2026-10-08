@@ -28,6 +28,7 @@ import { Route as TermsRouteImport } from './routes/terms'
 import { Route as TimelineRouteImport } from './routes/timeline'
 import { Route as ApiAssistantRouteImport } from './routes/api/assistant'
 import { Route as ApiConsultRouteImport } from './routes/api/consult'
+import { Route as ApiModelsRouteImport } from './routes/api/models'
 import { Route as AssistantIndexRouteImport } from './routes/assistant.index'
 import { Route as AssistantThreadIdRouteImport } from './routes/assistant.$threadId'
 
@@ -126,6 +127,11 @@ const ApiConsultRoute = ApiConsultRouteImport.update({
   path: '/api/consult',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiModelsRoute = ApiModelsRouteImport.update({
+  id: '/api/models',
+  path: '/api/models',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AssistantIndexRoute = AssistantIndexRouteImport.update({
   id: '/assistant/',
   path: '/assistant/',
@@ -157,6 +163,7 @@ export interface FileRoutesByFullPath {
   '/timeline': typeof TimelineRoute
   '/api/assistant': typeof ApiAssistantRoute
   '/api/consult': typeof ApiConsultRoute
+  '/api/models': typeof ApiModelsRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/assistant/': typeof AssistantIndexRoute
 }
@@ -180,6 +187,7 @@ export interface FileRoutesByTo {
   '/timeline': typeof TimelineRoute
   '/api/assistant': typeof ApiAssistantRoute
   '/api/consult': typeof ApiConsultRoute
+  '/api/models': typeof ApiModelsRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/assistant': typeof AssistantIndexRoute
 }
@@ -204,6 +212,7 @@ export interface FileRoutesById {
   '/timeline': typeof TimelineRoute
   '/api/assistant': typeof ApiAssistantRoute
   '/api/consult': typeof ApiConsultRoute
+  '/api/models': typeof ApiModelsRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/assistant/': typeof AssistantIndexRoute
 }
@@ -229,6 +238,7 @@ export interface FileRouteTypes {
     | '/timeline'
     | '/api/assistant'
     | '/api/consult'
+    | '/api/models'
     | '/assistant/$threadId'
     | '/assistant/'
   fileRoutesByTo: FileRoutesByTo
@@ -252,6 +262,7 @@ export interface FileRouteTypes {
     | '/timeline'
     | '/api/assistant'
     | '/api/consult'
+    | '/api/models'
     | '/assistant/$threadId'
     | '/assistant'
   id:
@@ -275,6 +286,7 @@ export interface FileRouteTypes {
     | '/timeline'
     | '/api/assistant'
     | '/api/consult'
+    | '/api/models'
     | '/assistant/$threadId'
     | '/assistant/'
   fileRoutesById: FileRoutesById
@@ -299,6 +311,7 @@ export interface RootRouteChildren {
   TimelineRoute: typeof TimelineRoute
   ApiAssistantRoute: typeof ApiAssistantRoute
   ApiConsultRoute: typeof ApiConsultRoute
+  ApiModelsRoute: typeof ApiModelsRoute
   AssistantThreadIdRoute: typeof AssistantThreadIdRoute
   AssistantIndexRoute: typeof AssistantIndexRoute
 }
@@ -438,6 +451,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiConsultRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/models': {
+      id: '/api/models'
+      path: '/api/models'
+      fullPath: '/api/models'
+      preLoaderRoute: typeof ApiModelsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/assistant/': {
       id: '/assistant/'
       path: '/assistant'
@@ -475,6 +495,7 @@ const rootRouteChildren: RootRouteChildren = {
   TimelineRoute: TimelineRoute,
   ApiAssistantRoute: ApiAssistantRoute,
   ApiConsultRoute: ApiConsultRoute,
+  ApiModelsRoute: ApiModelsRoute,
   AssistantThreadIdRoute: AssistantThreadIdRoute,
   AssistantIndexRoute: AssistantIndexRoute,
 }

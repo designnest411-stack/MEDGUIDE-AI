@@ -73,7 +73,12 @@ export function AssistantChat({
           }),
           signal: controller.signal,
         });
-        const data = (await res.json()) as { text?: string; error?: string };
+        const data = (await res.json()) as {
+          text?: string;
+          error?: string;
+          model?: string;
+          failovers?: number;
+        };
         if (!res.ok || data.error) throw new Error(data.error ?? `Request failed (${res.status})`);
         const withReply = [
           ...next,
@@ -82,6 +87,8 @@ export function AssistantChat({
             role: "assistant" as const,
             content: data.text?.trim() || "No response returned.",
             createdAt: Date.now(),
+            model: data.model,
+            failovers: data.failovers,
           },
         ];
         setMessages(withReply);
@@ -143,6 +150,17 @@ export function AssistantChat({
                 <div className="prose prose-base max-w-none leading-relaxed text-foreground prose-headings:font-display prose-headings:text-lg prose-p:my-2 prose-li:my-1 prose-code:text-primary prose-a:text-primary">
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
                 </div>
+              </div>
+              <div className="flex items-center gap-2 ml-1 text-[0.68rem] text-muted-foreground">
+                <span className="flex items-center gap-1 font-mono text-emerald-600 dark:text-emerald-400">
+                  <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                  {m.model ? `Routed via ${m.model}` : "Gemini 11-Model Cascade"}
+                </span>
+                {m.failovers && m.failovers > 0 ? (
+                  <span className="rounded bg-amber-500/10 px-1.5 py-0.5 font-mono text-amber-600 dark:text-amber-400">
+                    Auto-Failover Recovered ({m.failovers})
+                  </span>
+                ) : null}
               </div>
             </div>
           ),
