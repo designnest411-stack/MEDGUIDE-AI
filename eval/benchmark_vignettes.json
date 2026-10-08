@@ -1,0 +1,1096 @@
+[
+  {
+    "id": "card-001",
+    "domain": "Cardiology",
+    "title": "Acute Anterior STEMI with Cardiogenic Shock Risk",
+    "age": "58",
+    "sex": "M",
+    "presentation": "Severe retrosternal crushing chest pain for 45 minutes radiating to jaw and left shoulder, accompanied by diaphoresis, acute nausea, and marked dyspnea.",
+    "vitals": "BP 90/60 mmHg, HR 48 bpm, RR 24/min, SpO2 93% on room air, Temp 36.8C",
+    "labs": "ECG: 4mm ST-segment elevation in V2-V4 with reciprocal ST depression in II, III, aVF; High-sensitivity Troponin I: 4,850 ng/L (markedly elevated).",
+    "medications": "Lisinopril 10mg daily, Atorvastatin 20mg daily",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Anterior ST-Elevation Myocardial Infarction (STEMI)", "likelihood": "high", "grounded": true },
+      { "condition": "Acute Aortic Dissection (Type A)", "likelihood": "moderate", "grounded": true },
+      { "condition": "Acute Myocarditis", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "Beta-blockers (Metoprolol/Atenolol) contraindicated due to severe bradycardia (HR 48 bpm) and borderline hypotension (BP 90/60 mmHg)",
+      "Nitrates (Nitroglycerin) contraindicated in acute hypotension and risk of right ventricular involvement"
+    ],
+    "expectedCitations": ["pmid:34756127", "pmid:37622659", "guide:cardiology:0"]
+  },
+  {
+    "id": "card-002",
+    "domain": "Cardiology",
+    "title": "Non-ST Elevation Myocardial Infarction (NSTEMI) in Diabetic Patient",
+    "age": "64",
+    "sex": "F",
+    "presentation": "Intermittent sub-mammary burning chest discomfort over 6 hours, worsening with exertion, associated with diaphoresis and fatigue.",
+    "vitals": "BP 148/92 mmHg, HR 86 bpm, RR 18/min, SpO2 97% on room air",
+    "labs": "ECG: 2mm horizontal ST-depression in V4-V6 and T-wave inversion in I, aVL; Serial hs-cTnT: 320 ng/L rising to 780 ng/L; Fasting glucose: 182 mg/dL.",
+    "medications": "Metformin 1000mg BD, Empagliflozin 10mg OD, Amlodipine 5mg OD",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Non-ST Elevation Myocardial Infarction (NSTEMI)", "likelihood": "high", "grounded": true },
+      { "condition": "Unstable Angina Pectoris", "likelihood": "moderate", "grounded": true },
+      { "condition": "Gastroesophageal Reflux Disease with Esophageal Spasm", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "Withhold Metformin prior to coronary angiography due to contrast-induced nephropathy risk"
+    ],
+    "expectedCitations": ["pmid:33099607", "guide:cardiology:0"]
+  },
+  {
+    "id": "card-003",
+    "domain": "Cardiology",
+    "title": "Acute Decompensated Heart Failure with Preserved Ejection Fraction",
+    "age": "76",
+    "sex": "F",
+    "presentation": "Progressive exertional breathlessness, orthopnea (3 pillows), paroxysmal nocturnal dyspnea, and bilateral lower limb edema over 10 days.",
+    "vitals": "BP 168/98 mmHg, HR 96 bpm (irregular), RR 26/min, SpO2 90% on air, JVP +6 cm",
+    "labs": "NT-proBNP: 3,400 pg/mL; Serum Creatinine: 1.4 mg/dL; Echocardiogram: LVEF 55%, grade II diastolic dysfunction, LA dilation.",
+    "medications": "Ramipril 5mg OD, Indapamide 2.5mg OD, Bisoprolol 2.5mg OD",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Acute Decompensated Heart Failure (HFpEF)", "likelihood": "high", "grounded": true },
+      { "condition": "Exacerbation of COPD", "likelihood": "moderate", "grounded": true },
+      { "condition": "Bilateral Pulmonary Embolism", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "Avoid initiation of non-dihydropyridine calcium channel blockers with negative inotropic effects in acute congestion",
+      "Avoid NSAIDs due to sodium retention and renal perfusion deterioration"
+    ],
+    "expectedCitations": ["pmid:34447992", "guide:cardiology:0"]
+  },
+  {
+    "id": "card-004",
+    "domain": "Cardiology",
+    "title": "Atrial Fibrillation with Rapid Ventricular Response (RVR)",
+    "age": "69",
+    "sex": "M",
+    "presentation": "Acute onset palpitations, lightheadedness, and mild dyspnea lasting 4 hours.",
+    "vitals": "BP 112/74 mmHg, HR 148 bpm (irregularly irregular), RR 20/min, SpO2 96%",
+    "labs": "ECG: Absent P waves, irregular R-R intervals, narrow QRS tachycardia at 145-155 bpm; Potassium: 4.1 mmol/L; TSH: 1.2 mIU/L.",
+    "medications": "Atorvastatin 40mg OD, Losartan 50mg OD",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Atrial Fibrillation with Rapid Ventricular Response", "likelihood": "high", "grounded": true },
+      { "condition": "Atrial Flutter with Variable Block", "likelihood": "moderate", "grounded": true },
+      { "condition": "Multifocal Atrial Tachycardia", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "Avoid immediate electrical cardioversion without prior transesophageal echocardiography (TEE) or >=3 weeks therapeutic anticoagulation unless hemodynamically unstable",
+      "Calculate CHA2DS2-VASc score prior to discharge"
+    ],
+    "expectedCitations": ["pmid:32860029", "guide:cardiology:0"]
+  },
+  {
+    "id": "card-005",
+    "domain": "Cardiology",
+    "title": "Acute Pericarditis with Pleuritic Chest Pain",
+    "age": "32",
+    "sex": "M",
+    "presentation": "Sharp retrosternal chest pain radiating to the left trapezius ridge, significantly aggravated by lying flat and deep inspiration, relieved by sitting forward.",
+    "vitals": "BP 124/78 mmHg, HR 88 bpm, RR 16/min, SpO2 99%, Temp 37.6C",
+    "labs": "ECG: Widespread concave ST elevation across leads I, II, aVF, V2-V6 with PR-segment depression in II and reciprocal PR elevation in aVR; CRP: 48 mg/L; hs-cTnI: normal.",
+    "medications": "None",
+    "allergies": "Penicillin (rash)",
+    "referenceDifferentials": [
+      { "condition": "Acute Viral / Idiopathic Pericarditis", "likelihood": "high", "grounded": true },
+      { "condition": "Acute Coronary Syndrome", "likelihood": "moderate", "grounded": true },
+      { "condition": "Gastroesophageal Reflux Disease", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "Avoid systemic corticosteroids as first-line therapy due to increased risk of pericarditis recurrence"
+    ],
+    "expectedCitations": ["pmid:26320112", "guide:cardiology:0"]
+  },
+  {
+    "id": "card-006",
+    "domain": "Cardiology",
+    "title": "Stanford Type A Aortic Dissection",
+    "age": "61",
+    "sex": "M",
+    "presentation": "Sudden onset catastrophic 'tearing' chest pain radiating directly to the interscapular back, accompanied by syncope.",
+    "vitals": "BP right arm: 178/96 mmHg; BP left arm: 122/70 mmHg (asymmetric >20 mmHg); HR 92 bpm; RR 22/min",
+    "labs": "CXR: Widened mediastinum (>8cm); D-dimer: 5,400 ng/mL; High-sensitivity troponin: mildly elevated.",
+    "medications": "Amlodipine 10mg OD",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Acute Stanford Type A Aortic Dissection", "likelihood": "high", "grounded": true },
+      { "condition": "Acute Inferior Myocardial Infarction", "likelihood": "moderate", "grounded": true },
+      { "condition": "Massive Pulmonary Embolism", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "ABSOLUTE CONTRAINDICATION to thrombolytics, therapeutic heparin, and antiplatelet loading doses",
+      "Immediate emergent cardiothoracic surgical consultation"
+    ],
+    "expectedCitations": ["pmid:25164848", "guide:cardiology:0"]
+  },
+  {
+    "id": "card-007",
+    "domain": "Cardiology",
+    "title": "Severe Symptomatic Aortic Stenosis",
+    "age": "81",
+    "sex": "M",
+    "presentation": "Exertional syncope while climbing stairs, progressive angina on walking 100 meters, and dyspnea NYHA class III.",
+    "vitals": "BP 108/84 mmHg (narrow pulse pressure), HR 72 bpm (pulsus parvus et tardus), SpO2 95%",
+    "labs": "Cardiac auscultation: Harsh crescendo-decrescendo systolic ejection murmur at right upper sternal border radiating to carotids with soft S2; Echo: Aortic valve area 0.65 cm2, mean gradient 48 mmHg, peak velocity 4.4 m/s.",
+    "medications": "Simvastatin 20mg OD",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Severe Symptomatic Calcific Aortic Valve Stenosis", "likelihood": "high", "grounded": true },
+      { "condition": "Coronary Artery Disease with Exertional Angina", "likelihood": "moderate", "grounded": true },
+      { "condition": "Hypertrophic Cardiomyopathy", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "Avoid aggressive vasodilators (Nitrates, ACE inhibitors, high-dose DHP-CCB) which can precipitate critical hypotension and circulatory collapse"
+    ],
+    "expectedCitations": ["pmid:34447993", "guide:cardiology:0"]
+  },
+  {
+    "id": "card-008",
+    "domain": "Cardiology",
+    "title": "Hypertrophic Obstructive Cardiomyopathy (HOCM) in Young Athlete",
+    "age": "23",
+    "sex": "M",
+    "presentation": "Recurrent near-syncope during intense football training, accompanied by atypical chest tightness and exertional breathlessness.",
+    "vitals": "BP 120/75 mmHg, HR 68 bpm, SpO2 99%",
+    "labs": "ECG: Deep voltage criteria for LVH, dagger-like narrow deep Q waves in inferolateral leads (II, III, aVF, V5-V6); Echo: Interventricular septal thickness 22mm, systolic anterior motion (SAM) of mitral valve with LVOT gradient 52 mmHg at rest.",
+    "medications": "None",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Hypertrophic Obstructive Cardiomyopathy (HOCM)", "likelihood": "high", "grounded": true },
+      { "condition": "Athlete's Heart / Physiological Remodeling", "likelihood": "moderate", "grounded": true },
+      { "condition": "Anomalous Origin of Coronary Artery", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "Avoid Digoxin, Nitrates, and pure vasodilators as they increase the LVOT gradient and worsen dynamic obstruction",
+      "Avoid intense competitive athletic participation pending electrophysiology risk stratification"
+    ],
+    "expectedCitations": ["pmid:32860028", "guide:cardiology:0"]
+  },
+  {
+    "id": "card-009",
+    "domain": "Cardiology",
+    "title": "Subacute Infective Endocarditis with Valvular Vegetation",
+    "age": "52",
+    "sex": "M",
+    "presentation": "4 weeks of low-grade remittent fevers, night sweats, anorexia, 5kg unintended weight loss, and new petechial lesions on conjunctiva.",
+    "vitals": "BP 128/68 mmHg, HR 92 bpm, RR 18/min, SpO2 96%, Temp 38.4C",
+    "labs": "Blood cultures: 3/3 sets positive for Streptococcus viridans; Echo: 9mm mobile vegetation on aortic valve cusp with mild aortic regurgitation murmur; ESR: 86 mm/hr; Urinalysis: microscopic hematuria.",
+    "medications": "None",
+    "allergies": "Penicillin (documented IgE anaphylaxis)",
+    "referenceDifferentials": [
+      { "condition": "Subacute Native Valve Infective Endocarditis", "likelihood": "high", "grounded": true },
+      { "condition": "Systemic Lupus Erythematosus (Libman-Sacks Endocarditis)", "likelihood": "low", "grounded": true },
+      { "condition": "Occult Intra-Abdominal Malignancy / Lymphoma", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "Penicillin, Ampicillin, Ceftriaxone, and Cefazolin strictly contraindicated due to IgE-mediated anaphylaxis history. Prescribe IV Vancomycin plus Gentamicin"
+    ],
+    "expectedCitations": ["pmid:37622656", "guide:cardiology:0"]
+  },
+  {
+    "id": "card-010",
+    "domain": "Cardiology",
+    "title": "Third-Degree (Complete) Atrioventricular Block",
+    "age": "78",
+    "sex": "F",
+    "presentation": "Three discrete episodes of sudden syncope without prodrome (Adams-Stokes attacks) over 48 hours, profound fatigue.",
+    "vitals": "BP 164/58 mmHg, HR 32 bpm (regular, slow), RR 16/min, SpO2 96%",
+    "labs": "ECG: Complete AV dissociation, regular P-P intervals (78 bpm), regular independent wide QRS escape rhythm (32 bpm); Potassium: 4.4 mmol/L; Calcium: 2.3 mmol/L.",
+    "medications": "Diltiazem 120mg OD, Donepezil 10mg OD",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Complete (Third-Degree) Heart Block", "likelihood": "high", "grounded": true },
+      { "condition": "High-Grade Mobitz Type II Second-Degree AV Block", "likelihood": "moderate", "grounded": true },
+      { "condition": "Profound Sinus Bradycardia with Arrest", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "Immediate discontinuation of AV-nodal blocking drugs (Diltiazem, Beta-blockers)",
+      "Urgent transcutaneous / transvenous pacing, evaluate for permanent pacemaker"
+    ],
+    "expectedCitations": ["pmid:34756128", "guide:cardiology:0"]
+  },
+  {
+    "id": "card-011",
+    "domain": "Cardiology",
+    "title": "Severe Hypertensive Emergency with Acute Pulmonary Edema",
+    "age": "55",
+    "sex": "M",
+    "presentation": "Severe bursting occipital headache, blurred vision, orthopnea, and acute respiratory distress for 2 hours.",
+    "vitals": "BP 230/135 mmHg (bilateral), HR 112 bpm, RR 32/min, SpO2 86% on air, Temp 37.0C",
+    "labs": "Fundoscopy: Bilateral grade IV hypertensive retinopathy with flame hemorrhages and papilledema; CXR: Bat-wing perihilar alveolar opacities, Kerley B lines; Serum Creatinine: 2.1 mg/dL (baseline 1.1).",
+    "medications": "Non-compliant with unknown antihypertensives",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Hypertensive Emergency with Acute Cardiogenic Pulmonary Edema", "likelihood": "high", "grounded": true },
+      { "condition": "Acute Hypertensive Encephalopathy", "likelihood": "moderate", "grounded": true },
+      { "condition": "Pheochromocytoma Crisis", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "Avoid rapid drop in mean arterial pressure (>25% reduction in first hour) to prevent ischemic stroke and renal infarction",
+      "Avoid sublingual Nifedipine"
+    ],
+    "expectedCitations": ["pmid:30139974", "guide:cardiology:0"]
+  },
+  {
+    "id": "card-012",
+    "domain": "Cardiology",
+    "title": "Vasospastic (Prinzmetal) Angina",
+    "age": "44",
+    "sex": "F",
+    "presentation": "Recurrent episodes of severe rest chest pain occurring predominantly in early morning hours (4 AM - 6 AM), resolving spontaneously within 15 minutes.",
+    "vitals": "BP 118/72 mmHg, HR 64 bpm, SpO2 99%",
+    "labs": "ECG during episode: Transient ST-segment elevation in inferior leads II, III, aVF that returns to baseline when pain resolves; High-sensitivity troponin: negative.",
+    "medications": "None, active tobacco smoker (20 pack-years)",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Vasospastic (Prinzmetal / Variant) Angina", "likelihood": "high", "grounded": true },
+      { "condition": "Fixed Atherosclerotic Coronary Artery Disease", "likelihood": "moderate", "grounded": true },
+      { "condition": "Microvascular Angina", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "Non-selective beta-blockers (e.g. Propranolol) are contraindicated as uninhibited alpha-1 stimulation exacerbates coronary vasospasm",
+      "Smoking cessation and Calcium Channel Blockers (Diltiazem/Amlodipine) are first-line"
+    ],
+    "expectedCitations": ["pmid:31504439", "guide:cardiology:0"]
+  },
+  {
+    "id": "pulm-001",
+    "domain": "Pulmonology",
+    "title": "Severe Community-Acquired Pneumonia with Sepsis (CURB-65 = 3)",
+    "age": "72",
+    "sex": "M",
+    "presentation": "4 days of productive cough with rust-colored sputum, high-grade fever (38.9C), severe right-sided pleuritic chest pain, and confusion.",
+    "vitals": "BP 88/54 mmHg, HR 118 bpm, RR 30/min, SpO2 89% on room air, Temp 39.1C",
+    "labs": "WBC: 18.4 x 10^9/L (88% neutrophils); CRP: 245 mg/L; Urea: 9.8 mmol/L; CXR: Dense right lower lobe consolidation with air bronchograms; CURB-65 score: 3.",
+    "medications": "Amlodipine 5mg OD",
+    "allergies": "Penicillin (severe anaphylaxis with angioedema)",
+    "referenceDifferentials": [
+      { "condition": "Severe Community-Acquired Pneumonia (Streptococcal)", "likelihood": "high", "grounded": true },
+      { "condition": "Acute Pulmonary Embolism with Pulmonary Infarction", "likelihood": "moderate", "grounded": true },
+      { "condition": "Acute Aspiration Pneumonitis", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "All beta-lactams (Amoxicillin, Co-amoxiclav, Ceftriaxone, Cefotaxime) contraindicated due to severe anaphylaxis history. Prescribe Levofloxacin / Moxifloxacin or Vancomycin + Azithromycin",
+      "Immediate hospital admission required based on CURB-65 = 3"
+    ],
+    "expectedCitations": ["pmid:31573350", "guide:pulmonology:0"]
+  },
+  {
+    "id": "pulm-002",
+    "domain": "Pulmonology",
+    "title": "Acute Massive Pulmonary Embolism with Hemodynamic Instability",
+    "age": "61",
+    "sex": "F",
+    "presentation": "Sudden onset severe dyspnea, pleuritic chest pain, and syncope on postoperative day 4 following total hip arthroplasty.",
+    "vitals": "BP 82/50 mmHg, HR 134 bpm, RR 34/min, SpO2 84% on air, Temp 37.2C",
+    "labs": "ECG: S1Q3T3 pattern with sinus tachycardia and right axis deviation; D-dimer: 8,900 ng/mL; CTPA: Saddle embolus occluding bifurcation of main pulmonary artery with right ventricular dilation (RV/LV ratio > 1.2).",
+    "medications": "Enoxaparin 40mg SC daily (prophylactic)",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Massive High-Risk Pulmonary Embolism", "likelihood": "high", "grounded": true },
+      { "condition": "Acute Myocardial Infarction with Cardiogenic Shock", "likelihood": "moderate", "grounded": true },
+      { "condition": "Tension Pneumothorax", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "Systemic thrombolysis (Alteplase) or catheter-directed embolectomy indicated; evaluate surgical bleeding risk before administration",
+      "Avoid fluid overload which worsens acute cor pulmonale"
+    ],
+    "expectedCitations": ["pmid:31473722", "guide:pulmonology:0"]
+  },
+  {
+    "id": "pulm-003",
+    "domain": "Pulmonology",
+    "title": "Acute Exacerbation of COPD with Hypercapnic Respiratory Failure",
+    "age": "67",
+    "sex": "M",
+    "presentation": "3 days of worsening dyspnea, increased sputum volume, and purulence in a patient with severe baseline COPD (FEV1 38%), now drowsy.",
+    "vitals": "BP 138/84 mmHg, HR 108 bpm, RR 28/min, SpO2 86% on 4L nasal cannula oxygen",
+    "labs": "Arterial Blood Gas (ABG): pH 7.26, PaCO2 64 mmHg, PaO2 54 mmHg, HCO3 29 mmol/L (acute on chronic respiratory acidosis); CXR: Hyperinflated lungs, flattened diaphragms, no focal consolidation.",
+    "medications": "Tiotropium Respimat OD, Formoterol/Budesonide 400/12 BD, Salbutamol PRN",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Acute Exacerbation of COPD with Type II Respiratory Failure", "likelihood": "high", "grounded": true },
+      { "condition": "Pneumothorax complicating bullous emphysema", "likelihood": "moderate", "grounded": true },
+      { "condition": "Acute Left Ventricular Failure", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "Avoid uncontrolled high-concentration oxygen therapy; titrate target SpO2 strictly to 88-92%",
+      "Initiate Non-Invasive Ventilation (BiPAP) promptly for persistent respiratory acidosis (pH < 7.35)"
+    ],
+    "expectedCitations": ["pmid:36442657", "guide:pulmonology:0"]
+  },
+  {
+    "id": "pulm-004",
+    "domain": "Pulmonology",
+    "title": "Life-Threatening Acute Asthma Attack",
+    "age": "21",
+    "sex": "F",
+    "presentation": "Severe acute breathlessness, inability to complete sentences in one breath, cyanosis, and silent chest on auscultation following cat exposure.",
+    "vitals": "BP 132/88 mmHg, HR 132 bpm, RR 36/min, SpO2 88% on air, PEF 28% predicted",
+    "labs": "Auscultation: Silent chest with minimal air entry; ABG: pH 7.34, PaCO2 42 mmHg (pseudonormal PaCO2 in severe tachypnea indicates impending respiratory arrest), PaO2 58 mmHg.",
+    "medications": "Salbutamol 100mcg PRN, Beclomethasone 200mcg BD",
+    "allergies": "Aspirin (exacerbates asthma)",
+    "referenceDifferentials": [
+      { "condition": "Life-Threatening Acute Asthma Exacerbation", "likelihood": "high", "grounded": true },
+      { "condition": "Anaphylaxis with Bronchospasm", "likelihood": "moderate", "grounded": true },
+      { "condition": "Foreign Body Aspiration", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "Aspirin and NSAIDs strictly contraindicated (Aspirin-Exacerbated Respiratory Disease)",
+      "Non-selective beta-blockers contraindicated",
+      "Immediate High-flow O2, Continuous nebulized SABA + SAMA, IV Magnesium sulfate, and systemic corticosteroids"
+    ],
+    "expectedCitations": ["pmid:35508354", "guide:pulmonology:0"]
+  },
+  {
+    "id": "pulm-005",
+    "domain": "Pulmonology",
+    "title": "Secondary Spontaneous Pneumothorax in Emphysema",
+    "age": "63",
+    "sex": "M",
+    "presentation": "Sudden onset sharp right pleuritic chest pain followed by rapid progression of dyspnea at rest, history of 40 pack-year smoking.",
+    "vitals": "BP 118/74 mmHg, HR 104 bpm, RR 26/min, SpO2 91% on room air",
+    "labs": "Chest Exam: Hyperresonant percussion and absent breath sounds throughout right hemithorax, trachea midline; CXR: 3.5cm visible pleural rim on right with lung collapse, apical bullae.",
+    "medications": "Salmeterol/Fluticasone inhaler",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Secondary Spontaneous Pneumothorax", "likelihood": "high", "grounded": true },
+      { "condition": "Ruptured Giant Emphysematous Bulla", "likelihood": "moderate", "grounded": true },
+      { "condition": "Acute Pulmonary Embolism", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "Avoid Positive Pressure Ventilation / CPAP before chest tube insertion due to high risk of tension pneumothorax",
+      "Insert intercostal chest tube (size 14-20F)"
+    ],
+    "expectedCitations": ["pmid:20671307", "guide:pulmonology:0"]
+  },
+  {
+    "id": "pulm-006",
+    "domain": "Pulmonology",
+    "title": "Idiopathic Pulmonary Fibrosis with Acute Exacerbation",
+    "age": "71",
+    "sex": "M",
+    "presentation": "6 months of progressive exertional dyspnea and dry cough, with rapid worsening over the last week; bilateral end-inspiratory 'Velcro' crackles and digital clubbing.",
+    "vitals": "BP 130/80 mmHg, HR 90 bpm, RR 24/min, SpO2 88% on room air, 94% on 3L O2",
+    "labs": "High-Resolution CT (HRCT): Subpleural, basal-predominant reticular opacities, honeycombing, and traction bronchiectasis (definite UIP pattern); Autoimmune panel negative.",
+    "medications": "None",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Idiopathic Pulmonary Fibrosis (IPF)", "likelihood": "high", "grounded": true },
+      { "condition": "Chronic Hypersensitivity Pneumonitis", "likelihood": "moderate", "grounded": true },
+      { "condition": "Connective Tissue Disease-Associated ILD", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "Avoid combination of Prednisone, Azathioprine, and N-acetylcysteine (PANTHER trial showed increased mortality in IPF)",
+      "Refer for antifibrotic therapy (Pirfenidone / Nintedanib) and lung transplant assessment"
+    ],
+    "expectedCitations": ["pmid:35487771", "guide:pulmonology:0"]
+  },
+  {
+    "id": "pulm-007",
+    "domain": "Pulmonology",
+    "title": "Cavitary Pulmonary Tuberculosis with Hemoptysis",
+    "age": "38",
+    "sex": "M",
+    "presentation": "8 weeks of drenching night sweats, 7kg weight loss, low-grade fever, persistent productive cough, and 3 days of frank hemoptysis (approx. 50 mL/day).",
+    "vitals": "BP 112/68 mmHg, HR 88 bpm, RR 20/min, SpO2 95%, Temp 38.1C",
+    "labs": "CXR: Right upper lobe thick-walled cavitary lesion with surrounding consolidation; Sputum Ziehl-Neelsen smear: 3+ Acid-Fast Bacilli (AFB); GeneXpert MTB/RIF: MTB detected, Rifampicin resistance not detected.",
+    "medications": "None",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Active Cavitary Pulmonary Tuberculosis", "likelihood": "high", "grounded": true },
+      { "condition": "Cavitary Lung Malignancy (Squamous Cell Carcinoma)", "likelihood": "moderate", "grounded": true },
+      { "condition": "Chronic Pulmonary Aspergillosis / Aspergilloma", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "Immediate negative-pressure respiratory airborne isolation mandatory",
+      "Avoid empiric monotherapy; initiate standard 4-drug HRZE regimen (Isoniazid, Rifampicin, Pyrazinamide, Ethambutol)"
+    ],
+    "expectedCitations": ["pmid:28221762", "guide:pulmonology:0"]
+  },
+  {
+    "id": "pulm-008",
+    "domain": "Pulmonology",
+    "title": "Non-Small Cell Lung Cancer with Superior Vena Cava (SVC) Syndrome",
+    "age": "65",
+    "sex": "M",
+    "presentation": "Progressive facial and bilateral neck swelling, sensation of head fullness worsening on bending forward (Pemberton's sign positive), right arm edema, and hoarseness.",
+    "vitals": "BP 136/84 mmHg, HR 94 bpm, RR 20/min, SpO2 94% on room air",
+    "labs": "Contrast CT Thorax: 5.2cm right upper lobe/mediastinal mass directly compressing the superior vena cava, with extensive collateral vein engorgement across anterior chest wall; 45 pack-year smoking history.",
+    "medications": "None",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Bronchogenic Carcinoma with Superior Vena Cava Syndrome", "likelihood": "high", "grounded": true },
+      { "condition": "Mediastinal Lymphoma", "likelihood": "moderate", "grounded": true },
+      { "condition": "SVC Thrombosis associated with Central Venous Line", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "Avoid venous access and IV line placement in upper extremities (use femoral or lower extremity veins)",
+      "Urgent endovascular stenting or emergency radiation/chemotherapy consultation"
+    ],
+    "expectedCitations": ["pmid:30559389", "guide:pulmonology:0"]
+  },
+  {
+    "id": "pulm-009",
+    "domain": "Pulmonology",
+    "title": "Bilateral Bronchiectasis with Pseudomonas Exacerbation",
+    "age": "54",
+    "sex": "F",
+    "presentation": "Chronic daily production of large volumes (approx. 100 mL) of purulent, foul-smelling greenish sputum, chronic crackles, and recurrent chest infections.",
+    "vitals": "BP 122/76 mmHg, HR 88 bpm, RR 20/min, SpO2 93% on room air, Temp 37.8C",
+    "labs": "High-Resolution CT: Signet-ring sign, airway dilation greater than adjacent vessel, bronchial wall thickening in lower lobes; Sputum culture: Heavy growth of Pseudomonas aeruginosa.",
+    "medications": "Inhaled hypertonic saline, Salbutamol",
+    "allergies": "Ciprofloxacin (severe tendonitis history)",
+    "referenceDifferentials": [
+      { "condition": "Non-Cystic Fibrosis Bronchiectasis with Pseudomonas Exacerbation", "likelihood": "high", "grounded": true },
+      { "condition": "Allergic Bronchopulmonary Aspergillosis (ABPA)", "likelihood": "moderate", "grounded": true },
+      { "condition": "Chronic Aspiration Syndromes", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "Fluoroquinolones (Ciprofloxacin/Levofloxacin) contraindicated due to prior severe tendon rupture/tendonitis history. Prescribe IV Piperacillin/Tazobactam or Ceftazidime or Inhaled Colistin / Tobramycin"
+    ],
+    "expectedCitations": ["pmid:30700547", "guide:pulmonology:0"]
+  },
+  {
+    "id": "pulm-010",
+    "domain": "Pulmonology",
+    "title": "Occupational Hypersensitivity Pneumonitis (Farmer's Lung)",
+    "age": "48",
+    "sex": "M",
+    "presentation": "Recurrent episodes of fever, chills, cough, and severe dyspnea occurring 4 to 8 hours after entering agricultural moldy hay storage facilities.",
+    "vitals": "BP 126/78 mmHg, HR 96 bpm, RR 24/min, SpO2 91% on room air, Temp 38.3C",
+    "labs": "Chest HRCT: Centrilobular ground-glass nodules, mosaic attenuation with air trapping on expiratory imaging (three-density / 'headcheese' sign); Serum precipitins: Positive for Saccharopolyspora rectivirgula.",
+    "medications": "None",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Acute / Subacute Hypersensitivity Pneumonitis (Farmer's Lung)", "likelihood": "high", "grounded": true },
+      { "condition": "Atypical Community-Acquired Pneumonia", "likelihood": "moderate", "grounded": true },
+      { "condition": "Organic Dust Toxic Syndrome", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "Primary treatment is strict antigen avoidance; oral corticosteroids indicated for acute severe hypoxemic presentation"
+    ],
+    "expectedCitations": ["pmid:32763784", "guide:pulmonology:0"]
+  },
+  {
+    "id": "pulm-011",
+    "domain": "Pulmonology",
+    "title": "Severe Acute Respiratory Distress Syndrome (ARDS) secondary to Sepsis",
+    "age": "59",
+    "sex": "F",
+    "presentation": "Refractory hypoxemia 24 hours following acute pyelonephritis and urosepsis, requiring invasive mechanical ventilation.",
+    "vitals": "BP 96/60 mmHg (on norepinephrine), HR 116 bpm, RR 30/min (ventilator), SpO2 88% on FiO2 0.8 and PEEP 14 cmH2O",
+    "labs": "PaO2/FiO2 ratio: 110 mmHg (Severe ARDS by Berlin Definition); CXR: Diffuse bilateral alveolar infiltrates sparing costophrenic angles, normal cardiac silhouette; Echo: No left atrial hypertension.",
+    "medications": "Norepinephrine infusion, Meropenem 1g IV TDS",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Severe Acute Respiratory Distress Syndrome (ARDS)", "likelihood": "high", "grounded": true },
+      { "condition": "Cardiogenic Hydrostatic Pulmonary Edema", "likelihood": "moderate", "grounded": true },
+      { "condition": "Diffuse Alveolar Hemorrhage", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "Avoid high tidal volume ventilation (>6 mL/kg predicted body weight) and plateau pressure >30 cmH2O (Lung-Protective Ventilation Strategy mandatory)",
+      "Consider early prone positioning for PaO2/FiO2 < 150 mmHg"
+    ],
+    "expectedCitations": ["pmid:22797452", "guide:pulmonology:0"]
+  },
+  {
+    "id": "pulm-012",
+    "domain": "Pulmonology",
+    "title": "Unilateral Parapneumonic Pleural Empyema",
+    "age": "68",
+    "sex": "M",
+    "presentation": "Persistent fever, unremitting left-sided pleuritic chest pain, and night sweats despite 7 days of oral amoxicillin for pneumonia.",
+    "vitals": "BP 118/70 mmHg, HR 102 bpm, RR 22/min, SpO2 93%, Temp 38.6C",
+    "labs": "Thoracentesis pleural fluid: Macroscopically frank pus, pH 6.95, Glucose < 1.1 mmol/L, LDH 2,400 IU/L, Gram stain positive for mixed anaerobic and Gram-positive cocci.",
+    "medications": "Amoxicillin 500mg TDS (failed)",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Complicated Parapneumonic Effusion / Pleural Empyema", "likelihood": "high", "grounded": true },
+      { "condition": "Malignant Pleural Effusion", "likelihood": "moderate", "grounded": true },
+      { "condition": "Tuberculous Pleurisy", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "Avoid antibiotic therapy alone without tube thoracostomy drainage; frank empyema mandates immediate intercostal chest tube drainage and thoracic surgery/VATS evaluation"
+    ],
+    "expectedCitations": ["pmid:28483856", "guide:pulmonology:0"]
+  },
+  {
+    "id": "neuro-001",
+    "domain": "Neurology",
+    "title": "Acute Ischemic Stroke within Thrombolysis Window (NIHSS 14)",
+    "age": "68",
+    "sex": "M",
+    "presentation": "Sudden onset right-sided hemiplegia, facial droop, and global aphasia witnessed by family 75 minutes prior to emergency arrival.",
+    "vitals": "BP 168/94 mmHg, HR 82 bpm, RR 16/min, SpO2 98%, Blood Glucose 118 mg/dL",
+    "labs": "NIHSS score: 14; Non-contrast Head CT: No intracranial hemorrhage, ASPECT score 9 (early ischemic change in left MCA territory); CTA: Left M1 middle cerebral artery occlusion.",
+    "medications": "Atorvastatin 20mg OD",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Acute Left MCA Ischemic Stroke", "likelihood": "high", "grounded": true },
+      { "condition": "Acute Spontaneous Intracerebral Hemorrhage", "likelihood": "moderate", "grounded": true },
+      { "condition": "Todd's Paresis following Unwitnessed Focal Seizure", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "Candidate for IV Thrombolysis (Tenecteplase / Alteplase within 4.5h window) and emergent Endovascular Mechanical Thrombectomy (within 24h window)",
+      "Strictly avoid acute antihypertensive overtreatment unless BP > 185/110 mmHg prior to thrombolysis"
+    ],
+    "expectedCitations": ["pmid:31662037", "guide:neurology:0"]
+  },
+  {
+    "id": "neuro-002",
+    "domain": "Neurology",
+    "title": "Aneurysmal Subarachnoid Hemorrhage (Thunderclap Headache)",
+    "age": "42",
+    "sex": "F",
+    "presentation": "Sudden instantaneous onset of the 'worst headache of my life' peaking within 5 seconds during coitus, accompanied by projectile vomiting, photophobia, and neck stiffness.",
+    "vitals": "BP 162/98 mmHg, HR 64 bpm, RR 18/min, SpO2 99%, GCS 14 (E4V4M6)",
+    "labs": "Non-contrast Head CT (at 3 hours): Hyperdense blood in basal cisterns, sylvian fissures, and interhemispheric fissure (Fisher Grade 3); CTA Head: 7mm saccular anterior communicating artery (ACom) aneurysm.",
+    "medications": "Combined Oral Contraceptive Pill",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Aneurysmal Subarachnoid Hemorrhage (aSAH)", "likelihood": "high", "grounded": true },
+      { "condition": "Reversible Cerebral Vasoconstriction Syndrome (RCVS)", "likelihood": "moderate", "grounded": true },
+      { "condition": "Acute Bacterial Meningitis", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "ABSOLUTE CONTRAINDICATION to NSAIDs, Aspirin, and Anticoagulants due to re-bleeding risk",
+      "Immediate Nimodipine 60mg every 4h for vasospasm prevention, urgent neurosurgical aneurysm securing"
+    ],
+    "expectedCitations": ["pmid:37218384", "guide:neurology:0"]
+  },
+  {
+    "id": "neuro-003",
+    "domain": "Neurology",
+    "title": "Refractory Convulsive Status Epilepticus",
+    "age": "34",
+    "sex": "M",
+    "presentation": "Continuous generalized tonic-clonic seizure activity lasting >25 minutes without return of consciousness between episodes.",
+    "vitals": "BP 146/90 mmHg, HR 138 bpm, RR 28/min, SpO2 89%, Temp 38.6C (hyperthermic)",
+    "labs": "Bedside capillary glucose: 104 mg/dL; Serum sodium: 138 mmol/L; Toxicology screen: negative; History of remote traumatic brain injury with known epilepsy.",
+    "medications": "Levetiracetam 1000mg BD (missed last 3 doses)",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Generalized Convulsive Status Epilepticus", "likelihood": "high", "grounded": true },
+      { "condition": "Psychogenic Non-Epileptic Seizures (PNES)", "likelihood": "low", "grounded": true },
+      { "condition": "Severe Acute Hyponatremic Encephalopathy with Seizures", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "Avoid delay: First-line IV Lorazepam / Midazolam followed immediately by second-line IV Levetiracetam (60 mg/kg) or Fosphenytoin (20 mg PE/kg)",
+      "Prepare for rapid sequence intubation and anesthetic induction (Propofol/Midazolam) if seizure exceeds 30 minutes"
+    ],
+    "expectedCitations": ["pmid:26771482", "guide:neurology:0"]
+  },
+  {
+    "id": "neuro-004",
+    "domain": "Neurology",
+    "title": "Acute Bacterial (Pneumococcal) Meningitis",
+    "age": "26",
+    "sex": "M",
+    "presentation": "24 hours of rapidly escalating fever (39.5C), severe global headache, photophobia, confusion, marked neck rigidity, and positive Kernig/Brudzinski signs.",
+    "vitals": "BP 102/64 mmHg, HR 122 bpm, RR 22/min, SpO2 96%, Temp 39.6C",
+    "labs": "Lumbar Puncture: Opening pressure 320 mmH2O, cloudy CSF, WBC 4,200/uL (92% neutrophils), CSF Glucose 0.8 mmol/L (serum glucose 6.2 mmol/L, ratio < 0.2), CSF Protein 3.8 g/L; Gram stain: Gram-positive diplococci.",
+    "medications": "None",
+    "allergies": "Penicillin (rash in childhood)",
+    "referenceDifferentials": [
+      { "condition": "Acute Bacterial Meningitis (Streptococcus pneumoniae)", "likelihood": "high", "grounded": true },
+      { "condition": "Herpes Simplex Virus (HSV-1) Encephalitis", "likelihood": "moderate", "grounded": true },
+      { "condition": "Subarachnoid Hemorrhage", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "Do NOT delay empiric antibiotics for lumbar puncture or CT scan if signs of meningitis are present",
+      "Administer IV Dexamethasone 10mg before or with first dose of IV Ceftriaxone + Vancomycin"
+    ],
+    "expectedCitations": ["pmid:15467618", "guide:neurology:0"]
+  },
+  {
+    "id": "neuro-005",
+    "domain": "Neurology",
+    "title": "Myasthenia Gravis with Impending Myasthenic Crisis",
+    "age": "29",
+    "sex": "F",
+    "presentation": "Progressive bilateral fluctuating ptosis, binocular diplopia, dysphagia with choking on liquids, nasal speech, and neck flexor weakness worsening towards the evening.",
+    "vitals": "BP 120/75 mmHg, HR 88 bpm, RR 26/min (shallow), Single Breath Count: 11 (normal > 25), Forced Vital Capacity (FVC): 1.1 L (decreased)",
+    "labs": "Serum Anti-Acetylcholine Receptor (AChR) antibodies: Strongly Positive (18.4 nmol/L); Repetitive Nerve Stimulation: >15% decremental response in facial and abductor digiti minimi muscles; Chest CT: 2.5cm anterior mediastinal thymoma.",
+    "medications": "Pyridostigmine 60mg QDS",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Myasthenia Gravis with Impending Myasthenic Crisis", "likelihood": "high", "grounded": true },
+      { "condition": "Guillain-Barré Syndrome (Miller Fisher Variant)", "likelihood": "moderate", "grounded": true },
+      { "condition": "Lambert-Eaton Myasthenic Syndrome (LEMS)", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "ABSOLUTELY CONTRAINDICATED DRUGS that worsen neuromuscular transmission: Aminoglycosides (Gentamicin), Fluoroquinolones (Ciprofloxacin), Macrolides, Beta-blockers, Magnesium sulfate, Neuromuscular blockers",
+      "Urgent admission to ICU for Plasma Exchange (PLEX) or IVIG"
+    ],
+    "expectedCitations": ["pmid:27365183", "guide:neurology:0"]
+  },
+  {
+    "id": "neuro-006",
+    "domain": "Neurology",
+    "title": "Guillain-Barré Syndrome (Acute Inflammatory Demyelinating Polyneuropathy)",
+    "age": "45",
+    "sex": "M",
+    "presentation": "Progressive ascending symmetrical flaccid leg weakness and distal paresthesias developing 12 days after a diarrheal illness (Campylobacter jejuni).",
+    "vitals": "BP 138/84 mmHg, HR 92 bpm, RR 18/min, SpO2 97%",
+    "labs": "Neurological exam: Symmetrical lower extremity power 2/5, absent deep tendon reflexes (areflexia) in all four limbs; Lumbar Puncture (Day 10): Cytoalbuminologic dissociation (CSF Protein 1.8 g/L with normal WBC 2/uL); Nerve Conduction Studies: Marked demyelinating conduction block.",
+    "medications": "None",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Guillain-Barré Syndrome (AIDP)", "likelihood": "high", "grounded": true },
+      { "condition": "Acute Spinal Cord Compression / Transverse Myelitis", "likelihood": "moderate", "grounded": true },
+      { "condition": "Hypokalemic Periodic Paralysis", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "Avoid Systemic Corticosteroids (proven ineffective and potentially harmful in GBS)",
+      "Initiate IVIG (0.4 g/kg/day for 5 days) or Plasma Exchange early; monitor FVC every 4 hours"
+    ],
+    "expectedCitations": ["pmid:27876402", "guide:neurology:0"]
+  },
+  {
+    "id": "neuro-007",
+    "domain": "Neurology",
+    "title": "Herpes Simplex Virus (HSV-1) Encephalitis",
+    "age": "52",
+    "sex": "F",
+    "presentation": "5-day history of low-grade fever, fluctuating confusion, expressive aphasia, bizarre behavioral changes, and focal seizures with lip-smacking automatisms.",
+    "vitals": "BP 128/78 mmHg, HR 84 bpm, RR 18/min, SpO2 98%, Temp 38.8C",
+    "labs": "Brain MRI: Hyperintensity on T2/FLAIR restricted to the left frontotemporal and insular cortex with gyral enhancement; CSF Analysis: Lymphocytic pleocytosis (WBC 140/uL), elevated RBCs (220/uL), CSF HSV-1 PCR: Positive.",
+    "medications": "None",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Herpes Simplex Virus (HSV-1) Encephalitis", "likelihood": "high", "grounded": true },
+      { "condition": "Autoimmune / Anti-NMDA Receptor Encephalitis", "likelihood": "moderate", "grounded": true },
+      { "condition": "Acute Ischemic Stroke in Left MCA Territory", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "Immediate empiric IV Acyclovir (10 mg/kg TDS) without waiting for CSF PCR confirmation to prevent permanent temporal necrosis and mortality"
+    ],
+    "expectedCitations": ["pmid:18585489", "guide:neurology:0"]
+  },
+  {
+    "id": "neuro-008",
+    "domain": "Neurology",
+    "title": "Idiopathic Normal Pressure Hydrocephalus (NPH)",
+    "age": "74",
+    "sex": "M",
+    "presentation": "10-month progressive classic triad of gait disturbance ('magnetic' magnetic-feet gait), urinary urgency/incontinence, and mild subcortical cognitive decline.",
+    "vitals": "BP 132/80 mmHg, HR 70 bpm, SpO2 98%",
+    "labs": "Brain MRI: Ventriculomegaly (Evan's index > 0.3) out of proportion to sulcal atrophy, with acute callosal angle (<90 degrees) and periventricular hyperintensity; Lumbar Tap Test: Dramatic improvement in gait velocity following 40 mL CSF removal.",
+    "medications": "Atorvastatin 10mg OD",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Idiopathic Normal Pressure Hydrocephalus (NPH)", "likelihood": "high", "grounded": true },
+      { "condition": "Alzheimer's Disease with Sarcopenia", "likelihood": "moderate", "grounded": true },
+      { "condition": "Vascular Parkinsonism", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "Neurosurgical evaluation for Ventriculoperitoneal (VP) Shunt placement",
+      "Avoid misattribution to irreversible senile dementia"
+    ],
+    "expectedCitations": ["pmid:27591461", "guide:neurology:0"]
+  },
+  {
+    "id": "neuro-009",
+    "domain": "Neurology",
+    "title": "Multiple Sclerosis with Acute Optic Neuritis",
+    "age": "27",
+    "sex": "F",
+    "presentation": "Subacute unilateral right eye vision loss over 3 days, accompanied by retro-orbital pain exacerbated by eye movements and impaired color vision (dyschromatopsia).",
+    "vitals": "BP 116/72 mmHg, HR 72 bpm, SpO2 99%",
+    "labs": "Ophthalmology exam: Relative Afferent Pupillary Defect (Marcus Gunn pupil) in right eye, visual acuity 20/200; Brain/Orbit MRI: T2 hyperintensity and gadolinium enhancement of the intra-orbital right optic nerve, plus 4 periventricular Dawson's fingers lesions; CSF: Oligoclonal bands present.",
+    "medications": "None",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Acute Demyelinating Optic Neuritis (Multiple Sclerosis)", "likelihood": "high", "grounded": true },
+      { "condition": "Neuromyelitis Optica Spectrum Disorder (NMOSD)", "likelihood": "moderate", "grounded": true },
+      { "condition": "Non-Arteritic Anterior Ischemic Optic Neuropathy", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "Avoid oral low-dose Prednisone alone (Optic Neuritis Treatment Trial proved oral low-dose prednisone increases recurrence rates); prescribe IV Methylprednisolone (1000mg/day for 3 days)"
+    ],
+    "expectedCitations": ["pmid:18296338", "guide:neurology:0"]
+  },
+  {
+    "id": "neuro-010",
+    "domain": "Neurology",
+    "title": "Acute Cauda Equina Syndrome secondary to Massive Disc Herniation",
+    "age": "41",
+    "sex": "M",
+    "presentation": "Severe lower back pain radiating down both legs, acute urinary retention with overflow incontinence (post-void residual 850 mL), and 'saddle' perineal numbness.",
+    "vitals": "BP 138/82 mmHg, HR 84 bpm, SpO2 98%",
+    "labs": "Exam: Lax anal sphincter tone, loss of bulbocavernosus reflex, bilateral ankle jerks absent, sensory loss across S2-S5 dermatomes; Urgent Lumbar Spine MRI: Massive central L4-L5 disc extrusion completely obliterating the thecal sac.",
+    "medications": "Naproxen 500mg BD",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Acute Cauda Equina Syndrome", "likelihood": "high", "grounded": true },
+      { "condition": "Severe Acute L5/S1 Radiculopathy without Thecal Compression", "likelihood": "moderate", "grounded": true },
+      { "condition": "Spinal Epidural Abscess", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "SURGICAL EMERGENCY: Decompressive lumbar discectomy within 24-48 hours required to prevent permanent bladder/bowel denervation and paralysis"
+    ],
+    "expectedCitations": ["pmid:30553744", "guide:neurology:0"]
+  },
+  {
+    "id": "neph-001",
+    "domain": "Nephrology / Endo",
+    "title": "Severe Diabetic Ketoacidosis (DKA) with Euglycemia",
+    "age": "28",
+    "sex": "F",
+    "presentation": "Persistent nausea, vomiting, abdominal pain, Kussmaul deep breathing, and lethargy in a patient with Type 1 Diabetes on SGLT2 inhibitor therapy.",
+    "vitals": "BP 98/62 mmHg, HR 124 bpm, RR 32/min, SpO2 98%, Temp 36.4C",
+    "labs": "Blood Glucose: 198 mg/dL (euglycemic/mildly elevated); Venous Blood Gas: pH 7.12, HCO3 9 mmol/L, pCO2 24 mmHg, Anion Gap 26 mEq/L; Blood beta-hydroxybutyrate: 6.4 mmol/L; Urine ketones: 4+.",
+    "medications": "Insulin Glargine 22 units, Dapagliflozin 10mg OD",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Euglycemic Diabetic Ketoacidosis (SGLT2-associated)", "likelihood": "high", "grounded": true },
+      { "condition": "Acute Pancreatitis with Lactic Acidosis", "likelihood": "moderate", "grounded": true },
+      { "condition": "Toxic Alcohol Ingestion", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "Immediately withhold SGLT2 inhibitors (Dapagliflozin)",
+      "Do NOT delay insulin infusion due to near-normal blood glucose; infuse Dextrose 5-10% alongside fixed-rate IV insulin (0.1 units/kg/h) and aggressive isotonic fluid resuscitation",
+      "Monitor Potassium strictly; withhold insulin if K+ < 3.3 mmol/L"
+    ],
+    "expectedCitations": ["pmid:26148967", "guide:endocrinology:0"]
+  },
+  {
+    "id": "neph-002",
+    "domain": "Nephrology / Endo",
+    "title": "Hyperosmolar Hyperglycemic State (HHS) with Severe Dehydration",
+    "age": "73",
+    "sex": "M",
+    "presentation": "1 week of progressive lethargy, confusion, profound polyuria, and polydipsia, culminating in stupor; dry mucous membranes and poor skin turgor.",
+    "vitals": "BP 86/52 mmHg, HR 118 bpm, RR 18/min, SpO2 96%, Temp 37.1C",
+    "labs": "Blood Glucose: 980 mg/dL; Serum Osmolality: 362 mOsm/kg (markedly hyperosmolar); pH: 7.36, HCO3: 22 mmol/L (no significant ketoacidosis); Serum Creatinine: 3.4 mg/dL (baseline 1.0); Serum Sodium: 154 mmol/L (corrected sodium 168 mmol/L).",
+    "medications": "Metformin 500mg BD",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Hyperosmolar Hyperglycemic State (HHS)", "likelihood": "high", "grounded": true },
+      { "condition": "Diabetic Ketoacidosis with Severe Osmotic Diuresis", "likelihood": "moderate", "grounded": true },
+      { "condition": "Acute Ischemic Stroke with Dehydration", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "Avoid rapid reduction in serum glucose and osmolality to prevent central pontine myelinolysis / cerebral edema",
+      "Primary treatment is vigorous fluid resuscitation (0.9% NaCl then 0.45% NaCl); withhold high-dose bolus insulin initially"
+    ],
+    "expectedCitations": ["pmid:24855158", "guide:endocrinology:0"]
+  },
+  {
+    "id": "neph-003",
+    "domain": "Nephrology / Endo",
+    "title": "Life-Threatening Severe Hyperkalemia with ECG Changes",
+    "age": "66",
+    "sex": "M",
+    "presentation": "Profound generalized muscle weakness, ascending flaccid paresis, and lightheadedness in a patient with CKD Stage 4 recently started on Spironolactone.",
+    "vitals": "BP 102/58 mmHg, HR 42 bpm (slow, irregular), SpO2 96%",
+    "labs": "Serum Potassium: 7.6 mmol/L; Serum Creatinine: 4.2 mg/dL; eGFR: 14 mL/min/1.73m2; ECG: Tall peaked symmetrical T waves, flattened/absent P waves, prolonged PR interval, and widening of QRS complex (sine-wave appearance).",
+    "medications": "Ramipril 10mg OD, Spironolactone 25mg OD",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Severe Drug-Induced Hyperkalemia with Cardiotoxicity", "likelihood": "high", "grounded": true },
+      { "condition": "Acute Oliguric Kidney Injury (Stage 3)", "likelihood": "high", "grounded": true },
+      { "condition": "Rhabdomyolysis", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "IMMEDIATE EMERGENCY: Administer IV Calcium Gluconate 10% (10-20 mL) to stabilize cardiac membrane",
+      "Follow with IV Insulin + Dextrose 50% and nebulized Salbutamol to shift potassium intracellularly",
+      "Immediately discontinue ACE inhibitors (Ramipril) and Potassium-sparing diuretics (Spironolactone)"
+    ],
+    "expectedCitations": ["pmid:30808606", "guide:nephrology:0"]
+  },
+  {
+    "id": "neph-004",
+    "domain": "Nephrology / Endo",
+    "title": "Acute Kidney Injury Stage 3 secondary to Rhabdomyolysis",
+    "age": "39",
+    "sex": "M",
+    "presentation": "Found on the floor for 16 hours following a prolonged seizure; severe bilateral thigh pain, swelling, and dark red/brown 'tea-colored' urine.",
+    "vitals": "BP 112/68 mmHg, HR 106 bpm, RR 20/min, SpO2 97%",
+    "labs": "Serum Creatine Kinase (CK): 142,000 U/L; Serum Creatinine: 5.2 mg/dL (baseline 0.9); Potassium: 6.2 mmol/L; Urine Dipstick: Strongly positive for blood, but microscopy shows <2 RBCs/hpf (myoglobinuria).",
+    "medications": "None",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Rhabdomyolysis-Induced Acute Tubular Necrosis (AKI Stage 3)", "likelihood": "high", "grounded": true },
+      { "condition": "Traumatic Compartment Syndrome", "likelihood": "moderate", "grounded": true },
+      { "condition": "Glomerulonephritis", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "Avoid Nephrotoxic Agents (NSAIDs, Aminoglycosides, IV Radiocontrast)",
+      "Aggressive isotonic crystalloid resuscitation (target urine output 200-300 mL/h); evaluate for urgent hemodialysis if refractory hyperkalemia or fluid overload"
+    ],
+    "expectedCitations": ["pmid:20530774", "guide:nephrology:0"]
+  },
+  {
+    "id": "neph-005",
+    "domain": "Nephrology / Endo",
+    "title": "Acute Adrenal (Addisonian) Crisis",
+    "age": "35",
+    "sex": "F",
+    "presentation": "Severe shock refractory to fluid boluses, intractable abdominal pain, vomiting, extreme lethargy, and generalized hyperpigmentation of palmar creases and buccal mucosa.",
+    "vitals": "BP 76/44 mmHg, HR 128 bpm (thready), RR 22/min, SpO2 96%, Temp 35.8C (hypothermic)",
+    "labs": "Serum Sodium: 122 mmol/L (severe hyponatremia); Serum Potassium: 6.4 mmol/L (hyperkalemia); Blood Glucose: 52 mg/dL (hypoglycemia); Baseline Serum Cortisol: 42 nmol/L (severely depressed); ACTH: >1,200 pg/mL.",
+    "medications": "Primary adrenal insufficiency, stopped Hydrocortisone 3 days ago due to gastroenteritis",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Acute Primary Adrenal (Addisonian) Crisis", "likelihood": "high", "grounded": true },
+      { "condition": "Septic Shock with Waterhouse-Friderichsen Syndrome", "likelihood": "moderate", "grounded": true },
+      { "condition": "Acute Surgical Abdomen / Perforated Viscus", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "IMMEDIATE LIFE SAVING TREATMENT: IV Hydrocortisone 100mg stat bolus followed by 200mg/24h continuous infusion or 50mg IV 6-hourly",
+      "Do NOT wait for ACTH stimulation test results before administering steroid therapy in hemodynamic collapse"
+    ],
+    "expectedCitations": ["pmid:25608752", "guide:endocrinology:0"]
+  },
+  {
+    "id": "neph-006",
+    "domain": "Nephrology / Endo",
+    "title": "Severe Thyrotoxicosis / Thyroid Storm (Burch-Wartofsky Score 65)",
+    "age": "31",
+    "sex": "F",
+    "presentation": "Severe agitation, delirium, marked tremor, profuse diaphoresis, persistent vomiting, diarrhea, and high fever (40.1C) precipitated by acute odontogenic abscess.",
+    "vitals": "BP 158/68 mmHg, HR 164 bpm (atrial fibrillation), RR 26/min, Temp 40.2C",
+    "labs": "Burch-Wartofsky Point Scale (BWPS): 65 (highly suggestive of Thyroid Storm); Free T4: >100 pmol/L (markedly elevated); TSH: <0.01 mIU/L; ECG: Atrial fibrillation with rapid ventricular response.",
+    "medications": "Carbimazole (poorly compliant)",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Thyroid Storm / Thyrotoxic Crisis", "likelihood": "high", "grounded": true },
+      { "condition": "Severe Sepsis with Septic Encephalopathy", "likelihood": "moderate", "grounded": true },
+      { "condition": "Neuroleptic Malignant Syndrome / Serotonin Syndrome", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "ABSOLUTE CONTRAINDICATION to Aspirin / Salicylates because they displace T4/T3 from thyroid-binding globulin, worsening hyperthyroidism (use Acetaminophen for fever)",
+      "Multimodal therapy: Propylthiouracil (PTU), Lugol's iodine (given >=1h after PTU), Propranolol, and IV Hydrocortisone"
+    ],
+    "expectedCitations": ["pmid:27741484", "guide:endocrinology:0"]
+  },
+  {
+    "id": "neph-007",
+    "domain": "Nephrology / Endo",
+    "title": "Severe Symptomatic Hypercalcemia of Malignancy",
+    "age": "67",
+    "sex": "F",
+    "presentation": "2 weeks of progressive constipation, abdominal pain, profound nausea, polyuria, polydipsia, shortened QT interval, and cognitive obtundation in a patient with metastatic breast cancer.",
+    "vitals": "BP 106/64 mmHg, HR 62 bpm, RR 16/min, SpO2 97%",
+    "labs": "Serum Calcium: 3.85 mmol/L (15.4 mg/dL - critical hypercalcemic crisis); Ionized Calcium: 2.1 mmol/L; Serum Albumin: 32 g/L; PTH: suppressed (<4 pg/mL); PTHrP: elevated; ECG: Marked shortening of QT interval (QTc 340 ms).",
+    "medications": "Letrozole 2.5mg OD",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Humoral Hypercalcemia of Malignancy", "likelihood": "high", "grounded": true },
+      { "condition": "Primary Hyperparathyroidism with Parathyroid Adenoma", "likelihood": "low", "grounded": true },
+      { "condition": "Vitamin D Intoxication / Granulomatous Disease", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "Avoid Thiazide diuretics (worsen calcium retention)",
+      "Avoid Loop diuretics (Furosemide) prior to full volume repletion",
+      "Immediate management: Aggressive IV 0.9% Normal Saline (3-4 L/24h) + IV Bisphosphonates (Zoledronic acid 4mg) + subcutaneous Calcitonin"
+    ],
+    "expectedCitations": ["pmid:34932373", "guide:endocrinology:0"]
+  },
+  {
+    "id": "neph-008",
+    "domain": "Nephrology / Endo",
+    "title": "Nephrotic Syndrome secondary to Membranous Nephropathy",
+    "age": "46",
+    "sex": "M",
+    "presentation": "Rapidly accumulating severe bilateral lower extremity anasarca, scrotal edema, facial periorbital puffiness, and frothy urine over 3 weeks.",
+    "vitals": "BP 152/94 mmHg, HR 76 bpm, SpO2 98%",
+    "labs": "24-hour urine protein: 8.4 g/day (massive nephrotic-range proteinuria); Serum Albumin: 18 g/L (severe hypoalbuminemia); Total Cholesterol: 420 mg/dL; Serum anti-PLA2R antibody: Strongly positive (145 RU/mL); Normal complement C3/C4.",
+    "medications": "None",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Primary Membranous Nephropathy (PLA2R-associated)", "likelihood": "high", "grounded": true },
+      { "condition": "Focal Segmental Glomerulosclerosis (FSGS)", "likelihood": "moderate", "grounded": true },
+      { "condition": "Diabetic Nephropathy / Amyloidosis", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "High risk of Deep Vein Thrombosis and Renal Vein Thrombosis due to loss of antithrombin III when Albumin < 20 g/L (prophylactic anticoagulation indicated)",
+      "Initiate ACEi/ARB for proteinuria reduction and nephrology evaluation for Rituximab/cyclophosphamide"
+    ],
+    "expectedCitations": ["pmid:34509536", "guide:nephrology:0"]
+  },
+  {
+    "id": "pharm-001",
+    "domain": "Infectious / Pharm",
+    "title": "Urosepsis with Penicillin Anaphylaxis & Cephalosporin Cross-Reactivity",
+    "age": "45",
+    "sex": "F",
+    "presentation": "Severe acute left flank pain, dysuria, costovertebral angle tenderness, shaking rigors, high fever (39.2C), and confusion.",
+    "vitals": "BP 86/50 mmHg, HR 126 bpm, RR 24/min, SpO2 95%, Temp 39.4C",
+    "labs": "Urinalysis: Packed WBCs, leukocyte esterase 3+, nitrite positive; Blood cultures: Gram-negative bacilli; Documented history of IgE-mediated anaphylaxis to Amoxicillin with laryngeal edema.",
+    "medications": "None",
+    "allergies": "Penicillin (anaphylaxis with throat swelling and intubation)",
+    "referenceDifferentials": [
+      { "condition": "Acute Complicated Pyelonephritis with Uroseptic Shock", "likelihood": "high", "grounded": true },
+      { "condition": "Renal / Perinephric Abscess", "likelihood": "moderate", "grounded": true },
+      { "condition": "Acute Pelvic Inflammatory Disease", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "ABSOLUTE CONTRAINDICATION: All Penicillins, Ampicillin/Sulbactam, Piperacillin/Tazobactam, and early-generation Cephalosporins (Cefazolin, Ceftriaxone) due to severe anaphylaxis risk",
+      "Recommended alternative empiric regimen: IV Aztreonam + Vancomycin or Ciprofloxacin / Aminoglycosides"
+    ],
+    "expectedCitations": ["pmid:21258094", "fda:ciprofloxacin", "guide:infectious-disease:0"]
+  },
+  {
+    "id": "pharm-002",
+    "domain": "Infectious / Pharm",
+    "title": "Severe Warfarin and NSAID Co-Prescription Toxicity with Upper GI Bleeding",
+    "age": "70",
+    "sex": "M",
+    "presentation": "Copious melena (black tarry stools) for 2 days, hematemesis, severe postural dizziness, and syncope.",
+    "vitals": "BP 82/48 mmHg, HR 122 bpm, RR 22/min, SpO2 96%, Pallor +++",
+    "labs": "Hemoglobin: 6.2 g/dL (acute drop from 13.5); INR: 8.4 (supratherapeutic); Stool occult blood: strongly positive; Patient with mechanical mitral valve took OTC Ibuprofen 600mg TDS for 7 days for knee osteoarthritis.",
+    "medications": "Warfarin 5mg OD, Ibuprofen 600mg TDS (OTC)",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Acute Upper Gastrointestinal Bleeding secondary to Warfarin-NSAID Toxicity", "likelihood": "high", "grounded": true },
+      { "condition": "Peptic Ulcer Perforation", "likelihood": "moderate", "grounded": true },
+      { "condition": "Bleeding Colonic Angiodysplasia", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "CRITICAL SAFETY FLAG: Severe drug-drug interaction between Warfarin and NSAIDs (COX-1 inhibition causes gastric mucosal injury and platelet inhibition, multiplying bleeding risk 4-fold)",
+      "Immediate intervention: Withhold Warfarin and NSAIDs, administer IV Vitamin K 10mg + 4-factor Prothrombin Complex Concentrate (4F-PCC) to reverse INR, IV high-dose Pantoprazole, urgent endoscopy"
+    ],
+    "expectedCitations": ["pmid:34648719", "fda:warfarin", "guide:emergency:0"]
+  },
+  {
+    "id": "pharm-003",
+    "domain": "Infectious / Pharm",
+    "title": "Serotonin Syndrome from Tramadol and SSRI Interaction",
+    "age": "38",
+    "sex": "F",
+    "presentation": "Acute onset agitation, disorientation, profuse diaphoresis, ocular clonus, generalized spontaneous myoclonus, hyperreflexia (3+ patellar), and shivering after taking newly prescribed Tramadol.",
+    "vitals": "BP 164/98 mmHg, HR 132 bpm, RR 24/min, Temp 39.1C (hyperthermic)",
+    "labs": "Hunter Serotonin Toxicity Criteria: Met (Spontaneous clonus + diaphoresis + agitation); Serum Creatine Kinase: 1,800 U/L; Potassium: 4.6 mmol/L.",
+    "medications": "Sertraline 100mg OD, Tramadol 100mg QDS (started 24h ago for dental pain)",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Severe Serotonin Syndrome (Hunter Criteria Positive)", "likelihood": "high", "grounded": true },
+      { "condition": "Neuroleptic Malignant Syndrome (NMS)", "likelihood": "moderate", "grounded": true },
+      { "condition": "Malignant Hyperthermia", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "CRITICAL CONTRAINDICATION: Co-administration of Tramadol (serotonin reuptake inhibitor) and Sertraline (SSRI)",
+      "Immediate discontinuation of all serotonergic agents, administer IV Benzodiazepines (Diazepam) and Serotonin antagonist (Cyproheptadine 12mg orally/NG)"
+    ],
+    "expectedCitations": ["pmid:16014407", "fda:sertraline", "guide:emergency:0"]
+  },
+  {
+    "id": "pharm-004",
+    "domain": "Infectious / Pharm",
+    "title": "Severe Methotrexate Toxicity in Elderly Patient with Renal Impairment",
+    "age": "69",
+    "sex": "F",
+    "presentation": "Profound oral mucositis with bleeding ulcerations, severe neutropenic fever, pancytopenia, and acute diarrhea after accidentally taking Methotrexate daily instead of weekly.",
+    "vitals": "BP 104/60 mmHg, HR 108 bpm, RR 20/min, Temp 38.9C",
+    "labs": "Absolute Neutrophil Count (ANC): 0.2 x 10^9/L (critical agranulocytosis); Platelets: 28 x 10^9/L; Hemoglobin: 8.1 g/dL; Serum Creatinine: 2.4 mg/dL (baseline 1.0); Serum Methotrexate Level: 0.8 umol/L at 72h.",
+    "medications": "Methotrexate 15mg DAILY (dosing error), Omeprazole 20mg OD",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Acute Methotrexate Toxicity with Bone Marrow Aplasia", "likelihood": "high", "grounded": true },
+      { "condition": "Neutropenic Sepsis of Gastrointestinal Origin", "likelihood": "high", "grounded": true },
+      { "condition": "Aplastic Anemia", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "CRITICAL DOSING ERROR: Methotrexate in rheumatoid arthritis MUST be dosed weekly, never daily",
+      "Immediate antidote: High-dose IV Folinic Acid (Leucovorin calcium rescue 100 mg/m2 every 3-6 hours) and urinary alkalinization (IV sodium bicarbonate)"
+    ],
+    "expectedCitations": ["pmid:28258385", "fda:methotrexate", "guide:rheumatology:0"]
+  },
+  {
+    "id": "pharm-005",
+    "domain": "Infectious / Pharm",
+    "title": "Clostridioides difficile Colitis following Clindamycin Therapy",
+    "age": "62",
+    "sex": "F",
+    "presentation": "10 to 12 episodes per day of watery, foul-smelling diarrhea, severe lower abdominal cramping, nausea, and leukocytosis 10 days after completing a course of Clindamycin for a dental abscess.",
+    "vitals": "BP 110/68 mmHg, HR 98 bpm, RR 18/min, Temp 38.3C",
+    "labs": "WBC: 22.5 x 10^9/L (Severe C. diff criterion >15,000); Serum Creatinine: 1.6 mg/dL (1.5x baseline); Stool PCR / EIA: Positive for Clostridioides difficile toxin B; CT Abdomen: Diffuse colonic wall thickening and 'accordion sign'.",
+    "medications": "Clindamycin 300mg QDS (completed 3 days ago)",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Severe Clostridioides difficile Infection (CDI)", "likelihood": "high", "grounded": true },
+      { "condition": "Ischemic Colitis", "likelihood": "moderate", "grounded": true },
+      { "condition": "Inflammatory Bowel Disease (First Presentation)", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "AVOID anti-motility agents (Loperamide, Diphenoxylate-atropine) as they precipitate toxic megacolon and perforation",
+      "Recommended first-line therapy: Oral Fidaxomicin 200mg BD for 10 days or Oral Vancomycin 125mg QDS for 10 days (metronidazole no longer first-line for severe CDI)"
+    ],
+    "expectedCitations": ["pmid:34164663", "fda:vancomycin", "guide:infectious-disease:0"]
+  },
+  {
+    "id": "pharm-006",
+    "domain": "Infectious / Pharm",
+    "title": "Lithium Toxicity precipitated by ACE Inhibitor and Dehydration",
+    "age": "49",
+    "sex": "M",
+    "presentation": "Coarse resting tremor, ataxia, slurred speech (dysarthria), hyperreflexia, fasciculations, and confusion in a bipolar patient recently started on Lisinopril for hypertension.",
+    "vitals": "BP 102/64 mmHg, HR 58 bpm, SpO2 97%",
+    "labs": "Serum Lithium Level: 2.8 mmol/L (severe toxicity, therapeutic range 0.6-1.0 mmol/L); Serum Creatinine: 2.2 mg/dL (baseline 0.9); Serum Sodium: 132 mmol/L; ECG: T-wave flattening and sinus bradycardia.",
+    "medications": "Lithium Carbonate 800mg daily, Lisinopril 20mg daily (started 1 week ago)",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Severe Acute-on-Chronic Lithium Intoxication", "likelihood": "high", "grounded": true },
+      { "condition": "Acute Cerebellar Stroke", "likelihood": "moderate", "grounded": true },
+      { "condition": "Wernicke Encephalopathy", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "CRITICAL DRUG INTERACTION: ACE inhibitors (Lisinopril) reduce GFR and promote proximal tubular lithium reabsorption, causing toxic lithium accumulation",
+      "Immediately discontinue Lithium, ACE inhibitors, and Diuretics; administer IV 0.9% Normal Saline; evaluate for urgent Hemodialysis if Lithium > 2.5 with neurotoxicity"
+    ],
+    "expectedCitations": ["pmid:26880757", "fda:lithium", "guide:psychiatry:0"]
+  },
+  {
+    "id": "pharm-007",
+    "domain": "Infectious / Pharm",
+    "title": "Severe Statin-Induced Rhabdomyolysis from Clarithromycin Interaction",
+    "age": "58",
+    "sex": "M",
+    "presentation": "Profound proximal muscle weakness, intense bilateral thigh and shoulder myalgias, and dark cola-colored urine 5 days after starting Clarithromycin for bronchitis.",
+    "vitals": "BP 118/74 mmHg, HR 88 bpm, SpO2 98%",
+    "labs": "Serum Creatine Kinase (CK): 48,000 U/L (normal < 200 U/L); Serum Myoglobin: 4,200 ug/L; Serum Creatinine: 2.8 mg/dL (baseline 0.9); AST: 450 U/L; ALT: 210 U/L.",
+    "medications": "Simvastatin 40mg OD, Clarithromycin 500mg BD (started 5 days ago)",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Severe Statin-Induced Rhabdomyolysis secondary to CYP3A4 Inhibition", "likelihood": "high", "grounded": true },
+      { "condition": "Polymyositis / Immune-Mediated Necrotizing Myopathy", "likelihood": "moderate", "grounded": true },
+      { "condition": "Guillain-Barré Syndrome", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "CRITICAL CONTRAINDICATION: Co-administration of strong CYP3A4 inhibitors (Clarithromycin, Erythromycin, Itraconazole) with CYP3A4-metabolized statins (Simvastatin, Lovastatin) multiplies statin AUC >10-fold",
+      "Immediate cessation of Simvastatin and Clarithromycin; aggressive IV hydration (0.9% NaCl) to prevent pigment nephropathy"
+    ],
+    "expectedCitations": ["pmid:30559389", "fda:simvastatin", "guide:cardiology:0"]
+  },
+  {
+    "id": "pharm-008",
+    "domain": "Infectious / Pharm",
+    "title": "Stevens-Johnson Syndrome (SJS) secondary to Allopurinol",
+    "age": "53",
+    "sex": "M",
+    "presentation": "Targetoid erythematous macules rapidly coalescing with painful epidermal sloughing involving 8% of body surface area, hemorrhagic crusting of lips, and painful bilateral conjunctivitis 3 weeks after starting Allopurinol for gout.",
+    "vitals": "BP 108/68 mmHg, HR 106 bpm, RR 20/min, SpO2 97%, Temp 38.6C",
+    "labs": "Exam: Positive Nikolsky sign (sloughing on lateral pressure); Skin biopsy: Full-thickness epidermal necrosis with subepidermal detachment; HLA-B*58:01 allele: Positive.",
+    "medications": "Allopurinol 300mg OD (started 3 weeks ago)",
+    "allergies": "NKDA",
+    "referenceDifferentials": [
+      { "condition": "Stevens-Johnson Syndrome (SJS) - Allopurinol Induced", "likelihood": "high", "grounded": true },
+      { "condition": "Toxic Epidermal Necrolysis (TEN)", "likelihood": "moderate", "grounded": true },
+      { "condition": "Staphylococcal Scalded Skin Syndrome (SSSS)", "likelihood": "low", "grounded": true }
+    ],
+    "trueContraindications": [
+      "IMMEDIATE DRUG CESSATION: Discontinue Allopurinol permanently (re-challenge strictly contraindicated and fatal)",
+      "Urgent transfer to specialized Burn Center / ICU, supportive barrier care, ophthalmology consult for ocular cicatrization prevention"
+    ],
+    "expectedCitations": ["pmid:28287474", "fda:allopurinol", "guide:dermatology:0"]
+  }
+]

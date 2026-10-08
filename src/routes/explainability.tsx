@@ -29,13 +29,13 @@ export const Route = createFileRoute("/explainability")({
   }),
   head: () => ({
     meta: [
-      { title: "Explainability — MEDGUIDE AI" },
+      { title: "Explainability : MEDGUIDE AI" },
       {
         name: "description",
         content:
           "See why a conclusion was reached: supporting evidence, contradicting evidence, guidelines and confidence breakdown.",
       },
-      { property: "og:title", content: "Explainability — MEDGUIDE AI" },
+      { property: "og:title", content: "Explainability : MEDGUIDE AI" },
       {
         property: "og:description",
         content:
@@ -91,7 +91,7 @@ function ExplainPage() {
         <EmptyState
           icon={ScanEye}
           title="No consultation to explain"
-          description="Run and save a consultation — its full reasoning path, evidence and confidence signals appear here."
+          description="Run and save a consultation: its full reasoning path, evidence and confidence signals appear here."
         />
       ) : (
         <div className="grid gap-4 lg:grid-cols-[1fr_360px]">

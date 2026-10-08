@@ -16,13 +16,13 @@ import { CASE_LIBRARY, rankCases } from "@/lib/medical/cases";
 export const Route = createFileRoute("/cases")({
   head: () => ({
     meta: [
-      { title: "Case Similarity — MEDGUIDE AI" },
+      { title: "Case Similarity : MEDGUIDE AI" },
       {
         name: "description",
         content:
           "Find clinically similar reference cases with their diagnosis, treatment and outcome.",
       },
-      { property: "og:title", content: "Case Similarity — MEDGUIDE AI" },
+      { property: "og:title", content: "Case Similarity : MEDGUIDE AI" },
       {
         property: "og:description",
         content: "Compare a presentation against a curated library of reference clinical cases.",
@@ -71,7 +71,7 @@ function CasesPage() {
           <p className="mb-2 text-sm leading-relaxed text-muted-foreground">
             {searchQuery.trim()
               ? "Curated reference cases ranked against the presentation above."
-              : "Showing the full curated reference library. These are pre-written teaching cases, not results from your consultation — describe a presentation to rank them by similarity."}
+              : "Showing the full curated reference library. These are pre-written teaching cases, not results from your consultation: describe a presentation to rank them by similarity."}
           </p>
           <Input
             value={searchQuery}

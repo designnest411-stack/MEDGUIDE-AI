@@ -3,7 +3,7 @@
  *
  * Uses the public ONNX DenseNet-121 model (ONNX Model Zoo) in the browser to
  * produce an occlusion-based saliency map. This is an EXPLAINABILITY overlay
- * that highlights which regions drive the network's response — it is NOT a
+ * that highlights which regions drive the network's response: it is NOT a
  * diagnostic classifier. Pathology labels come from the Medical Image Agent.
  */
 
@@ -18,7 +18,10 @@ async function getSession(modelUrl: string) {
   if (!sessionPromise) {
     sessionPromise = (async () => {
       const ort = await import("onnxruntime-web");
-      ort.env.wasm.numThreads = 1;
+      ort.env.wasm.numThreads =
+        typeof navigator !== "undefined" && navigator.hardwareConcurrency
+          ? Math.min(4, Math.max(1, navigator.hardwareConcurrency))
+          : 4;
       return ort.InferenceSession.create(modelUrl, { executionProviders: ["wasm"] });
     })();
   }
@@ -88,7 +91,7 @@ function computeContrastSaliency(canvas: HTMLCanvasElement): SaliencyOutput {
   if (!ctx) {
     return {
       heatmap: Array.from({ length: SALIENCY_GRID }, () => Array(SALIENCY_GRID).fill(0.5)),
-      modelName: "DenseNet-121 (ONNX Model Zoo) — occlusion saliency",
+      modelName: "DenseNet-121 (ONNX Model Zoo) : occlusion saliency",
     };
   }
   const { data } = ctx.getImageData(0, 0, 224, 224);
@@ -115,7 +118,7 @@ function computeContrastSaliency(canvas: HTMLCanvasElement): SaliencyOutput {
   const span = max - min || 1;
   return {
     heatmap: heatmap.map((r) => r.map((v) => (v - min) / span)),
-    modelName: "DenseNet-121 (ONNX Model Zoo) — occlusion saliency",
+    modelName: "DenseNet-121 (ONNX Model Zoo) : occlusion saliency",
   };
 }
 
@@ -167,7 +170,7 @@ export async function computeSaliency(
     const span = max - min || 1;
     return {
       heatmap: heatmap.map((r) => r.map((v) => (v - min) / span)),
-      modelName: "DenseNet-121 (ONNX Model Zoo) — occlusion saliency",
+      modelName: "DenseNet-121 (ONNX Model Zoo) : occlusion saliency",
     };
   } catch (err) {
     console.warn("DenseNet WASM model download timed out or was blocked; using local saliency approximation:", err);

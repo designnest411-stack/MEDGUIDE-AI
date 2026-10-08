@@ -17,13 +17,13 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/assistant/$threadId")({
   head: () => ({
     meta: [
-      { title: "Ask MedGuide — Conversation" },
+      { title: "Ask MedGuide : Conversation" },
       {
         name: "description",
         content:
           "A saved conversation with the MedGuide guide: interpret differentials, evidence tiers, safety findings and platform workflows.",
       },
-      { property: "og:title", content: "Ask MedGuide — Conversation" },
+      { property: "og:title", content: "Ask MedGuide : Conversation" },
       {
         property: "og:description",
         content: "Saved guidance conversation about clinical results and platform usage.",
@@ -46,7 +46,7 @@ function AssistantThreadPage() {
     <AppShell
       kicker="Module 15 / Guide"
       title="Ask MedGuide"
-      subtitle="Interpret results and learn the platform — conversations stay in this browser"
+      subtitle="Interpret results and learn the platform: conversations stay in this browser"
       actions={
         <button
           type="button"

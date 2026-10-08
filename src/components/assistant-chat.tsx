@@ -204,7 +204,7 @@ export function AssistantChat({
           )}
         </div>
         <p className="mt-3 text-[0.65rem] leading-relaxed text-muted-foreground text-center">
-          Guidance only — not a diagnosis. Conversations stay in this browser.
+          Guidance only: not a diagnosis. Conversations stay in this browser.
         </p>
       </form>
     </div>

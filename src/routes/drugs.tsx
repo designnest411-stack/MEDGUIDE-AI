@@ -16,13 +16,13 @@ import type { DrugFinding, EvidenceSource } from "@/lib/agents/types";
 export const Route = createFileRoute("/drugs")({
   head: () => ({
     meta: [
-      { title: "Drug Intelligence — MEDGUIDE AI" },
+      { title: "Drug Intelligence : MEDGUIDE AI" },
       {
         name: "description",
         content:
           "Check drug-drug interactions, contraindications and openFDA label warnings for a medication list.",
       },
-      { property: "og:title", content: "Drug Intelligence — MEDGUIDE AI" },
+      { property: "og:title", content: "Drug Intelligence : MEDGUIDE AI" },
       {
         property: "og:description",
         content:

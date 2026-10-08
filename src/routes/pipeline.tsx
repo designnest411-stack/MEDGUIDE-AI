@@ -11,7 +11,7 @@ import { AGENTS, type AgentId } from "@/lib/agents/types";
 export const Route = createFileRoute("/pipeline")({
   head: () => ({
     meta: [
-      { title: "Agent Pipeline — MEDGUIDE AI" },
+      { title: "Agent Pipeline : MEDGUIDE AI" },
       { name: "description", content: "Live status of the clinical reasoning agent pipeline." },
     ],
   }),

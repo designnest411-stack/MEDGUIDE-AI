@@ -15,12 +15,12 @@ import type { EvidenceSource } from "@/lib/agents/types";
 export const Route = createFileRoute("/literature")({
   head: () => ({
     meta: [
-      { title: "Literature Explorer — MEDGUIDE AI" },
+      { title: "Literature Explorer : MEDGUIDE AI" },
       {
         name: "description",
         content: "Search PubMed and WHO guidance for evidence relevant to your clinical question.",
       },
-      { property: "og:title", content: "Literature Explorer — MEDGUIDE AI" },
+      { property: "og:title", content: "Literature Explorer : MEDGUIDE AI" },
       {
         property: "og:description",
         content: "Peer-reviewed evidence retrieval from PubMed and WHO for clinical questions.",
@@ -92,7 +92,7 @@ function LiteraturePage() {
                   setQuery(s);
                   void search(s);
                 }}
-                className="rounded-full border border-border/70 px-3 py-1 text-xs text-muted-foreground transition-colors hover:border-primary/50 hover:text-primary"
+                className="rounded-md border border-border/70 px-3 py-1 text-xs text-muted-foreground transition-colors hover:border-primary/50 hover:text-primary"
               >
                 {s}
               </button>

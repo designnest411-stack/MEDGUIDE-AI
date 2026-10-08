@@ -24,17 +24,17 @@ import type { ImagingResult } from "@/lib/agents/types";
 export const Route = createFileRoute("/imaging")({
   head: () => ({
     meta: [
-      { title: "Chest X-ray Analysis — MEDGUIDE AI" },
+      { title: "Chest X-ray Analysis : MEDGUIDE AI" },
       {
         name: "description",
         content:
           "Upload a chest radiograph for candidate findings and an explainable in-browser saliency heatmap.",
       },
-      { property: "og:title", content: "Chest X-ray Analysis — MEDGUIDE AI" },
+      { property: "og:title", content: "Chest X-ray Analysis : MEDGUIDE AI" },
       {
         property: "og:description",
         content:
-          "Explainable chest X-ray review with saliency overlays — clinician confirmation required.",
+          "Explainable chest X-ray review with saliency overlays: clinician confirmation required.",
       },
     ],
   }),
@@ -107,6 +107,37 @@ function ImagingPage() {
     }
   };
 
+  const createThumbnail = (dataUri: string): Promise<string> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        const maxDim = 200;
+        let { width, height } = img;
+        if (width > maxDim || height > maxDim) {
+          if (width > height) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          resolve(dataUri);
+          return;
+        }
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL("image/jpeg", 0.7));
+      };
+      img.onerror = () => resolve(dataUri);
+      img.src = dataUri;
+    });
+  };
+
   const run = async () => {
     if (!dataUrl) return;
     setBusy(true);
@@ -137,14 +168,15 @@ function ImagingPage() {
       };
       setResult(base);
 
-      let heatmap: number[][] | undefined;
+      let heatmap: number[][] | number[] | undefined;
       let modelName = "Vision agent only";
       try {
         if (imgRef.current) {
           const sal = await computeSaliency(imgRef.current, undefined, (d, t) =>
             setProgress(Math.round((d / t) * 100)),
           );
-          heatmap = sal.heatmap;
+          // Flatten 2D heatmap to 1D for Firestore compatibility
+          heatmap = Array.isArray(sal.heatmap?.[0]) ? sal.heatmap.flat() : sal.heatmap;
           modelName = sal.modelName;
         }
       } catch (salErr) {
@@ -157,15 +189,24 @@ function ImagingPage() {
         ...(heatmap ? { heatmap } : {}),
       };
       setResult(final);
+
       if (cols) {
-        await addDoc(cols.imaging, {
-          name: fileName || "chest-xray",
-          imageDataUrl: dataUrl,
-          result: final,
-          createdAt: Date.now(),
-        });
+        try {
+          const thumbnail = await createThumbnail(dataUrl);
+          await addDoc(cols.imaging, {
+            name: fileName || "chest-xray",
+            imageDataUrl: thumbnail,
+            result: final,
+            createdAt: Date.now(),
+          });
+          toast.success("Analysis saved: it will attach to your next consultation.");
+        } catch (dbErr) {
+          console.warn("Firestore imaging save warning:", dbErr);
+          toast.info("Analysis complete (local view).");
+        }
+      } else {
+        toast.success("Analysis complete.");
       }
-      toast.success("Analysis saved — it will attach to your next consultation.");
     } catch (err) {
       console.error("Image analysis failed:", err);
       toast.error("Image analysis encountered an error. Please try again.");
@@ -250,7 +291,10 @@ function ImagingPage() {
                       gridTemplateRows: `repeat(${SALIENCY_GRID}, 1fr)`,
                     }}
                   >
-                    {result.heatmap.flat().map((v, i) => (
+                    {(Array.isArray(result.heatmap[0])
+                      ? (result.heatmap as number[][]).flat()
+                      : (result.heatmap as number[])
+                    ).map((v, i) => (
                       <div key={i} style={{ background: heatColor(v) }} />
                     ))}
                   </div>
@@ -263,7 +307,7 @@ function ImagingPage() {
                 <p className="mt-1.5 text-center text-xs text-muted-foreground">
                   {progress > 0
                     ? `Computing in-browser saliency… ${progress}% (first run downloads the model)`
-                    : "Medical Image Agent is reviewing the radiograph — this can take up to a minute…"}
+                    : "Medical Image Agent is reviewing the radiograph: this can take up to a minute…"}
                 </p>
               </div>
             )}

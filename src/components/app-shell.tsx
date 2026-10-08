@@ -47,10 +47,20 @@ export function AppShell({ title, subtitle, kicker, actions, children, wide }: A
           </main>
 
           <footer className="border-t border-border/70 px-4 py-3 sm:px-6">
-            <p className="mx-auto flex max-w-6xl items-start gap-2 text-[0.7rem] leading-relaxed text-muted-foreground">
-              <ShieldAlert className="mt-px h-3.5 w-3.5 shrink-0 text-warning" />
-              <span>Decision support only — not a diagnosis. {DISCLAIMER}</span>
-            </p>
+            <div className="mx-auto flex max-w-6xl flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-[0.7rem] leading-relaxed text-muted-foreground">
+              <p className="flex items-start gap-2">
+                <ShieldAlert className="mt-px h-3.5 w-3.5 shrink-0 text-warning" />
+                <span>Decision support only: not a diagnosis. {DISCLAIMER}</span>
+              </p>
+              <div className="flex items-center gap-4 shrink-0 font-medium">
+                <a href="/privacy" className="hover:text-foreground hover:underline">
+                  Privacy Policy
+                </a>
+                <a href="/terms" className="hover:text-foreground hover:underline">
+                  Terms and Conditions
+                </a>
+              </div>
+            </div>
           </footer>
         </div>
       </div>

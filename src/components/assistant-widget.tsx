@@ -35,7 +35,7 @@ export function AssistantWidget() {
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="fixed bottom-4 right-4 z-50 flex items-center gap-2 rounded-full border border-primary/40 bg-primary px-3.5 py-2.5 sm:px-4 sm:py-3 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/20 transition-transform active:scale-95 hover:scale-[1.03] touch-manipulation"
+          className="fixed bottom-4 right-4 z-50 flex items-center gap-2 rounded-md border border-primary/40 bg-primary px-3.5 py-2.5 sm:px-4 sm:py-3 text-sm font-medium text-primary-foreground shadow-lg shadow-primary/20 transition-transform active:scale-95 hover:scale-[1.01] touch-manipulation"
           aria-label="Open MedGuide Assistant"
         >
           <MessageSquareText className="h-4 w-4" />

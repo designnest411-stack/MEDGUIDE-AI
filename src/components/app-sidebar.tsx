@@ -114,13 +114,12 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" className="border-r border-sidebar-border">
       <SidebarHeader>
         <Link to="/" onClick={handleLinkClick} className="group flex items-center gap-2 px-2 py-2">
-          <div className="relative flex aspect-square size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-[#A073D9]/20 shadow-sm ring-1 ring-primary/30 overflow-hidden">
-            <div className="absolute inset-0 bg-primary/10 group-hover:animate-pulse" />
-            <Brain className="size-6 text-primary transition-transform duration-700 group-hover:scale-110 group-hover:rotate-12" />
+          <div className="relative flex aspect-square size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 border border-primary/20 shadow-sm">
+            <Brain className="size-5 text-primary" />
           </div>
           {!collapsed && (
             <div className="grid flex-1 text-left leading-tight ml-1 min-w-0">
-              <span className="truncate font-display text-lg font-bold tracking-tight bg-gradient-to-r from-primary via-[#A073D9] to-primary bg-clip-text text-transparent animate-text-shimmer">
+              <span className="truncate font-display text-base font-bold tracking-tight text-foreground">
                 MEDGUIDE AI
               </span>
               <span className="truncate text-[0.7rem] uppercase tracking-wider text-muted-foreground/80 font-semibold mt-0.5">

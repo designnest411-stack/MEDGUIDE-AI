@@ -5,7 +5,7 @@ import type { DrugFinding } from "@/lib/agents/types";
  *
  * Each entry maps an allergen keyword to the drug classes and named agents that
  * are either the same class or carry documented cross-reactivity risk.
- * This is a deterministic safety net — it runs before any model output is shown,
+ * This is a deterministic safety net: it runs before any model output is shown,
  * so an unsafe suggestion is caught even if the model misses it.
  */
 interface AllergyClass {
@@ -14,7 +14,7 @@ interface AllergyClass {
   label: string;
   /** Agents that must not be given. */
   avoid: string[];
-  /** Agents with partial cross-reactivity — use with caution. */
+  /** Agents with partial cross-reactivity: use with caution. */
   caution?: string[];
   note: string;
 }
@@ -107,7 +107,7 @@ export const ALLERGY_CLASSES: AllergyClass[] = [
   },
 ];
 
-/** Entries that record the ABSENCE of an allergy — never treat these as allergens. */
+/** Entries that record the ABSENCE of an allergy: never treat these as allergens. */
 const NEGATIONS =
   /^(nkda|nka|none(\s+known)?|nil|no\b|not\b|denies\b|negative\b|unknown\b|n\/a)|no\s+(known|other|reported|documented)\b/i;
 
@@ -119,7 +119,7 @@ export function parseAllergies(text?: string): string[] {
       s
         .replace(/\(.*?\)/g, "")
         // strip bullet glyphs / list markers pasted from notes
-        .replace(/^[\s•·*\-–—>\u2022]+/, "")
+        .replace(/^[\s•·*\-–\u2014>\u2022]+/, "")
         .replace(/^\d+[.)]\s*/, "")
         .trim(),
     )

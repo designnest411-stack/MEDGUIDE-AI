@@ -39,13 +39,13 @@ import { auth } from "@/lib/firebase";
 export const Route = createFileRoute("/timeline")({
   head: () => ({
     meta: [
-      { title: "Clinical Timeline — MEDGUIDE AI" },
+      { title: "Clinical Timeline : MEDGUIDE AI" },
       {
         name: "description",
         content:
           "Track symptoms, tests, medications, imaging and clinical outcomes chronologically.",
       },
-      { property: "og:title", content: "Clinical Timeline — MEDGUIDE AI" },
+      { property: "og:title", content: "Clinical Timeline : MEDGUIDE AI" },
       {
         property: "og:description",
         content: "A chronological clinical log for structured patient course tracking.",
@@ -199,7 +199,7 @@ function TimelinePage() {
                   const Icon = kinds.find((k) => k.value === e.kind)?.icon ?? StickyNote;
                   return (
                     <li key={e.id} className="relative">
-                      <span className="absolute -left-[31px] flex h-6 w-6 items-center justify-center rounded-full border border-primary/40 bg-card">
+                      <span className="absolute -left-[31px] flex h-6 w-6 items-center justify-center rounded-md border border-primary/40 bg-card">
                         <Icon className="h-3 w-3 text-primary" />
                       </span>
                       <div className="rounded-lg border border-border/60 bg-card/40 p-3">

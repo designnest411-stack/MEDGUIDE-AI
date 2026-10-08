@@ -90,7 +90,7 @@ export const CASE_LIBRARY: SimilarCase[] = [
     sex: "M",
     presentation:
       "8 weeks of cough, 6kg weight loss, 40 pack-year history, right hilar opacity on chest X-ray.",
-    diagnosis: "Suspected bronchogenic carcinoma — referred on 2-week pathway",
+    diagnosis: "Suspected bronchogenic carcinoma: referred on 2-week pathway",
     treatment: "CT thorax, bronchoscopy with biopsy, MDT referral",
     outcome: "Stage IIB NSCLC, treated with lobectomy and adjuvant chemotherapy",
     tags: ["cough", "weight loss", "smoking", "chest x-ray", "malignancy"],
@@ -98,7 +98,7 @@ export const CASE_LIBRARY: SimilarCase[] = [
 ];
 
 /**
- * Lightweight lexical similarity — no server round trip needed.
+ * Lightweight lexical similarity: no server round trip needed.
  *
  * Generic clinical filler ("disease", "patient", "treatment"…) is dropped so a
  * vague query cannot score an unrelated case at 100%. Tags and the diagnosis

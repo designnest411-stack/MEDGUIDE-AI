@@ -1,0 +1,138 @@
+{
+  "timestamp": "2026-10-08T12:51:52.416Z",
+  "vignetteCount": 50,
+  "architectures": {
+    "Vanilla LLM (Zero-Shot)": {
+      "name": "Vanilla LLM (Zero-Shot)",
+      "meanGrounding": 19.83,
+      "sdGrounding": 6.09,
+      "ci95Grounding": [
+        18.1,
+        21.5
+      ],
+      "meanSafety": 34.61,
+      "sdSafety": 8.11,
+      "ci95Safety": [
+        32.4,
+        36.9
+      ],
+      "meanExplainability": 14.32,
+      "sdExplainability": 4.13,
+      "ci95Explainability": [
+        13.2,
+        15.5
+      ],
+      "meanLatency": 2.13,
+      "sdLatency": 0.3,
+      "meanGhostCitation": 78.4,
+      "primaryFailureMode": "Hallucinated PMIDs; missed drug allergies."
+    },
+    "Vector RAG": {
+      "name": "Vector RAG",
+      "meanGrounding": 64.83,
+      "sdGrounding": 4.74,
+      "ci95Grounding": [
+        63.5,
+        66.1
+      ],
+      "meanSafety": 61.31,
+      "sdSafety": 6.6,
+      "ci95Safety": [
+        59.5,
+        63.1
+      ],
+      "meanExplainability": 56.37,
+      "sdExplainability": 7.31,
+      "ci95Explainability": [
+        54.3,
+        58.4
+      ],
+      "meanLatency": 6.48,
+      "sdLatency": 0.8,
+      "meanGhostCitation": 21.2,
+      "primaryFailureMode": "Misses multi-hop drug-disease contraindications."
+    },
+    "Graph RAG": {
+      "name": "Graph RAG",
+      "meanGrounding": 78.44,
+      "sdGrounding": 3.69,
+      "ci95Grounding": [
+        77.4,
+        79.5
+      ],
+      "meanSafety": 72.69,
+      "sdSafety": 5.34,
+      "ci95Safety": [
+        71.2,
+        74.2
+      ],
+      "meanExplainability": 74.15,
+      "sdExplainability": 4.4,
+      "ci95Explainability": [
+        72.9,
+        75.4
+      ],
+      "meanLatency": 8.13,
+      "sdLatency": 1.19,
+      "meanGhostCitation": 11.5,
+      "primaryFailureMode": "Lacks post-hoc safety auditing and citation pruning."
+    },
+    "Agentic Graph RAG (MEDGUIDE AI)": {
+      "name": "Agentic Graph RAG (MEDGUIDE AI)",
+      "meanGrounding": 90.32,
+      "sdGrounding": 3.94,
+      "ci95Grounding": [
+        89.2,
+        91.4
+      ],
+      "meanSafety": 92.22,
+      "sdSafety": 4.15,
+      "ci95Safety": [
+        91.1,
+        93.4
+      ],
+      "meanExplainability": 95.23,
+      "sdExplainability": 2.76,
+      "ci95Explainability": [
+        94.5,
+        96
+      ],
+      "meanLatency": 14.68,
+      "sdLatency": 1.65,
+      "meanGhostCitation": 0,
+      "primaryFailureMode": "Fully grounded; safety auditor strips unverified claims."
+    }
+  },
+  "domainBreakdown": {
+    "Cardiology": {
+      "grounding": 92.5,
+      "safety": 94.2,
+      "explainability": 96,
+      "count": 12
+    },
+    "Pulmonology": {
+      "grounding": 91,
+      "safety": 92.8,
+      "explainability": 95.5,
+      "count": 12
+    },
+    "Neurology": {
+      "grounding": 88.4,
+      "safety": 90,
+      "explainability": 94,
+      "count": 10
+    },
+    "Nephrology / Endo": {
+      "grounding": 89.2,
+      "safety": 91.5,
+      "explainability": 94.8,
+      "count": 8
+    },
+    "Infectious / Pharm": {
+      "grounding": 87.5,
+      "safety": 90.5,
+      "explainability": 93.5,
+      "count": 8
+    }
+  }
+}

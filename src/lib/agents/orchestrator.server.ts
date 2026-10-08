@@ -54,7 +54,7 @@ function evidenceBlock(evidence: EvidenceSource[]) {
   return evidence
     .map(
       (e) =>
-        `[${e.id}] (${e.source}${e.year ? ` ${e.year}` : ""}${e.level ? `, tier ${e.level.rank} ${e.level.label}` : ""}) ${e.title}${e.snippet ? ` — ${e.snippet}` : ""}`,
+        `[${e.id}] (${e.source}${e.year ? ` ${e.year}` : ""}${e.level ? `, tier ${e.level.rank} ${e.level.label}` : ""}) ${e.title}${e.snippet ? `: ${e.snippet}` : ""}`,
     )
     .join("\n");
 }
@@ -178,7 +178,7 @@ Return JSON: {"agents":[...],"missingData":["clinical data still needed"],"follo
   const specialty = detectSpecialty(`${input.question} ${patient}`, input.question);
   for (const q of queries) addBatch(await searchPubMed(q, 5));
   // Europe PMC is a second free index with different coverage (EU journals,
-  // preprints, tropical/rare disease literature) — it rescues thin PubMed hits.
+  // preprints, tropical/rare disease literature): it rescues thin PubMed hits.
   for (const q of queries.slice(0, 2)) addBatch(await searchEuropePmc(q, 5));
   if (evidence.length < 4) {
     const fallbacks = (plan.conditions ?? []).slice(0, 2);
@@ -232,7 +232,7 @@ Return JSON: {"agents":[...],"missingData":["clinical data still needed"],"follo
 
   // ---------- 4. Drug Intelligence ----------
   const drugs = parseDrugList(input.patient?.medications);
-  // Candidate treatments for the matched conditions — what the allergy is checked against.
+  // Candidate treatments for the matched conditions: what the allergy is checked against.
   const candidateDrugs = [...new Set(matched.flatMap((m) => [...m.drugs, ...m.treatments]))];
   const allergyFindings = checkAllergies(input.patient?.allergies, candidateDrugs);
 
@@ -251,7 +251,7 @@ Return JSON: {"agents":[...],"missingData":["clinical data still needed"],"follo
     emit({ type: "partial", key: "drugs", value: findings });
     finish(
       "drug-intelligence",
-      `${findings.length} findings — ${drugs.length} active drug(s), ${allergyFindings.length} allergy check(s)`,
+      `${findings.length} findings: ${drugs.length} active drug(s), ${allergyFindings.length} allergy check(s)`,
       [...drugs, ...(allergyFindings.length ? ["allergy cross-check"] : [])].join(", "),
     );
   } else {
@@ -322,7 +322,7 @@ Only cite ids that appear in RETRIEVED EVIDENCE.`,
     const evidenceIds = result.evidence.slice(0, 3).map((e) => e.id);
 
     reasoned.value = {
-      summary: `Clinical assessment for ${input.patient?.name || "patient"} presenting with ${input.question}. Differential diagnosis formulated based on clinical ontology matching and retrieved medical evidence.`,
+      summary: `Clinical assessment for ${input.patient?.age ? `${input.patient.age}${input.patient.sex ? ` ${input.patient.sex}` : ""} patient` : "patient"} presenting with ${input.question}. Differential diagnosis formulated based on clinical ontology matching and retrieved medical evidence.`,
       differentials: candidateNames.map((cond, idx) => ({
         condition: cond,
         likelihood: idx === 0 ? "high" : idx === 1 ? "moderate" : "low",
@@ -373,7 +373,7 @@ Only cite ids that appear in RETRIEVED EVIDENCE.`,
 
 QUESTION: ${input.question}
 
-PATIENT CONTEXT (this is supplied clinical data — anything restated from here is NOT a hallucination):
+PATIENT CONTEXT (this is supplied clinical data: anything restated from here is NOT a hallucination):
 ${patient}
 
 OUTPUT:
@@ -387,7 +387,7 @@ Return JSON: {"flags":[{"type":"unsupported-claim|missing-evidence|contradiction
       ],
       maxTokens: 2000,
     },
-    { flags: [], verdict: "Automated audit complete — no critical contradictions identified." },
+    { flags: [], verdict: "Automated audit complete: no critical contradictions identified." },
   );
   const flags = [...(safetyRes.value.flags ?? [])];
   if (badCitations.length) {
@@ -401,9 +401,9 @@ Return JSON: {"flags":[{"type":"unsupported-claim|missing-evidence|contradiction
     flags.unshift({
       type: "missing-evidence",
       severity: "note",
-      detail: `${ungrounded.length} differential(s) — ${ungrounded
+      detail: `${ungrounded.length} differential(s) (${ungrounded
         .map((d) => d.condition)
-        .join(", ")} — rest on clinical reasoning alone with no retrieved source attached.`,
+        .join(", ")}) rest on clinical reasoning alone with no retrieved source attached.`,
     });
   }
   if (result.drugs.some((d) => d.source === "Allergy cross-check" && d.severity === "critical")) {
@@ -419,7 +419,7 @@ Return JSON: {"flags":[{"type":"unsupported-claim|missing-evidence|contradiction
       type: "missing-evidence",
       severity: result.evidence.length ? "warning" : "critical",
       detail: result.evidence.length
-        ? `Only ${result.evidence.length} source(s) were retrieved — the evidence base for this answer is thin.`
+        ? `Only ${result.evidence.length} source(s) were retrieved: the evidence base for this answer is thin.`
         : "No external evidence was retrieved for this query.",
     });
   }
@@ -497,7 +497,7 @@ Return JSON: {"why":"why this conclusion, 3-5 sentences","supporting":["evidence
       evidenceCompleteness) /
       5 -
     hallucinationRisk * 0.6;
-  // A starved retrieval is not the same thing as a low-confidence answer — say so
+  // A starved retrieval is not the same thing as a low-confidence answer: say so
   // explicitly instead of reporting a band the signals cannot support.
   const band: ConfidenceBreakdown["band"] =
     evidenceCount < 3

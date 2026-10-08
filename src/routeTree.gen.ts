@@ -20,9 +20,11 @@ import { Route as ImagingRouteImport } from './routes/imaging'
 import { Route as LiteratureRouteImport } from './routes/literature'
 import { Route as PatientRouteImport } from './routes/patient'
 import { Route as PipelineRouteImport } from './routes/pipeline'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as ResearchRouteImport } from './routes/research'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as TimelineRouteImport } from './routes/timeline'
 import { Route as ApiAssistantRouteImport } from './routes/api/assistant'
 import { Route as ApiConsultRouteImport } from './routes/api/consult'
@@ -84,6 +86,11 @@ const PipelineRoute = PipelineRouteImport.update({
   path: '/pipeline',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReportsRoute = ReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
@@ -97,6 +104,11 @@ const ResearchRoute = ResearchRouteImport.update({
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TimelineRoute = TimelineRouteImport.update({
@@ -137,9 +149,11 @@ export interface FileRoutesByFullPath {
   '/literature': typeof LiteratureRoute
   '/patient': typeof PatientRoute
   '/pipeline': typeof PipelineRoute
+  '/privacy': typeof PrivacyRoute
   '/reports': typeof ReportsRoute
   '/research': typeof ResearchRoute
   '/settings': typeof SettingsRoute
+  '/terms': typeof TermsRoute
   '/timeline': typeof TimelineRoute
   '/api/assistant': typeof ApiAssistantRoute
   '/api/consult': typeof ApiConsultRoute
@@ -158,9 +172,11 @@ export interface FileRoutesByTo {
   '/literature': typeof LiteratureRoute
   '/patient': typeof PatientRoute
   '/pipeline': typeof PipelineRoute
+  '/privacy': typeof PrivacyRoute
   '/reports': typeof ReportsRoute
   '/research': typeof ResearchRoute
   '/settings': typeof SettingsRoute
+  '/terms': typeof TermsRoute
   '/timeline': typeof TimelineRoute
   '/api/assistant': typeof ApiAssistantRoute
   '/api/consult': typeof ApiConsultRoute
@@ -180,9 +196,11 @@ export interface FileRoutesById {
   '/literature': typeof LiteratureRoute
   '/patient': typeof PatientRoute
   '/pipeline': typeof PipelineRoute
+  '/privacy': typeof PrivacyRoute
   '/reports': typeof ReportsRoute
   '/research': typeof ResearchRoute
   '/settings': typeof SettingsRoute
+  '/terms': typeof TermsRoute
   '/timeline': typeof TimelineRoute
   '/api/assistant': typeof ApiAssistantRoute
   '/api/consult': typeof ApiConsultRoute
@@ -203,9 +221,11 @@ export interface FileRouteTypes {
     | '/literature'
     | '/patient'
     | '/pipeline'
+    | '/privacy'
     | '/reports'
     | '/research'
     | '/settings'
+    | '/terms'
     | '/timeline'
     | '/api/assistant'
     | '/api/consult'
@@ -224,9 +244,11 @@ export interface FileRouteTypes {
     | '/literature'
     | '/patient'
     | '/pipeline'
+    | '/privacy'
     | '/reports'
     | '/research'
     | '/settings'
+    | '/terms'
     | '/timeline'
     | '/api/assistant'
     | '/api/consult'
@@ -245,9 +267,11 @@ export interface FileRouteTypes {
     | '/literature'
     | '/patient'
     | '/pipeline'
+    | '/privacy'
     | '/reports'
     | '/research'
     | '/settings'
+    | '/terms'
     | '/timeline'
     | '/api/assistant'
     | '/api/consult'
@@ -267,9 +291,11 @@ export interface RootRouteChildren {
   LiteratureRoute: typeof LiteratureRoute
   PatientRoute: typeof PatientRoute
   PipelineRoute: typeof PipelineRoute
+  PrivacyRoute: typeof PrivacyRoute
   ReportsRoute: typeof ReportsRoute
   ResearchRoute: typeof ResearchRoute
   SettingsRoute: typeof SettingsRoute
+  TermsRoute: typeof TermsRoute
   TimelineRoute: typeof TimelineRoute
   ApiAssistantRoute: typeof ApiAssistantRoute
   ApiConsultRoute: typeof ApiConsultRoute
@@ -356,6 +382,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PipelineRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reports': {
       id: '/reports'
       path: '/reports'
@@ -375,6 +408,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/timeline': {
@@ -427,9 +467,11 @@ const rootRouteChildren: RootRouteChildren = {
   LiteratureRoute: LiteratureRoute,
   PatientRoute: PatientRoute,
   PipelineRoute: PipelineRoute,
+  PrivacyRoute: PrivacyRoute,
   ReportsRoute: ReportsRoute,
   ResearchRoute: ResearchRoute,
   SettingsRoute: SettingsRoute,
+  TermsRoute: TermsRoute,
   TimelineRoute: TimelineRoute,
   ApiAssistantRoute: ApiAssistantRoute,
   ApiConsultRoute: ApiConsultRoute,

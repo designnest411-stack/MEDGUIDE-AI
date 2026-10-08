@@ -6,13 +6,13 @@ import { createThread, listThreads } from "@/lib/assistant/threads";
 export const Route = createFileRoute("/assistant/")({
   head: () => ({
     meta: [
-      { title: "Ask MedGuide — In-app Clinical Guide" },
+      { title: "Ask MedGuide : In-app Clinical Guide" },
       {
         name: "description",
         content:
           "Chat with the MedGuide guide to interpret consultation results, evidence tiers and safety findings, or learn how to use each module.",
       },
-      { property: "og:title", content: "Ask MedGuide — In-app Clinical Guide" },
+      { property: "og:title", content: "Ask MedGuide : In-app Clinical Guide" },
       {
         property: "og:description",
         content: "Interpret results and learn the platform with the in-app MedGuide guide.",

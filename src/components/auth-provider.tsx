@@ -4,9 +4,6 @@ import { onAuthStateChanged } from "firebase/auth";
 import {
   Brain,
   Loader2,
-  Plus,
-  Activity,
-  Hexagon,
   Library,
   GitBranch,
   ShieldCheck,
@@ -15,7 +12,7 @@ import {
 
 import { auth, loginWithGoogle, getRedirectResult } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
-import { useNavigate, useRouterState } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = React.useState<User | null>(null);
@@ -122,67 +119,48 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       <div className="flex min-h-screen w-full flex-col lg:flex-row antialiased">
         {/* Left Panel: Branding & Capabilities */}
         <div className="relative flex flex-1 flex-col justify-center bg-transparent px-8 py-12 lg:flex-[1.3] lg:px-20 overflow-hidden">
-          {/* Premium Animated Background */}
+          {/* Subtle Clinical Background */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            {/* Slow moving aurora/blobs */}
-            <div
-              className="absolute -top-[20%] -left-[10%] w-[70%] h-[70%] rounded-full bg-primary/10 mix-blend-screen blur-[120px] animate-pulse"
-              style={{ animationDuration: "8s" }}
-            />
-            <div
-              className="absolute top-[40%] -right-[20%] w-[60%] h-[60%] rounded-full bg-[#A073D9]/10 mix-blend-screen blur-[100px] animate-pulse"
-              style={{ animationDuration: "12s", animationDelay: "2s" }}
-            />
-            <div
-              className="absolute -bottom-[20%] left-[20%] w-[80%] h-[80%] rounded-full bg-primary/10 mix-blend-screen blur-[120px] animate-pulse"
-              style={{ animationDuration: "10s", animationDelay: "4s" }}
-            />
-
-            {/* Floating Medical Symbols */}
-            <div className="absolute inset-0 opacity-5">
-              <Plus className="absolute top-[15%] left-[20%] w-32 h-32 text-foreground animate-float-slow" />
-              <Activity className="absolute bottom-[20%] left-[60%] w-48 h-48 text-foreground animate-float-slower" />
-              <Hexagon
-                className="absolute top-[40%] right-[15%] w-24 h-24 text-foreground animate-float-slow"
-                style={{ animationDelay: "3s" }}
-              />
-            </div>
-
-            {/* Clinical grid overlay */}
+            <div className="absolute -top-[10%] -left-[10%] w-[50%] h-[50%] rounded-3xl bg-primary/5 blur-[100px]" />
+            <div className="absolute -bottom-[10%] right-[10%] w-[50%] h-[50%] rounded-3xl bg-cyan-500/5 blur-[100px]" />
             <div className="absolute inset-0 grid-noise [mask-image:radial-gradient(ellipse_80%_80%_at_50%_50%,#000_20%,transparent_100%)]" />
           </div>
 
           <div className="relative z-10 mx-auto w-full max-w-xl">
-            <div className="mb-12 flex items-center gap-4 group cursor-default">
-              <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-[#A073D9]/20 ring-1 ring-primary/30 shadow-md backdrop-blur-md overflow-hidden">
-                <div className="absolute inset-0 bg-primary/10 group-hover:animate-pulse" />
-                <Brain className="h-8 w-8 text-primary transition-transform duration-700 group-hover:scale-110 group-hover:rotate-12" />
+            <div className="mb-10 flex items-center gap-3.5 group cursor-default">
+              <div className="relative flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 border border-primary/20 shadow-sm overflow-hidden">
+                <Brain className="h-7 w-7 text-primary" />
               </div>
-              <h1 className="font-display text-3xl font-bold tracking-tight bg-gradient-to-r from-primary via-[#A073D9] to-primary bg-clip-text text-transparent animate-text-shimmer">
-                MEDGUIDE AI
-              </h1>
+              <div>
+                <h1 className="font-display text-2xl font-bold tracking-tight text-foreground">
+                  MEDGUIDE AI
+                </h1>
+                <p className="font-mono text-[0.65rem] tracking-wider text-muted-foreground uppercase">
+                  Clinical Insight Engine
+                </p>
+              </div>
             </div>
 
-            <h2 className="font-display text-5xl font-semibold tracking-tight text-foreground lg:text-6xl lg:leading-[1.1]">
+            <h2 className="font-display text-4xl font-semibold tracking-tight text-foreground lg:text-5xl lg:leading-[1.15]">
               Evidence-backed clinical intelligence.
             </h2>
-            <p className="mt-8 max-w-lg text-xl leading-relaxed text-muted-foreground">
+            <p className="mt-6 max-w-lg text-lg leading-relaxed text-muted-foreground">
               Clinical decision support powered by retrieval, medical knowledge graphs, and
               explainable AI.
             </p>
 
-            <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
               {/* Evidence Retrieval */}
-              <div className="group relative overflow-hidden rounded-2xl border border-cyan-500/30 bg-gradient-to-br from-cyan-500/10 via-card/90 to-card p-4 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/50 hover:shadow-md hover:shadow-cyan-500/10">
-                <div className="flex items-center gap-3.5">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-teal-600 text-white shadow-sm ring-2 ring-cyan-400/30">
-                    <Library className="h-5 w-5 transition-transform group-hover:scale-110" />
+              <div className="relative overflow-hidden rounded-xl border border-border/80 bg-card/90 p-4 shadow-sm backdrop-blur-md">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-cyan-600 text-white shadow-sm">
+                    <Library className="h-5 w-5" />
                   </div>
                   <div>
-                    <span className="font-mono text-[0.62rem] uppercase tracking-wider text-cyan-600 dark:text-cyan-400 font-bold">
+                    <span className="font-mono text-[0.62rem] uppercase tracking-wider text-cyan-600 dark:text-cyan-400 font-semibold">
                       PubMed & WHO
                     </span>
-                    <p className="font-display text-base font-bold tracking-tight text-foreground">
+                    <p className="font-display text-sm font-bold tracking-tight text-foreground">
                       Evidence Retrieval
                     </p>
                   </div>
@@ -194,16 +172,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               </div>
 
               {/* Knowledge Graph */}
-              <div className="group relative overflow-hidden rounded-2xl border border-purple-500/30 bg-gradient-to-br from-purple-500/10 via-card/90 to-card p-4 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-purple-500/50 hover:shadow-md hover:shadow-purple-500/10">
-                <div className="flex items-center gap-3.5">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 text-white shadow-sm ring-2 ring-purple-400/30">
-                    <GitBranch className="h-5 w-5 transition-transform group-hover:scale-110" />
+              <div className="relative overflow-hidden rounded-xl border border-border/80 bg-card/90 p-4 shadow-sm backdrop-blur-md">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-white shadow-sm">
+                    <GitBranch className="h-5 w-5" />
                   </div>
                   <div>
-                    <span className="font-mono text-[0.62rem] uppercase tracking-wider text-purple-600 dark:text-purple-400 font-bold">
+                    <span className="font-mono text-[0.62rem] uppercase tracking-wider text-blue-600 dark:text-blue-400 font-semibold">
                       Ontology Graph
                     </span>
-                    <p className="font-display text-base font-bold tracking-tight text-foreground">
+                    <p className="font-display text-sm font-bold tracking-tight text-foreground">
                       Knowledge Graph
                     </p>
                   </div>
@@ -215,16 +193,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               </div>
 
               {/* Safety Audit */}
-              <div className="group relative overflow-hidden rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 via-card/90 to-card p-4 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-emerald-500/50 hover:shadow-md hover:shadow-emerald-500/10">
-                <div className="flex items-center gap-3.5">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-700 text-white shadow-sm ring-2 ring-emerald-400/30">
-                    <ShieldCheck className="h-5 w-5 transition-transform group-hover:scale-110" />
+              <div className="relative overflow-hidden rounded-xl border border-border/80 bg-card/90 p-4 shadow-sm backdrop-blur-md">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-600 text-white shadow-sm">
+                    <ShieldCheck className="h-5 w-5" />
                   </div>
                   <div>
-                    <span className="font-mono text-[0.62rem] uppercase tracking-wider text-emerald-600 dark:text-emerald-400 font-bold">
+                    <span className="font-mono text-[0.62rem] uppercase tracking-wider text-emerald-600 dark:text-emerald-400 font-semibold">
                       Safety Guardrail
                     </span>
-                    <p className="font-display text-base font-bold tracking-tight text-foreground">
+                    <p className="font-display text-sm font-bold tracking-tight text-foreground">
                       Safety Audit
                     </p>
                   </div>
@@ -236,16 +214,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               </div>
 
               {/* Explainable Insights */}
-              <div className="group relative overflow-hidden rounded-2xl border border-amber-500/30 bg-gradient-to-br from-amber-500/10 via-card/90 to-card p-4 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-amber-500/50 hover:shadow-md hover:shadow-amber-500/10">
-                <div className="flex items-center gap-3.5">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-sm ring-2 ring-amber-400/30">
-                    <ScanEye className="h-5 w-5 transition-transform group-hover:scale-110" />
+              <div className="relative overflow-hidden rounded-xl border border-border/80 bg-card/90 p-4 shadow-sm backdrop-blur-md">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-amber-600 text-white shadow-sm">
+                    <ScanEye className="h-5 w-5" />
                   </div>
                   <div>
-                    <span className="font-mono text-[0.62rem] uppercase tracking-wider text-amber-600 dark:text-amber-400 font-bold">
+                    <span className="font-mono text-[0.62rem] uppercase tracking-wider text-amber-600 dark:text-amber-400 font-semibold">
                       Transparent AI
                     </span>
-                    <p className="font-display text-base font-bold tracking-tight text-foreground">
+                    <p className="font-display text-sm font-bold tracking-tight text-foreground">
                       Explainable Insights
                     </p>
                   </div>
@@ -269,9 +247,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               Sign in to your clinical workspace.
             </p>
 
-            <div className="mt-10 rounded-2xl border border-border/70 bg-card/90 p-8 shadow-lg backdrop-blur-md">
+            <div className="mt-10 rounded-xl border border-border/70 bg-card/90 p-8 shadow-lg backdrop-blur-md">
               <Button
-                className="h-12 w-full border border-border/80 bg-secondary/80 text-base font-medium text-foreground shadow-sm transition-all hover:scale-[1.01] hover:border-primary/50 hover:bg-primary/10"
+                className="h-12 w-full border border-border/80 bg-secondary/80 text-base font-medium text-foreground shadow-sm transition-colors hover:border-primary/50 hover:bg-primary/10 rounded-md"
                 variant="outline"
                 disabled={isLoggingIn}
                 onClick={handleLogin}
@@ -309,6 +287,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                   </p>
                 </div>
               )}
+            </div>
+
+            <div className="mt-8 flex items-center justify-center gap-4 text-xs text-muted-foreground">
+              <Link to="/privacy" className="hover:text-foreground transition-colors underline-offset-4 hover:underline">
+                Privacy Policy
+              </Link>
+              <span>•</span>
+              <Link to="/terms" className="hover:text-foreground transition-colors underline-offset-4 hover:underline">
+                Terms and Conditions
+              </Link>
             </div>
           </div>
         </div>

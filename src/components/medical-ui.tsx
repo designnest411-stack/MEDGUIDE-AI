@@ -33,7 +33,7 @@ export function GlassCard({ className, children }: { className?: string; childre
 }
 
 /**
- * Section heading: a mono, letter-spaced label sitting on a hairline rule —
+ * Section heading: a mono, letter-spaced label sitting on a hairline rule:
  * closer to a lab report header than a generic card title.
  */
 export function SectionTitle({
@@ -234,7 +234,7 @@ export function EmptyState({
 }) {
   return (
     <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border/70 px-6 py-14 text-center">
-      <span className="mb-4 flex h-12 w-12 items-center justify-center rounded-full border border-border/70 bg-muted/40">
+      <span className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl border border-border/70 bg-muted/40">
         <Icon className="h-5 w-5 text-muted-foreground" />
       </span>
       <p className="font-mono text-xs uppercase tracking-[0.16em]">{title}</p>

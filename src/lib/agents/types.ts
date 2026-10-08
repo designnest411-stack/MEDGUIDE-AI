@@ -195,7 +195,7 @@ export interface ImagingCondition {
 export interface ImagingResult {
   findings: ImagingFinding[];
   quality: { usable: boolean; note: string };
-  heatmap?: number[][] | undefined;
+  heatmap?: (number[] | number[][]) | undefined;
   narrative?: string | undefined;
   modelName: string;
   /** Candidate disease-level interpretations derived from the findings. */

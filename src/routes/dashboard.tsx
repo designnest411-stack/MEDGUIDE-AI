@@ -34,13 +34,13 @@ import { auth } from "@/lib/firebase";
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
     meta: [
-      { title: "Dashboard — MEDGUIDE AI" },
+      { title: "Dashboard : MEDGUIDE AI" },
       {
         name: "description",
         content:
           "Overview of consultations, evidence retrieved, imaging studies and generated clinical reports.",
       },
-      { property: "og:title", content: "Dashboard — MEDGUIDE AI" },
+      { property: "og:title", content: "Dashboard : MEDGUIDE AI" },
       {
         property: "og:description",
         content:

@@ -14,19 +14,19 @@ import { auth } from "@/lib/firebase";
 import { DISEASES, NODE_COLORS, buildGraph, matchDiseases } from "@/lib/medical/graph";
 import type { Edge, Node } from "@xyflow/react";
 
-// Lazy-load React Flow — it's a large bundle (~350 kB) only needed on this page
+// Lazy-load React Flow: it's a large bundle (~350 kB) only needed on this page
 const ReactFlowGraph = lazy(() => import("@/components/react-flow-graph"));
 
 export const Route = createFileRoute("/graph")({
   head: () => ({
     meta: [
-      { title: "Knowledge Graph — MEDGUIDE AI" },
+      { title: "Knowledge Graph : MEDGUIDE AI" },
       {
         name: "description",
         content:
           "Explore relationships between diseases, symptoms, risk factors, drugs, treatments and complications.",
       },
-      { property: "og:title", content: "Knowledge Graph — MEDGUIDE AI" },
+      { property: "og:title", content: "Knowledge Graph : MEDGUIDE AI" },
       {
         property: "og:description",
         content:
@@ -122,7 +122,7 @@ function GraphPage() {
           </CardHeader>
           <CardContent className="space-y-1.5">
             <p className="mb-2 rounded-md border border-border/60 bg-card/40 p-2 text-[0.68rem] leading-relaxed text-muted-foreground">
-              This is a curated reference knowledge base, not output from your run — it is always
+              This is a curated reference knowledge base, not output from your run: it is always
               available so you can traverse relationships on demand.
               {lastConsult ? " Pre-selected from your latest consultation." : ""}
             </p>

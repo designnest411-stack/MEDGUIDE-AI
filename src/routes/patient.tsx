@@ -18,13 +18,13 @@ import { auth } from "@/lib/firebase";
 export const Route = createFileRoute("/patient")({
   head: () => ({
     meta: [
-      { title: "Patient Workspace — MEDGUIDE AI" },
+      { title: "Patient Workspace : MEDGUIDE AI" },
       {
         name: "description",
         content:
-          "Record patient demographics, history, medications, allergies, vitals and labs — stored securely in your clinical workspace.",
+          "Record patient demographics, history, medications, allergies, vitals and labs: stored securely in your clinical workspace.",
       },
-      { property: "og:title", content: "Patient Workspace — MEDGUIDE AI" },
+      { property: "og:title", content: "Patient Workspace : MEDGUIDE AI" },
       {
         property: "og:description",
         content: "Structured patient intake that feeds the clinical reasoning agents.",
@@ -108,9 +108,9 @@ function PatientPage() {
     }
     const meds = form.medications ? ` on ${form.medications}` : "";
     const allergies = form.allergies ? `; allergies: ${form.allergies}` : "";
-    const q = `${parts.join(" ")}${meds}${allergies} — what is the most likely diagnosis and evidence-based next step?`;
+    const q = `${parts.join(" ")}${meds}${allergies}. What is the most likely diagnosis and evidence-based next step?`;
     setForm((f) => ({ ...f, question: q }));
-    toast.success("Question suggested — edit it to match your clinical concern.");
+    toast.success("Question suggested: edit it to match your clinical concern.");
   };
 
   const set = (k: keyof typeof blank) => (v: string) => setForm({ ...form, [k]: v });
@@ -165,7 +165,7 @@ function PatientPage() {
               <Textarea
                 className="mt-2 bg-background/60"
                 rows={3}
-                placeholder="e.g. 52-year-old male with fever, productive cough and right basal crackles — most likely diagnosis and first-line treatment?"
+                placeholder="e.g. 52-year-old male with fever, productive cough and right basal crackles: most likely diagnosis and first-line treatment?"
                 value={form.question}
                 onChange={(e) => set("question")(e.target.value)}
               />

@@ -10,7 +10,7 @@ async function safeJson<T>(url: string, fallback: T, attempts = 2): Promise<T> {
     try {
       const res = await fetch(url, { headers: UA });
       if (res.ok) return (await res.json()) as T;
-      // 429 / 5xx from NCBI etc. — brief backoff then retry
+      // 429 / 5xx from NCBI etc.: brief backoff then retry
       if (res.status !== 429 && res.status < 500) return fallback;
     } catch {
       /* retry */
@@ -97,7 +97,7 @@ export async function searchFdaLabel(drug: string): Promise<{
     evidence: [
       {
         id: `fda:${drug}`,
-        title: `openFDA drug label — ${label}`,
+        title: `openFDA drug label: ${label}`,
         source: "openFDA",
         url: `https://labels.fda.gov/?query=${encodeURIComponent(drug)}`,
         snippet: clip(r.warnings) || clip(r.contraindications),
@@ -168,7 +168,7 @@ export async function whoGuidelines(query: string): Promise<EvidenceSource[]> {
   return [
     {
       id: `who:${query.slice(0, 40)}`,
-      title: `WHO guidelines search — ${query}`,
+      title: `WHO guidelines search: ${query}`,
       source: "WHO",
       url: `https://www.who.int/publications/who-guidelines?q=${encodeURIComponent(query)}`,
       snippet: "Authoritative WHO guideline collection for this clinical topic.",
@@ -177,7 +177,7 @@ export async function whoGuidelines(query: string): Promise<EvidenceSource[]> {
 }
 
 /* ------------------------------------------------------------------ *
- * Evidence grading — Oxford-style tiers inferred from title/metadata.
+ * Evidence grading: Oxford-style tiers inferred from title/metadata.
  * Purely local heuristics, no paid service involved.
  * ------------------------------------------------------------------ */
 
@@ -202,7 +202,7 @@ export function gradeEvidence(source: EvidenceSource): EvidenceSource {
   return { ...source, level };
 }
 
-/** Europe PMC — free, no key, wider coverage than PubMed alone (incl. preprints, EU journals). */
+/** Europe PMC: free, no key, wider coverage than PubMed alone (incl. preprints, EU journals). */
 export async function searchEuropePmc(query: string, limit = 6): Promise<EvidenceSource[]> {
   const data = await safeJson<{
     resultList?: {
@@ -235,11 +235,11 @@ export async function searchEuropePmc(query: string, limit = 6): Promise<Evidenc
         : `https://europepmc.org/article/${r.source ?? "MED"}/${r.id ?? ""}`,
       year: Number(r.pubYear) || undefined,
       authors: (r.authorString ?? "").split(",").slice(0, 3).join(",").trim() || undefined,
-      snippet: [r.journalTitle, r.pubType].filter(Boolean).join(" — ") || undefined,
+      snippet: [r.journalTitle, r.pubType].filter(Boolean).join(" · ") || undefined,
     }));
 }
 
-/** ClinicalTrials.gov v2 — free, no key. Surfaces active/recruiting studies. */
+/** ClinicalTrials.gov v2: free, no key. Surfaces active/recruiting studies. */
 export async function searchTrials(condition: string, limit = 3): Promise<EvidenceSource[]> {
   if (!condition.trim()) return [];
   const data = await safeJson<{
@@ -279,7 +279,7 @@ export async function searchTrials(condition: string, limit = 3): Promise<Eviden
 }
 
 /* ------------------------------------------------------------------ *
- * Specialty-aware guideline routing — free public guideline libraries.
+ * Specialty-aware guideline routing: free public guideline libraries.
  * Makes the platform usable beyond adult internal medicine.
  * ------------------------------------------------------------------ */
 
@@ -422,7 +422,7 @@ export function specialtyGuidelines(specialty: Specialty, query: string): Eviden
   const q = encodeURIComponent(query.slice(0, 80));
   return SPECIALTY_SOURCES[specialty].map((s, i) => ({
     id: `guide:${specialty}:${i}`,
-    title: `${s.name} — ${query.slice(0, 70)}`,
+    title: `${s.name}: ${query.slice(0, 70)}`,
     source: "Guideline" as const,
     url: s.url(q),
     snippet: `Specialty guideline library selected for ${specialty.replace("-", " ")}.`,
@@ -460,7 +460,7 @@ function relTerms(text: string): string[] {
 /**
  * Drop sources with no topical overlap with the query/conditions.
  * Curated sources (WHO, specialty guideline library, openFDA labels) are
- * always kept — they were selected deterministically for this case.
+ * always kept: they were selected deterministically for this case.
  */
 export function filterRelevant(
   sources: EvidenceSource[],

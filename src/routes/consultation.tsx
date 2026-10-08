@@ -50,13 +50,13 @@ import { type ConsultationInput, type ConsultationResult } from "@/lib/agents/ty
 export const Route = createFileRoute("/consultation")({
   head: () => ({
     meta: [
-      { title: "AI Consultation — MEDGUIDE AI" },
+      { title: "AI Consultation : MEDGUIDE AI" },
       {
         name: "description",
         content:
           "Run a multi-agent clinical consultation: structured intake, retrieved evidence, differentials, drug safety and explainable confidence.",
       },
-      { property: "og:title", content: "AI Consultation — MEDGUIDE AI" },
+      { property: "og:title", content: "AI Consultation : MEDGUIDE AI" },
       {
         property: "og:description",
         content:
@@ -155,9 +155,17 @@ function Consultation() {
     if (!cols) return;
     const { addDoc } = await import("firebase/firestore");
 
+    const sanitizedResult = { ...result };
+    if (sanitizedResult.imaging?.heatmap && Array.isArray(sanitizedResult.imaging.heatmap[0])) {
+      sanitizedResult.imaging = {
+        ...sanitizedResult.imaging,
+        heatmap: (sanitizedResult.imaging.heatmap as number[][]).flat(),
+      };
+    }
+
     const docRef = await addDoc(cols.consultations, {
       question,
-      result: result as ConsultationResult,
+      result: sanitizedResult as ConsultationResult,
       createdAt: Date.now(),
     });
     if (result.reportMarkdown) {
@@ -180,7 +188,7 @@ function Consultation() {
   return (
     <AppShell
       title="AI Consultation"
-      subtitle="Evidence-based clinical assistant — every claim traced to a source"
+      subtitle="Evidence-based clinical assistant: every claim traced to a source"
       wide
       actions={
         <div className="flex items-center gap-2">
@@ -219,7 +227,7 @@ function Consultation() {
               <Textarea
                 value={question}
                 onChange={(e) => setQuestion(e.target.value)}
-                placeholder="e.g. 68-year-old smoker with 3 days of productive cough, fever and pleuritic chest pain — what is the evidence-based workup and antibiotic choice?"
+                placeholder="e.g. 68-year-old smoker with 3 days of productive cough, fever and pleuritic chest pain. What is the evidence-based workup and antibiotic choice?"
                 rows={5}
               />
 
@@ -275,7 +283,7 @@ function Consultation() {
                 label="Current medications"
                 value={patient.medications}
                 onChange={(v) => setPatient({ ...patient, medications: v })}
-                placeholder="Comma separated — triggers drug safety checks"
+                placeholder="Comma separated: triggers drug safety checks"
               />
               <FormArea
                 label="Allergies"
@@ -330,7 +338,7 @@ function Consultation() {
           {!result && !running && (
             <GlassCard>
               <CardContent className="p-10 text-center">
-                <span className="mx-auto flex h-11 w-11 items-center justify-center rounded-full border border-primary/30 bg-primary/10">
+                <span className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl border border-primary/30 bg-primary/10">
                   <Stethoscope className="h-5 w-5 text-primary" />
                 </span>
                 <p className="mt-3 font-mono text-[0.7rem] uppercase tracking-[0.18em]">
@@ -446,7 +454,7 @@ function Consultation() {
                           </p>
                         ) : (
                           <p className="mt-2 text-[0.65rem] text-warning/90">
-                            No retrieved source attached — treat as clinical reasoning, not
+                            No retrieved source attached: treat as clinical reasoning, not
                             evidence.
                           </p>
                         )}

@@ -6,17 +6,27 @@
  */
 
 export const GEMINI_WORKHORSE_MODELS = [
-  "gemini-3.1-flash-lite", // 500 RPD, 15 RPM (Verified Active & Operational)
-  "gemini-3.5-flash-lite", // 500 RPD, 15 RPM (Verified Active & Operational)
+  "gemini-3.1-flash-lite", // 15 RPM, 500 RPD (High capacity)
+  "gemini-3.5-flash-lite", // 15 RPM, 500 RPD (High capacity)
+  "gemini-3.5-flash", // 5 RPM, 20 RPD
+  "gemini-3.6-flash", // 5 RPM, 20 RPD
 ] as const;
 
 export const GEMINI_REASONING_MODELS = [
-  "gemini-3.5-flash", // 20 RPD, 5 RPM (Verified Active & Operational)
-  "gemini-3.7-flash", // 20 RPD, 5 RPM (Agentic reasoning / coding)
-  "gemini-3.6-flash", // 20 RPD, 5 RPM
+  "gemini-3.5-flash", // 5 RPM, 20 RPD (Differential diagnosis & synthesis)
+  "gemini-3.6-flash", // 5 RPM, 20 RPD
+  "gemini-3.7-flash", // 5 RPM, 20 RPD
+  "gemini-3.8-flash", // 5 RPM, 20 RPD
+  "gemini-3-flash", // 5 RPM, 20 RPD
+  "gemini-3.1-flash-lite", // 15 RPM, 500 RPD (Automatic fallback)
 ] as const;
 
-export const GEMINI_VOLUME_MODELS = ["gemini-3.1-flash-lite", "gemini-3.5-flash-lite"] as const;
+export const GEMINI_VOLUME_MODELS = [
+  "gemini-3.1-flash-lite", // 15 RPM, 500 RPD
+  "gemini-3.5-flash-lite", // 15 RPM, 500 RPD
+  "gemma-4-26b-a4b-it", // 30 RPM, 14,400 RPD (High throughput fallback)
+  "gemma-4-31b-it", // 30 RPM, 14,400 RPD (High throughput fallback)
+] as const;
 
 export const GEMINI_FREE_TIER_MODELS = [
   ...GEMINI_WORKHORSE_MODELS,
@@ -44,7 +54,7 @@ export interface LlmOptions {
   /** Optional image attached to the first user message (multimodal vision). */
   image?: { mediaType: string; base64: string } | undefined;
   /** Optional structured JSON output enforcement */
-  responseMimeType?: "application/json" | "text/plain";
+  responseMimeType?: "application/json" | "text/plain" | undefined;
 }
 
 export interface LlmResult {
@@ -104,6 +114,7 @@ async function callSingleGeminiModel(
     generationConfig: {
       maxOutputTokens: opts.maxTokens ?? 4096,
       temperature: 0.2,
+      topP: 0.95,
       ...(opts.responseMimeType ? { responseMimeType: opts.responseMimeType } : {}),
     },
   };

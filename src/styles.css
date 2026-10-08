@@ -105,7 +105,7 @@
   --info: #0284c7;
   --info-foreground: #ffffff;
 
-  --agent: #7c3aed;
+  --agent: #0284c7;
   --agent-foreground: #ffffff;
 
   --evidence: #0284c7;
@@ -118,7 +118,7 @@
   --ring: #0891b2;
 
   --chart-1: #0891b2;
-  --chart-2: #7c3aed;
+  --chart-2: #0284c7;
   --chart-3: #d97706;
   --chart-4: #059669;
   --chart-5: #e11d48;
@@ -153,7 +153,7 @@
     font-family: var(--font-sans);
     background-image:
       radial-gradient(ellipse 80% 50% at 50% -20%, rgba(8, 145, 178, 0.07), transparent),
-      radial-gradient(ellipse 60% 40% at 85% 80%, rgba(124, 58, 237, 0.04), transparent),
+      radial-gradient(ellipse 60% 40% at 85% 80%, rgba(8, 145, 178, 0.03), transparent),
       linear-gradient(180deg, #f8fafc 0%, #edf2f7 50%, #f8fafc 100%);
     background-attachment: fixed;
     min-height: 100vh;
@@ -202,7 +202,7 @@
 }
 
 @utility text-gradient {
-  background-image: linear-gradient(110deg, #38bdf8 0%, #a855f7 50%, #38bdf8 100%);
+  background-image: linear-gradient(110deg, #0891b2 0%, #0369a1 100%);
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
@@ -213,51 +213,6 @@
     linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
   background-size: 40px 40px;
-}
-
-@keyframes float-slow {
-  0%,
-  100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-12px) rotate(3deg);
-  }
-}
-
-@keyframes float-slower {
-  0%,
-  100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  50% {
-    transform: translateY(15px) rotate(-3deg);
-  }
-}
-
-@keyframes text-shimmer {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-@utility animate-float-slow {
-  animation: float-slow 12s ease-in-out infinite;
-}
-
-@utility animate-float-slower {
-  animation: float-slower 18s ease-in-out infinite;
-}
-
-@utility animate-text-shimmer {
-  animation: text-shimmer 6s ease-in-out infinite;
-  background-size: 200% auto;
 }
 
 @keyframes pulse-ring {

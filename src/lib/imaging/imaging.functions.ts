@@ -16,7 +16,7 @@ const FALLBACK: XrayAnalysis = {
   conditions: [],
   urgency: "routine",
   nextSteps: [],
-  quality: { usable: false, note: "Image analysis unavailable — no provider response." },
+  quality: { usable: false, note: "Image analysis unavailable: no provider response." },
   narrative: "",
   provider: "fallback",
 };
@@ -57,9 +57,9 @@ export const analyzeXray = createServerFn({ method: "POST" })
               '"urgency":"routine"|"prompt"|"urgent","nextSteps":[string],' +
               '"quality":{"usable":boolean,"note":string},"narrative":string}. ' +
               "findings use standard radiological labels (e.g. Consolidation, Pleural effusion, Cardiomegaly, " +
-              "Pneumothorax, Atelectasis, Nodule/mass, Interstitial opacities, No acute cardiopulmonary abnormality) — max 6. " +
+              "Pneumothorax, Atelectasis, Nodule/mass, Interstitial opacities, No acute cardiopulmonary abnormality) (max 6). " +
               "conditions are the candidate diseases those findings suggest (e.g. Community-acquired pneumonia, " +
-              "Pulmonary oedema, COPD, Tuberculosis, Lung malignancy) — max 4, each with a one-sentence radiological rationale. " +
+              "Pulmonary oedema, COPD, Tuberculosis, Lung malignancy) (max 4), each with a one-sentence radiological rationale. " +
               "nextSteps are 2-4 concrete confirmatory actions (imaging, labs, clinical correlation). " +
               "The narrative is 3-5 sentences of structured radiological description. " +
               (data.context ? `Clinical context: ${data.context}` : ""),

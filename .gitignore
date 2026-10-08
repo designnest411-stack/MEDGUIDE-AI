@@ -41,3 +41,10 @@ dist-ssr
 project_report.*
 PROJECT_REPORT_README.md
 img/
+
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.blg
+*.out
+*.synctex.gz
