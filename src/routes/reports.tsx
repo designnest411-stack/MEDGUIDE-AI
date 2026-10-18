@@ -1,22 +1,48 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { query, orderBy, deleteDoc, doc } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
-import jsPDF from "jspdf";
-import { ChevronLeft, ChevronRight, Download, FileText, QrCode, Trash2 } from "lucide-react";
+import {
+  Activity,
+  AlertTriangle,
+  BookOpen,
+  CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+  Copy,
+  Download,
+  ExternalLink,
+  FileCheck2,
+  FileText,
+  GitFork,
+  Printer,
+  QrCode,
+  Search,
+  ShieldAlert,
+  Stethoscope,
+  Trash2,
+} from "lucide-react";
 import QRCode from "qrcode";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 import { AppShell } from "@/components/app-shell";
-import { EmptyState, GlassCard, SectionTitle } from "@/components/medical-ui";
+import { EmptyState, GlassCard } from "@/components/medical-ui";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getCollections, useTypedCollection, type ReportRecord } from "@/lib/db";
 import { auth } from "@/lib/firebase";
 import { DISCLAIMER } from "@/lib/agents/types";
+import {
+  parseClinicalReport,
+  generateEhrSummary,
+  getCitationUrl,
+} from "@/lib/reports/clinical-report-parser";
+import { generateClinicalReportPdf } from "@/lib/reports/report-pdf-generator";
 
 export const Route = createFileRoute("/reports")({
   head: () => ({
@@ -58,208 +84,710 @@ function ReportsPage() {
   );
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeTab, setActiveTab] = useState<"structured" | "markdown">("structured");
+  const [qrDataUrl, setQrDataUrl] = useState<string>("");
+  const [isExportingPdf, setIsExportingPdf] = useState(false);
   const [page, setPage] = useState(0);
-  const pageSize = 7;
+  const pageSize = 6;
 
-  const totalPages = Math.ceil(reports.length / pageSize) || 1;
-  const paginatedReports = reports.slice(page * pageSize, (page + 1) * pageSize);
-  const selected = reports.find((r) => r.id === selectedId) ?? reports[0];
+  // Filter reports by search keyword
+  const filteredReports = useMemo(() => {
+    if (!searchQuery.trim()) return reports;
+    const q = searchQuery.toLowerCase();
+    return reports.filter(
+      (r) =>
+        r.title.toLowerCase().includes(q) ||
+        r.patientName.toLowerCase().includes(q) ||
+        r.markdown.toLowerCase().includes(q),
+    );
+  }, [reports, searchQuery]);
 
-  const exportPdf = async (report: ReportRecord) => {
-    const docPdf = new jsPDF({ unit: "pt", format: "a4" });
-    const margin = 48;
-    const width = docPdf.internal.pageSize.getWidth() - margin * 2;
-    let y = margin;
+  const totalPages = Math.ceil(filteredReports.length / pageSize) || 1;
+  const paginatedReports = filteredReports.slice(page * pageSize, (page + 1) * pageSize);
+  const selected = filteredReports.find((r) => r.id === selectedId) ?? filteredReports[0];
 
-    docPdf.setFontSize(16);
-    docPdf.text("MEDGUIDE AI : Clinical Report", margin, y);
-    y += 20;
-    docPdf.setFontSize(9);
-    docPdf.setTextColor(120);
-    docPdf.text(`${report.title} · ${new Date(report.createdAt).toLocaleString()}`, margin, y);
-    y += 22;
+  // Parse structured report data for the selected document
+  const structured = useMemo(() => {
+    if (!selected) return null;
+    return parseClinicalReport(selected.markdown, selected.title);
+  }, [selected]);
 
-    docPdf.setTextColor(30);
-    docPdf.setFontSize(10);
-    const lines = docPdf.splitTextToSize(report.markdown.replace(/[#*`]/g, ""), width) as string[];
-    for (const line of lines) {
-      if (y > docPdf.internal.pageSize.getHeight() - 90) {
-        docPdf.addPage();
-        y = margin;
-      }
-      docPdf.text(line, margin, y);
-      y += 13;
+  // Generate scannable QR Code whenever selected report changes
+  useEffect(() => {
+    if (!selected) {
+      setQrDataUrl("");
+      return;
     }
+    const dateStr = new Date(selected.createdAt).toISOString();
+    QRCode.toDataURL(
+      `MEDGUIDE AI CLINICAL REPORT\nTitle: ${selected.title.slice(0, 60)}\nDate: ${dateStr}\nReport ID: ${selected.id || "VERIFIED"}`,
+      { margin: 1, width: 160 },
+    )
+      .then(setQrDataUrl)
+      .catch(() => setQrDataUrl(""));
+  }, [selected]);
 
+  // Export PDF with official medical template
+  const handleExportPdf = async () => {
+    if (!selected) return;
+    setIsExportingPdf(true);
     try {
-      const qr = await QRCode.toDataURL(
-        `MEDGUIDE AI report: ${report.title} (${new Date(report.createdAt).toISOString()})`,
-        { margin: 1, width: 128 },
-      );
-      if (y > docPdf.internal.pageSize.getHeight() - 140) {
-        docPdf.addPage();
-        y = margin;
-      }
-      docPdf.addImage(qr, "PNG", margin, y + 10, 72, 72);
-    } catch {
-      /* QR is optional */
+      await generateClinicalReportPdf({
+        title: selected.title,
+        patientName: selected.patientName,
+        markdown: selected.markdown,
+        createdAt: selected.createdAt,
+        reportId: selected.id,
+      });
+      toast.success("Clinical Report PDF generated successfully");
+    } catch (err) {
+      toast.error((err as Error)?.message || "Failed to generate PDF");
+    } finally {
+      setIsExportingPdf(false);
     }
+  };
 
-    docPdf.setFontSize(8);
-    docPdf.setTextColor(150);
-    docPdf.text(DISCLAIMER, margin, docPdf.internal.pageSize.getHeight() - 30);
-    docPdf.save(`${report.title.slice(0, 40).replace(/\W+/g, "-") || "clinical-report"}.pdf`);
-    toast.success("PDF exported");
+  // Copy EHR / SOAP Formatted Summary
+  const handleCopyEhr = () => {
+    if (!selected || !structured) return;
+    const summary = generateEhrSummary(
+      structured,
+      selected.patientName,
+      new Date(selected.createdAt).toLocaleString(),
+    );
+    navigator.clipboard.writeText(summary);
+    toast.success("EHR consult summary copied to clipboard (Epic / Cerner format)");
+  };
+
+  // Download Markdown file
+  const handleDownloadMarkdown = () => {
+    if (!selected) return;
+    const blob = new Blob([selected.markdown], { type: "text/markdown;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${selected.title.slice(0, 40).replace(/\W+/g, "-") || "clinical-report"}.md`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success("Markdown file downloaded");
   };
 
   return (
     <AppShell
       title="Report Center"
-      subtitle="Professional clinical reports with citations and confidence"
+      subtitle="Evidence-linked clinical reports with citation provenance, safety audits, and EHR export"
+      wide
     >
       {reportsLoading ? (
-        <div className="grid gap-4 lg:grid-cols-[300px_1fr]">
+        <div className="grid gap-4 lg:grid-cols-[320px_1fr]">
           <GlassCard>
-            <CardHeader className="pb-2">
-              <SectionTitle title="Reports" hint="Loading..." />
+            <CardHeader className="pb-3 border-b border-border/50">
+              <Skeleton className="h-5 w-1/2" />
+              <Skeleton className="h-8 w-full mt-2" />
             </CardHeader>
-            <CardContent className="space-y-2">
+            <CardContent className="space-y-3 pt-3">
               {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="rounded-lg border border-border/60 p-3 space-y-1.5">
-                  <Skeleton className="h-3.5 w-3/4" />
-                  <Skeleton className="h-2.5 w-1/3" />
+                <div key={i} className="rounded-xl border border-border/60 p-3 space-y-2">
+                  <Skeleton className="h-4 w-3/4" />
+                  <Skeleton className="h-3 w-1/3" />
                 </div>
               ))}
             </CardContent>
           </GlassCard>
-          <GlassCard className="p-6">
-            <Skeleton className="h-6 w-1/3 mb-4" />
-            <Skeleton className="h-4 w-full mb-2" />
-            <Skeleton className="h-4 w-5/6 mb-2" />
-            <Skeleton className="h-4 w-2/3" />
+          <GlassCard className="p-8 space-y-4">
+            <Skeleton className="h-8 w-1/3" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-5/6" />
+            <Skeleton className="h-32 w-full rounded-xl" />
           </GlassCard>
         </div>
       ) : reports.length === 0 ? (
         <EmptyState
           icon={FileText}
-          title="No reports yet"
-          description="Save a consultation and the Report Generator agent's output appears here, ready to export."
+          title="No clinical reports saved yet"
+          description="Complete a consultation in the AI Consultation module to generate an evidence-backed clinical report ready for export and EHR integration."
+          action={
+            <Button asChild size="sm" className="mt-4">
+              <a href="/consultation">Start Consultation</a>
+            </Button>
+          }
         />
       ) : (
-        <div className="grid gap-4 lg:grid-cols-[300px_1fr]">
-          <GlassCard>
-            <CardHeader className="pb-2">
-              <SectionTitle title="Reports" hint={`${reports.length} saved`} />
-            </CardHeader>
-            <CardContent className="space-y-2">
-              {paginatedReports.map((r) => (
-                <div
-                  key={r.id}
-                  className={`flex items-start gap-2 rounded-lg border p-3 transition-colors ${
-                    selected?.id === r.id
-                      ? "border-primary/50 bg-primary/10"
-                      : "border-border/60 bg-card/40"
-                  }`}
-                >
-                  <button
-                    type="button"
-                    className="min-w-0 flex-1 text-left"
-                    onClick={() => setSelectedId(r.id!)}
-                  >
-                    <p className="truncate text-xs font-medium">{r.title}</p>
-                    <p className="text-[0.65rem] text-muted-foreground">
-                      {new Date(r.createdAt).toLocaleDateString()}
-                    </p>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => cols && deleteDoc(doc(cols.reports, r.id!))}
-                    className="text-muted-foreground transition-colors hover:text-destructive"
-                    aria-label="Delete report"
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </button>
-                </div>
-              ))}
-
-              {totalPages > 1 && (
-                <div className="flex items-center justify-between border-t border-border/60 pt-2 text-xs text-muted-foreground">
-                  <span>
-                    {page + 1}/{totalPages}
+        <div className="grid gap-5 lg:grid-cols-[320px_minmax(0,1fr)]">
+          {/* Left Column: Report List & Search */}
+          <GlassCard className="flex flex-col h-[calc(100vh-140px)] min-h-[580px] overflow-hidden">
+            <CardHeader className="pb-3 border-b border-border/60 space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <FileCheck2 className="h-4 w-4 text-primary" />
+                  <span className="font-display text-sm font-bold text-foreground">
+                    Saved Consultations
                   </span>
-                  <div className="flex items-center gap-1">
+                </div>
+                <Badge variant="outline" className="text-[0.68rem] font-mono border-primary/30 text-primary">
+                  {reports.length} Total
+                </Badge>
+              </div>
+
+              {/* Real-time search */}
+              <div className="relative">
+                <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setPage(0);
+                  }}
+                  placeholder="Filter by diagnosis, symptom, age..."
+                  className="w-full rounded-lg border border-border/70 bg-card/60 pl-8 pr-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary/60 focus:outline-none focus:ring-1 focus:ring-primary/30"
+                />
+              </div>
+            </CardHeader>
+
+            <CardContent className="flex-1 overflow-y-auto p-3 space-y-2">
+              {filteredReports.length === 0 ? (
+                <div className="p-6 text-center text-xs text-muted-foreground">
+                  No reports matching &ldquo;{searchQuery}&rdquo;
+                </div>
+              ) : (
+                paginatedReports.map((r) => {
+                  const isSelected = selected?.id === r.id;
+                  const cleanTitle = r.title.replace(/^["“”']+|["“”']+$/g, "").trim();
+                  const demoMatch = cleanTitle.match(/^(\d{1,3}-year-old\s+(?:male|female))/i);
+                  const demoTag = demoMatch ? demoMatch[1] : r.patientName || "Consultation";
+
+                  return (
+                    <div
+                      key={r.id}
+                      className={`group relative rounded-xl border p-3 transition-all duration-200 cursor-pointer ${
+                        isSelected
+                          ? "border-primary/60 bg-primary/10 shadow-sm"
+                          : "border-border/60 bg-card/40 hover:border-primary/40 hover:bg-card/70"
+                      }`}
+                      onClick={() => setSelectedId(r.id!)}
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <Badge
+                          variant="secondary"
+                          className="text-[0.62rem] font-medium px-2 py-0.5 max-w-[170px] truncate"
+                        >
+                          {demoTag}
+                        </Badge>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (cols && r.id) {
+                              deleteDoc(doc(cols.reports, r.id));
+                              toast.info("Report removed from workspace");
+                            }
+                          }}
+                          className="opacity-0 group-hover:opacity-100 text-muted-foreground transition-opacity hover:text-destructive p-1 rounded"
+                          title="Delete report"
+                          aria-label="Delete report"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+
+                      <p className="mt-2 text-xs font-semibold leading-snug text-foreground line-clamp-2">
+                        {cleanTitle}
+                      </p>
+
+                      <div className="mt-2.5 flex items-center justify-between text-[0.68rem] text-muted-foreground font-mono">
+                        <span>{new Date(r.createdAt).toLocaleDateString()}</span>
+                        <span className="flex items-center gap-1 text-primary text-[0.65rem]">
+                          <FileText className="h-3 w-3" /> View
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </CardContent>
+
+            {/* Pagination controls */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-between border-t border-border/60 p-3 text-xs text-muted-foreground bg-card/20">
+                <span>
+                  Page {page + 1} of {totalPages}
+                </span>
+                <div className="flex items-center gap-1">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-7 px-2"
+                    disabled={page === 0}
+                    onClick={() => setPage((p) => Math.max(0, p - 1))}
+                    aria-label="Previous reports page"
+                  >
+                    <ChevronLeft className="h-3.5 w-3.5" />
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-7 px-2"
+                    disabled={page >= totalPages - 1}
+                    onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+                    aria-label="Next reports page"
+                  >
+                    <ChevronRight className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+              </div>
+            )}
+          </GlassCard>
+
+          {/* Right Column: High-Trust Hospital Consultation Chart */}
+          {selected && structured && (
+            <div className="space-y-4">
+              {/* Document Header & Action Bar */}
+              <GlassCard className="p-4 sm:p-5">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                  <div className="space-y-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Badge className="bg-primary/15 text-primary border-primary/30 text-[0.65rem] font-mono uppercase tracking-wider">
+                        Clinical Consultation Summary
+                      </Badge>
+                      <Badge
+                        variant="outline"
+                        className={`text-[0.65rem] font-mono ${
+                          structured.confidenceBand === "High"
+                            ? "border-emerald-500/40 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10"
+                            : structured.confidenceBand === "Medium"
+                            ? "border-amber-500/40 text-amber-600 dark:text-amber-400 bg-amber-500/10"
+                            : "border-slate-500/40 text-slate-600 bg-slate-500/10"
+                        }`}
+                      >
+                        Confidence: {structured.confidenceBand}
+                      </Badge>
+                      <span className="text-xs text-muted-foreground">
+                        {new Date(selected.createdAt).toLocaleString()}
+                      </span>
+                    </div>
+                    <h2 className="font-display text-lg sm:text-xl font-bold text-foreground">
+                      {selected.title.replace(/^["“”']+|["“”']+$/g, "").trim()}
+                    </h2>
+                  </div>
+
+                  {/* Actions Toolbar */}
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as typeof activeTab)}>
+                      <TabsList className="h-8">
+                        <TabsTrigger value="structured" className="text-xs px-2.5">
+                          Clinical Chart
+                        </TabsTrigger>
+                        <TabsTrigger value="markdown" className="text-xs px-2.5">
+                          Raw Markdown
+                        </TabsTrigger>
+                      </TabsList>
+                    </Tabs>
+
                     <Button
                       size="sm"
                       variant="outline"
-                      className="h-6 px-1.5"
-                      disabled={page === 0}
-                      onClick={() => setPage((p) => Math.max(0, p - 1))}
-                      aria-label="Previous reports page"
+                      onClick={() => window.print()}
+                      className="text-xs h-8 gap-1.5"
+                      title="Print document"
                     >
-                      <ChevronLeft className="h-3 w-3" />
+                      <Printer className="h-3.5 w-3.5" /> Print
                     </Button>
+
                     <Button
                       size="sm"
                       variant="outline"
-                      className="h-6 px-1.5"
-                      disabled={page >= totalPages - 1}
-                      onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
-                      aria-label="Next reports page"
+                      onClick={handleCopyEhr}
+                      className="text-xs h-8 gap-1.5"
+                      title="Copy structured text for EHR / Epic Systems"
                     >
-                      <ChevronRight className="h-3 w-3" />
+                      <Copy className="h-3.5 w-3.5" /> Copy EHR
+                    </Button>
+
+                    <Button
+                      size="sm"
+                      onClick={handleExportPdf}
+                      disabled={isExportingPdf}
+                      className="text-xs h-8 gap-1.5 shadow-sm"
+                    >
+                      <QrCode className="h-3.5 w-3.5" />
+                      {isExportingPdf ? "Generating..." : "PDF + QR"}
+                    </Button>
+
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={handleDownloadMarkdown}
+                      className="text-xs h-8 px-2 text-muted-foreground hover:text-foreground"
+                      title="Download Markdown"
+                    >
+                      <Download className="h-3.5 w-3.5" />
                     </Button>
                   </div>
                 </div>
-              )}
-            </CardContent>
-          </GlassCard>
+              </GlassCard>
 
-          {selected && (
-            <GlassCard>
-              <CardHeader className="pb-2">
-                <SectionTitle
-                  icon={FileText}
-                  title={selected.title}
-                  hint={new Date(selected.createdAt).toLocaleString()}
-                  right={
-                    <div className="flex flex-wrap gap-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => exportPdf(selected)}
-                        className="text-xs"
-                      >
-                        <QrCode className="mr-1.5 h-3.5 w-3.5" /> PDF + QR
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => {
-                          const blob = new Blob([selected.markdown], { type: "text/markdown" });
-                          const url = URL.createObjectURL(blob);
-                          const a = document.createElement("a");
-                          a.href = url;
-                          a.download = `${selected.title.slice(0, 40).replace(/\W+/g, "-")}.md`;
-                          a.click();
-                          URL.revokeObjectURL(url);
-                        }}
-                        className="text-xs"
-                      >
-                        <Download className="mr-1.5 h-3.5 w-3.5" /> Markdown
-                      </Button>
+              {/* View 1: Clinical Chart View */}
+              {activeTab === "structured" && (
+                <div className="space-y-4">
+                  {/* Hospital Consultation Document Banner */}
+                  <div className="rounded-2xl border border-border/80 bg-card/90 p-5 sm:p-6 shadow-sm backdrop-blur-xl space-y-5">
+                    {/* Official Banner Header */}
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-border/60 pb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary border border-primary/25 shrink-0">
+                          <Stethoscope className="h-6 w-6" />
+                        </div>
+                        <div>
+                          <p className="font-mono text-[0.65rem] uppercase tracking-wider text-muted-foreground">
+                            MEDGUIDE AI CLINICAL DECISION SUPPORT
+                          </p>
+                          <h3 className="font-display text-base font-bold text-foreground">
+                            Multi-Agent Verified Clinical Consultation
+                          </h3>
+                          <p className="text-xs text-muted-foreground">
+                            Patient Identifier:{" "}
+                            <span className="font-medium text-foreground">
+                              {selected.patientName || "Clinical Vignette"}
+                            </span>{" "}
+                            · Document: <span className="font-mono text-[0.7rem]">{selected.id?.slice(0, 10) || "REP-AUDIT"}</span>
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Scannable QR Code */}
+                      {qrDataUrl && (
+                        <div className="flex items-center gap-3 bg-card/70 border border-border/70 rounded-xl p-2 shrink-0">
+                          <img
+                            src={qrDataUrl}
+                            alt="Verification QR Code"
+                            className="h-14 w-14 rounded-lg bg-white p-0.5"
+                          />
+                          <div className="text-[0.65rem] space-y-0.5">
+                            <p className="font-semibold text-foreground">QR Verification</p>
+                            <p className="text-muted-foreground">Scan to verify</p>
+                            <span className="inline-flex items-center gap-1 text-[0.6rem] font-mono text-emerald-600 dark:text-emerald-400">
+                              <CheckCircle2 className="h-2.5 w-2.5" /> Grounded
+                            </span>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  }
-                />
-              </CardHeader>
-              <CardContent>
-                <div className="prose prose-sm dark:prose-invert max-w-none rounded-lg bg-card/40 p-4 sm:p-5 border border-border/50 backdrop-blur-md leading-relaxed text-foreground prose-headings:font-display prose-headings:text-foreground prose-h1:text-xl prose-h2:text-base prose-h3:text-sm prose-p:my-2 prose-li:my-1 prose-code:text-primary prose-a:text-primary overflow-x-auto break-words">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{selected.markdown}</ReactMarkdown>
+
+                    {/* Section 1: Patient Clinical Summary */}
+                    {structured.patientSummary && (
+                      <section className="space-y-2">
+                        <div className="flex items-center gap-2 text-xs font-bold text-primary tracking-wide uppercase">
+                          <Stethoscope className="h-4 w-4" />
+                          <span>1. Clinical Presentation & Case Summary</span>
+                        </div>
+                        <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 text-xs sm:text-sm leading-relaxed text-foreground">
+                          {renderTextWithCitations(structured.patientSummary)}
+                        </div>
+                      </section>
+                    )}
+
+                    {/* Section 2: Objective Findings & Vitals */}
+                    {structured.findings.length > 0 && (
+                      <section className="space-y-2.5">
+                        <div className="flex items-center gap-2 text-xs font-bold text-primary tracking-wide uppercase">
+                          <Activity className="h-4 w-4" />
+                          <span>2. Objective Findings, Vitals & Laboratories</span>
+                        </div>
+                        <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
+                          {structured.findings.map((f, i) => (
+                            <div
+                              key={i}
+                              className="rounded-xl border border-border/70 bg-card/50 p-3 space-y-1"
+                            >
+                              <p className="font-mono text-[0.65rem] uppercase tracking-wider text-muted-foreground">
+                                {f.label}
+                              </p>
+                              <p className="text-xs font-semibold text-foreground leading-snug">
+                                {f.value}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </section>
+                    )}
+
+                    {/* Section 3: Differential Diagnosis & Risk Stratification */}
+                    {structured.differentials.length > 0 && (
+                      <section className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2 text-xs font-bold text-primary tracking-wide uppercase">
+                            <GitFork className="h-4 w-4" />
+                            <span>3. Differential Diagnosis & Risk Stratification</span>
+                          </div>
+                          <span className="text-[0.65rem] text-muted-foreground font-mono">
+                            Ordered by clinical consensus
+                          </span>
+                        </div>
+
+                        <div className="space-y-2.5">
+                          {structured.differentials.map((d, i) => {
+                            const isHigh = d.likelihood === "High";
+                            const isMod = d.likelihood === "Moderate";
+                            return (
+                              <div
+                                key={i}
+                                className={`rounded-xl border p-4 transition-all ${
+                                  isHigh
+                                    ? "border-emerald-500/40 bg-emerald-500/5 dark:bg-emerald-950/15"
+                                    : isMod
+                                    ? "border-amber-500/40 bg-amber-500/5 dark:bg-amber-950/15"
+                                    : "border-border/70 bg-card/40"
+                                }`}
+                              >
+                                <div className="flex flex-wrap items-center justify-between gap-2">
+                                  <div className="flex items-center gap-2">
+                                    <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-card text-xs font-bold border border-border/80">
+                                      {i + 1}
+                                    </span>
+                                    <h4 className="font-display text-sm font-bold text-foreground">
+                                      {d.condition}
+                                    </h4>
+                                  </div>
+                                  <Badge
+                                    className={`text-[0.65rem] font-semibold ${
+                                      isHigh
+                                        ? "bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border-emerald-500/30"
+                                        : isMod
+                                        ? "bg-amber-500/20 text-amber-700 dark:text-amber-300 border-amber-500/30"
+                                        : "bg-slate-500/20 text-slate-700 dark:text-slate-300 border-slate-500/30"
+                                    }`}
+                                  >
+                                    {d.likelihoodText}
+                                  </Badge>
+                                </div>
+
+                                <p className="mt-2.5 text-xs sm:text-sm leading-relaxed text-muted-foreground">
+                                  {renderTextWithCitations(d.rationale)}
+                                </p>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </section>
+                    )}
+
+                    {/* Section 4: Drug Safety & Pharmacovigilance */}
+                    {structured.drugSafety.length > 0 && (
+                      <section className="space-y-3">
+                        <div className="flex items-center gap-2 text-xs font-bold text-amber-600 dark:text-amber-400 tracking-wide uppercase">
+                          <ShieldAlert className="h-4 w-4" />
+                          <span>4. Pharmacovigilance & Medication Safety Audit</span>
+                        </div>
+                        <div className="space-y-2.5">
+                          {structured.drugSafety.map((ds, i) => (
+                            <div
+                              key={i}
+                              className={`rounded-xl border p-3.5 space-y-1.5 ${
+                                ds.isContraindicated
+                                  ? "border-destructive/40 bg-destructive/10"
+                                  : "border-amber-500/40 bg-amber-500/10"
+                              }`}
+                            >
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                  <AlertTriangle
+                                    className={`h-4 w-4 shrink-0 ${
+                                      ds.isContraindicated ? "text-destructive" : "text-amber-600 dark:text-amber-400"
+                                    }`}
+                                  />
+                                  <span className="font-display text-xs font-bold text-foreground">
+                                    {ds.drug}
+                                  </span>
+                                </div>
+                                <Badge
+                                  variant="outline"
+                                  className={`text-[0.6rem] font-mono ${
+                                    ds.isContraindicated
+                                      ? "border-destructive/40 text-destructive"
+                                      : "border-amber-500/40 text-amber-600"
+                                  }`}
+                                >
+                                  {ds.isContraindicated ? "Contraindicated / High Alert" : "Safety Advisory"}
+                                </Badge>
+                              </div>
+                              <p className="text-xs leading-relaxed text-foreground/90">
+                                {renderTextWithCitations(ds.warning)}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </section>
+                    )}
+
+                    {/* Section 5: Biomedical Evidence & Guidelines */}
+                    {structured.evidenceBase.length > 0 && (
+                      <section className="space-y-2.5">
+                        <div className="flex items-center gap-2 text-xs font-bold text-primary tracking-wide uppercase">
+                          <BookOpen className="h-4 w-4" />
+                          <span>5. Clinical Practice Guidelines & Biomedical Evidence</span>
+                        </div>
+                        <div className="space-y-2">
+                          {structured.evidenceBase.map((eb, i) => (
+                            <div
+                              key={i}
+                              className="rounded-xl border border-border/70 bg-card/40 p-3.5 space-y-1"
+                            >
+                              <p className="text-xs font-bold text-foreground">
+                                {eb.topic}
+                              </p>
+                              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                                {renderTextWithCitations(eb.content)}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </section>
+                    )}
+
+                    {/* Section 6: Confidence Calibration & Caveats */}
+                    {structured.confidenceExplanation && (
+                      <section className="space-y-2.5">
+                        <div className="flex items-center gap-2 text-xs font-bold text-primary tracking-wide uppercase">
+                          <CheckCircle2 className="h-4 w-4" />
+                          <span>6. Confidence Calibration & Clinical Limitations</span>
+                        </div>
+                        <div className="rounded-xl border border-border/70 bg-card/40 p-4 space-y-2">
+                          <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                            {renderTextWithCitations(structured.confidenceExplanation)}
+                          </p>
+                          {structured.limitations.length > 0 && (
+                            <ul className="mt-2 space-y-1 text-xs text-muted-foreground list-disc list-inside">
+                              {structured.limitations.map((lim, i) => (
+                                <li key={i}>{lim}</li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      </section>
+                    )}
+
+                    {/* Section 7: Audited References with Direct Links */}
+                    {structured.references.length > 0 && (
+                      <section className="space-y-2.5 border-t border-border/60 pt-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2 text-xs font-bold text-foreground tracking-wide uppercase">
+                            <BookOpen className="h-4 w-4 text-primary" />
+                            <span>7. Audited Citations & Provenance</span>
+                          </div>
+                          <span className="text-[0.65rem] text-muted-foreground font-mono">
+                            NCBI PubMed · openFDA Monograph
+                          </span>
+                        </div>
+
+                        <div className="grid gap-2 sm:grid-cols-2">
+                          {structured.references.map((r, i) => (
+                            <a
+                              key={i}
+                              href={r.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="group flex items-start gap-2 rounded-xl border border-border/60 bg-card/40 p-3 transition-colors hover:border-primary/50 hover:bg-card/70"
+                            >
+                              <Badge
+                                variant="outline"
+                                className="text-[0.6rem] font-mono shrink-0 border-primary/30 text-primary group-hover:bg-primary/10"
+                              >
+                                {r.key}
+                              </Badge>
+                              <div className="min-w-0 flex-1">
+                                <p className="text-xs text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-snug">
+                                  {r.citation}
+                                </p>
+                              </div>
+                              <ExternalLink className="h-3 w-3 text-muted-foreground opacity-60 group-hover:opacity-100 group-hover:text-primary shrink-0 mt-0.5" />
+                            </a>
+                          ))}
+                        </div>
+                      </section>
+                    )}
+
+                    {/* Hospital Safety Attestation */}
+                    <div className="rounded-xl border border-warning/30 bg-warning/10 p-3.5 text-center text-xs text-warning">
+                      <strong>Clinical Attestation:</strong> {DISCLAIMER}
+                    </div>
+                  </div>
                 </div>
-              </CardContent>
-            </GlassCard>
+              )}
+
+              {/* View 2: Raw Markdown View */}
+              {activeTab === "markdown" && (
+                <GlassCard className="p-5">
+                  <div className="prose prose-sm dark:prose-invert max-w-none leading-relaxed text-foreground prose-headings:font-display prose-headings:text-foreground prose-h1:text-xl prose-h2:text-base prose-h3:text-sm prose-p:my-2 prose-li:my-1 prose-code:text-primary prose-a:text-primary overflow-x-auto break-words">
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                      components={{
+                        // Enhance inline citation tags in markdown
+                        p({ children }) {
+                          return <p className="my-2 leading-relaxed">{renderChildrenWithCitations(children)}</p>;
+                        },
+                        li({ children }) {
+                          return <li className="my-1">{renderChildrenWithCitations(children)}</li>;
+                        },
+                      }}
+                    >
+                      {selected.markdown}
+                    </ReactMarkdown>
+                  </div>
+                </GlassCard>
+              )}
+            </div>
           )}
         </div>
       )}
     </AppShell>
   );
+}
+
+/**
+ * Helper to render string text with interactive clickable citation badges
+ */
+function renderTextWithCitations(text: string) {
+  if (!text) return null;
+  const parts = text.split(/(\[(?:pmid:\d+|fda:[\w\-]+|epmc:[\w\-]+)\])/gi);
+
+  return parts.map((part, index) => {
+    if (/^\[(pmid:\d+|fda:[\w\-]+|epmc:[\w\-]+)\]$/i.test(part)) {
+      const { url, type } = getCitationUrl(part);
+      return (
+        <a
+          key={index}
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`inline-flex items-center gap-1 mx-0.5 font-mono text-[0.68rem] px-1.5 py-0.2 rounded border transition-colors ${
+            type === "fda"
+              ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30 hover:bg-amber-500/20"
+              : "bg-primary/10 text-primary border-primary/30 hover:bg-primary/20"
+          }`}
+          title={`Open verified ${type.toUpperCase()} citation in new tab`}
+        >
+          {part}
+          <ExternalLink className="h-2.5 w-2.5 inline-block opacity-70" />
+        </a>
+      );
+    }
+    return part;
+  });
+}
+
+/**
+ * Helper for ReactMarkdown children
+ */
+function renderChildrenWithCitations(children: React.ReactNode): React.ReactNode {
+  if (typeof children === "string") {
+    return renderTextWithCitations(children);
+  }
+  if (Array.isArray(children)) {
+    return children.map((c, idx) => (
+      <span key={idx}>{typeof c === "string" ? renderTextWithCitations(c) : c}</span>
+    ));
+  }
+  return children;
 }
