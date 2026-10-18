@@ -171,10 +171,10 @@ function PipelinePage() {
   );
 
   const { running, statuses, result: liveResult } = run$;
-  const [selectedConsultationId, setSelectedConsultationId] = useState<string>("latest");
+  const [selectedConsultationId, setSelectedConsultationId] = useState<string>("standby");
   const [inspectedAgent, setInspectedAgent] = useState<AgentMeta | null>(null);
 
-  // Determine active consultation data to display
+  // Determine active consultation data to display (null by default in clean standby mode)
   const activeConsultation = useMemo(() => {
     if (running && liveResult) {
       return {
@@ -185,19 +185,16 @@ function PipelinePage() {
         isLive: true,
       };
     }
-    if (consultations && consultations.length > 0) {
-      if (selectedConsultationId === "latest") {
-        return consultations[0] ? { ...consultations[0], isLive: false } : null;
-      }
+    if (selectedConsultationId && selectedConsultationId !== "standby" && consultations && consultations.length > 0) {
       const match = consultations.find((c) => c.id === selectedConsultationId);
-      return match ? { ...match, isLive: false } : { ...consultations[0]!, isLive: false };
+      return match ? { ...match, isLive: false } : null;
     }
     return null;
   }, [consultations, selectedConsultationId, running, liveResult]);
 
   const activeResult: ConsultationResult | null = activeConsultation?.result ?? null;
 
-  // Real summary output per agent from the actual consultation
+  // Real summary output per agent (clean idle role description when in standby)
   const getRealAgentSummary = (id: AgentId): { status: AgentStatus; summary: string } => {
     if (running) {
       const st = statuses[id];
@@ -211,7 +208,11 @@ function PipelinePage() {
     }
 
     if (!activeResult) {
-      return { status: "idle", summary: "Standing ready for incoming clinical cases" };
+      const meta = AGENTS.find((a) => a.id === id);
+      return {
+        status: "idle",
+        summary: meta?.description || "Standing ready for incoming clinical cases.",
+      };
     }
 
     switch (id) {
@@ -340,9 +341,11 @@ function PipelinePage() {
               <Library className="h-4 w-4 text-emerald-500" />
             </div>
             <p className="font-display text-xl font-bold text-emerald-600 dark:text-emerald-400">
-              {activeResult?.evidence?.length ? `${activeResult.evidence.length} Citations` : "NCBI & WHO"}
+              {activeResult?.evidence?.length ? `${activeResult.evidence.length} Citations` : "Standby"}
             </p>
-            <p className="text-[0.68rem] text-muted-foreground">PubMed E-utilities</p>
+            <p className="text-[0.68rem] text-muted-foreground">
+              {activeResult ? "PubMed E-utilities" : "PubMed & WHO Ready"}
+            </p>
           </div>
 
           <div className="rounded-2xl border border-border/70 bg-card/60 p-4 shadow-sm backdrop-blur-md space-y-1">
@@ -354,7 +357,7 @@ function PipelinePage() {
               {activeResult?.safety?.flags?.length ? `${activeResult.safety.flags.length} Flag(s)` : "Zero-Tolerance"}
             </p>
             <p className="text-[0.68rem] text-emerald-600 dark:text-emerald-400 font-medium">
-              Deterministic Safety Audit
+              {activeResult ? "Deterministic Safety Audit" : "Deterministic Guardrail"}
             </p>
           </div>
 
@@ -364,9 +367,11 @@ function PipelinePage() {
               <Sparkles className="h-4 w-4 text-cyan-500" />
             </div>
             <p className="font-display text-xl font-bold text-cyan-600 dark:text-cyan-400">
-              {activeResult?.confidence?.band ? activeResult.confidence.band.toUpperCase() : "CALIBRATED"}
+              {activeResult?.confidence?.band ? activeResult.confidence.band.toUpperCase() : "STANDBY"}
             </p>
-            <p className="text-[0.68rem] text-muted-foreground">Multi-Signal Agreement</p>
+            <p className="text-[0.68rem] text-muted-foreground">
+              {activeResult ? "Multi-Signal Agreement" : "Calibrated on Run"}
+            </p>
           </div>
         </div>
 
@@ -381,19 +386,19 @@ function PipelinePage() {
                       ? "bg-primary/10 text-primary border border-primary/30 animate-pulse"
                       : activeResult
                       ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30"
-                      : "bg-muted text-muted-foreground"
+                      : "bg-muted text-muted-foreground border border-border/60"
                   }`}
                 >
                   <span
                     className={`h-1.5 w-1.5 rounded-full ${
-                      running ? "bg-primary animate-ping" : activeResult ? "bg-emerald-500" : "bg-muted-foreground"
+                      running ? "bg-primary animate-ping" : activeResult ? "bg-emerald-500" : "bg-primary/80"
                     }`}
                   />
                   {running
                     ? "Live Pipeline Execution Active"
                     : activeResult
                     ? "Audited Real Case Telemetry"
-                    : "Standing Ready"}
+                    : "Idle Standby · Ready for Clinical Intake"}
                 </span>
 
                 {activeConsultation?.createdAt && (
@@ -404,29 +409,44 @@ function PipelinePage() {
               </div>
 
               <p className="text-sm font-semibold text-foreground line-clamp-1">
-                {activeConsultation?.question || "No active consultation. Launch a consultation to stream agent execution."}
+                {activeConsultation?.question ||
+                  "Pipeline idle on standby. Launch a new consultation to execute all 11 agents in real time, or select a past case to review telemetry."}
               </p>
             </div>
 
             {/* Case Selector Dropdown if saved consultations exist */}
             {consultations && consultations.length > 0 && !running && (
-              <div className="w-full sm:w-[280px]">
-                <Select
-                  value={selectedConsultationId}
-                  onValueChange={(val) => setSelectedConsultationId(val)}
-                >
-                  <SelectTrigger className="h-8 text-xs bg-card/60">
-                    <SelectValue placeholder="Select patient case" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="latest">Latest Real Consultation</SelectItem>
-                    {consultations.map((c) => (
-                      <SelectItem key={c.id} value={c.id!}>
-                        {c.question.slice(0, 36)}...
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              <div className="flex items-center gap-2 shrink-0">
+                <div className="w-full sm:w-[260px]">
+                  <Select
+                    value={selectedConsultationId}
+                    onValueChange={(val) => setSelectedConsultationId(val)}
+                  >
+                    <SelectTrigger className="h-8 text-xs bg-card/60">
+                      <SelectValue placeholder="Inspect past case (optional)" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="standby">Live Standby (Clean / Ready)</SelectItem>
+                      {consultations.map((c) => (
+                        <SelectItem key={c.id} value={c.id!}>
+                          {c.question.replace(/^["“”']+|["“”']+$/g, "").slice(0, 36)}...
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {selectedConsultationId !== "standby" && (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => setSelectedConsultationId("standby")}
+                    className="h-8 text-xs text-muted-foreground hover:text-foreground"
+                    title="Reset view to clean standby"
+                  >
+                    Clear
+                  </Button>
+                )}
               </div>
             )}
           </div>
