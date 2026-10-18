@@ -122,6 +122,76 @@ function Dashboard() {
         </Button>
       }
     >
+      {/* Clinical Quick Actions Launcher */}
+      <div className="mb-4 grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+        <Link
+          to="/consultation"
+          className="group flex items-center gap-3 rounded-xl border border-primary/30 bg-primary/[0.07] p-3 transition-all hover:bg-primary/[0.12] hover:border-primary/50 hover:shadow-sm"
+        >
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-white shadow-sm transition-transform group-hover:scale-105">
+            <Stethoscope className="h-4 w-4" />
+          </div>
+          <div className="min-w-0">
+            <p className="text-xs font-semibold text-foreground group-hover:text-primary transition-colors">
+              New Consultation
+            </p>
+            <p className="text-[0.68rem] text-muted-foreground truncate">
+              Differential reasoning
+            </p>
+          </div>
+        </Link>
+
+        <Link
+          to="/patient"
+          className="group flex items-center gap-3 rounded-xl border border-border/70 bg-card/60 p-3 transition-all hover:bg-card hover:border-primary/40 hover:shadow-sm"
+        >
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/20 transition-transform group-hover:scale-105">
+            <UserRound className="h-4 w-4" />
+          </div>
+          <div className="min-w-0">
+            <p className="text-xs font-semibold text-foreground group-hover:text-primary transition-colors">
+              Patient Intake
+            </p>
+            <p className="text-[0.68rem] text-muted-foreground truncate">
+              Vitals, labs & photos
+            </p>
+          </div>
+        </Link>
+
+        <Link
+          to="/imaging"
+          className="group flex items-center gap-3 rounded-xl border border-border/70 bg-card/60 p-3 transition-all hover:bg-card hover:border-primary/40 hover:shadow-sm"
+        >
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-sky-500/15 text-sky-600 dark:text-sky-400 border border-sky-500/20 transition-transform group-hover:scale-105">
+            <ImageIcon className="h-4 w-4" />
+          </div>
+          <div className="min-w-0">
+            <p className="text-xs font-semibold text-foreground group-hover:text-primary transition-colors">
+              Chest Radiograph
+            </p>
+            <p className="text-[0.68rem] text-muted-foreground truncate">
+              CAM deep learning
+            </p>
+          </div>
+        </Link>
+
+        <Link
+          to="/drugs"
+          className="group flex items-center gap-3 rounded-xl border border-border/70 bg-card/60 p-3 transition-all hover:bg-card hover:border-primary/40 hover:shadow-sm"
+        >
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/20 transition-transform group-hover:scale-105">
+            <Pill className="h-4 w-4" />
+          </div>
+          <div className="min-w-0">
+            <p className="text-xs font-semibold text-foreground group-hover:text-primary transition-colors">
+              Drug Safety
+            </p>
+            <p className="text-[0.68rem] text-muted-foreground truncate">
+              Allergies & warnings
+            </p>
+          </div>
+        </Link>
+      </div>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
         {isStatsLoading
           ? Array.from({ length: 5 }).map((_, i) => (

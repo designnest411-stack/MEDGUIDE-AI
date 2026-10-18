@@ -17,7 +17,6 @@ import {
   Timer,
   UserRound,
   LogOut,
-  Sparkles,
 } from "lucide-react";
 
 import {
@@ -37,11 +36,10 @@ import { auth, logout } from "@/lib/firebase";
 import { ThemeToggle } from "./theme-toggle";
 
 const clinical = [
-  { title: "Platform Overview", url: "/", icon: Sparkles },
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "AI Consultation", url: "/consultation", icon: Stethoscope },
-  { title: "Agent Pipeline", url: "/pipeline", icon: Activity },
   { title: "Patient Workspace", url: "/patient", icon: UserRound },
+  { title: "Agent Pipeline", url: "/pipeline", icon: Activity },
   { title: "Clinical Timeline", url: "/timeline", icon: Timer },
 ];
 
@@ -114,7 +112,7 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon" className="border-r border-sidebar-border">
       <SidebarHeader>
-        <Link to="/" onClick={handleLinkClick} className="group flex items-center gap-2 px-2 py-2">
+        <Link to="/dashboard" onClick={handleLinkClick} className="group flex items-center gap-2 px-2 py-2">
           <div className="relative flex aspect-square size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 border border-primary/20 shadow-sm">
             <Brain className="size-5 text-primary" />
           </div>
