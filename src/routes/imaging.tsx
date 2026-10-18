@@ -230,9 +230,9 @@ function ImagingPage() {
           });
 
           if (uploadRes.isLocalFallback) {
-            toast.success("Analysis saved locally. (Add Cloudinary keys to sync across devices)");
+            toast.success("Analysis saved locally.");
           } else {
-            toast.success("Analysis and high-resolution scan saved to Cloudinary CDN!");
+            toast.success("Analysis and high-resolution radiograph saved to secure cloud.");
           }
         } catch (dbErr) {
           console.warn("Firestore imaging save warning:", dbErr);
@@ -503,10 +503,10 @@ function ImagingPage() {
                           {isCloud && (
                             <span
                               className="inline-flex items-center gap-0.5 rounded bg-primary/10 px-1 py-0.2 text-[0.55rem] font-medium text-primary"
-                              title="Hosted on Cloudinary CDN"
+                              title="Synchronized to cloud storage"
                             >
                               <Cloud className="h-2.5 w-2.5" />
-                              CDN
+                              Cloud
                             </span>
                           )}
                         </div>

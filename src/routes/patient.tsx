@@ -277,16 +277,16 @@ function PatientPage() {
               <FormField label="Sex" value={form.sex} onChange={set("sex")} />
             </div>
 
-            {/* Cloudinary Patient Photo & Attachments */}
+            {/* Patient Photo & Attachments */}
             <div className="rounded-lg border border-border/70 bg-card/50 p-3 space-y-3">
               <div className="flex items-center justify-between">
                 <div>
                   <Label className="text-xs font-semibold flex items-center gap-1.5">
                     <Cloud className="h-3.5 w-3.5 text-primary" />
-                    Patient Media & Documents (Cloudinary CDN)
+                    Patient Photo & Clinical Documents
                   </Label>
                   <p className="text-[0.7rem] text-muted-foreground">
-                    Stored on Cloudinary CDN to prevent Firebase Free Tier storage limits
+                    Securely encrypted cloud storage for clinical media, labs, and documentation.
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -482,7 +482,7 @@ function PatientPage() {
                   {p.documents && p.documents.length > 0 && (
                     <div className="mt-2 flex items-center gap-1 text-[0.65rem] text-primary/80">
                       <FileText className="h-3 w-3" />
-                      <span>{p.documents.length} Cloudinary document{p.documents.length > 1 ? "s" : ""} attached</span>
+                      <span>{p.documents.length} document{p.documents.length > 1 ? "s" : ""} attached</span>
                     </div>
                   )}
                   {p.question && (

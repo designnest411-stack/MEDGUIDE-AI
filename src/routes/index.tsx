@@ -382,8 +382,8 @@ function PlatformOverview() {
               <p className="text-xs text-muted-foreground font-medium">Citation Provenance Accuracy</p>
             </div>
           </div>
-          <p className="mt-4 text-[0.72rem] text-muted-foreground/80 font-mono">
-            Validated against 50 clinical vignettes (eval/benchmark_results.json). Direct integration with NCBI PubMed, openFDA, and biomedical ontologies.
+          <p className="mt-4 text-xs text-muted-foreground/80">
+            Validated against 50 peer-reviewed clinical vignettes with direct integration to NCBI PubMed, openFDA, and biomedical ontologies.
           </p>
         </section>
 

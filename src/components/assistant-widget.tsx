@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { MessageSquareText, Plus, Trash2, X, Maximize2 } from "lucide-react";
+import { MessageSquareText, Plus, Trash2, X, Maximize2, History } from "lucide-react";
 
 import { AssistantChat } from "@/components/assistant-chat";
 import {
@@ -54,8 +54,8 @@ export function AssistantWidget() {
                 {threads.find((t) => t.id === activeId)?.title ?? "New conversation"}
               </p>
             </div>
-            <IconBtn label="Conversations" onClick={() => setShowList((v) => !v)}>
-              <span className="font-mono text-[0.65rem]">{threads.length || 0}</span>
+            <IconBtn label="Conversation history" onClick={() => setShowList((v) => !v)}>
+              <History className="h-3.5 w-3.5" />
             </IconBtn>
             <IconBtn
               label="New conversation"
