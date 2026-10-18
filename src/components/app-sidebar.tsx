@@ -16,13 +16,11 @@ import {
   Stethoscope,
   Timer,
   UserRound,
-  LogOut,
 } from "lucide-react";
 
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -32,8 +30,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { auth, logout } from "@/lib/firebase";
-import { ThemeToggle } from "./theme-toggle";
 
 const clinical = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
@@ -134,70 +130,6 @@ export function AppSidebar() {
         {group("Intelligence", intelligence)}
         {group("Insight", insight)}
       </SidebarContent>
-
-      <SidebarFooter>
-        <div className="mx-1 mb-2 space-y-2">
-          {!collapsed && auth.currentUser && (
-            <div className="flex items-center gap-2.5 rounded-lg border border-sidebar-border/80 bg-sidebar-accent/50 px-2.5 py-2">
-              {auth.currentUser.photoURL ? (
-                <img
-                  src={auth.currentUser.photoURL}
-                  alt=""
-                  className="h-7 w-7 rounded-full object-cover ring-1 ring-primary/40"
-                />
-              ) : (
-                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/20 text-xs font-bold text-primary">
-                  {(
-                    auth.currentUser.displayName?.[0] ||
-                    auth.currentUser.email?.[0] ||
-                    "D"
-                  ).toUpperCase()}
-                </div>
-              )}
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-xs font-semibold text-foreground">
-                  {auth.currentUser.displayName || "Clinician"}
-                </p>
-                <p className="truncate text-[10px] text-muted-foreground">
-                  {auth.currentUser.email || "clinical-session"}
-                </p>
-              </div>
-            </div>
-          )}
-
-          {collapsed ? (
-            <div className="flex flex-col items-center gap-2">
-              <ThemeToggle collapsed />
-              <SidebarMenu>
-                <SidebarMenuItem>
-                  <SidebarMenuButton
-                    tooltip="Sign out"
-                    onClick={() => logout()}
-                    className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-                    aria-label="Sign out"
-                  >
-                    <LogOut className="h-4 w-4 shrink-0" />
-                    <span className="sr-only">Sign out</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              </SidebarMenu>
-            </div>
-          ) : (
-            <div className="space-y-1.5 rounded border border-sidebar-border/80 p-2">
-              <ThemeToggle />
-              <button
-                type="button"
-                onClick={() => logout()}
-                className="group flex w-full items-center gap-2 rounded-md bg-destructive/10 px-2 py-1.5 text-xs font-medium text-destructive transition-colors hover:bg-destructive hover:text-destructive-foreground"
-                aria-label="Sign out of clinical session"
-              >
-                <LogOut className="h-3.5 w-3.5" />
-                Sign out
-              </button>
-            </div>
-          )}
-        </div>
-      </SidebarFooter>
     </Sidebar>
   );
 }
