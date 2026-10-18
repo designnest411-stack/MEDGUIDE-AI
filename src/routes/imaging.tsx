@@ -208,9 +208,10 @@ function ImagingPage() {
 
       if (cols) {
         try {
-          setUploadStatus("Optimizing and storing asset on Cloudinary...");
+          setUploadStatus("Optimizing and storing asset on cloud storage...");
+          const imagingFolder = `medguide/${user?.uid || "clinician"}/imaging`;
           const uploadRes = await uploadToCloudinary(dataUrl, {
-            folder: "medguide-imaging",
+            folder: imagingFolder,
             tags: ["chest-xray", fileName || "scan"],
           });
 

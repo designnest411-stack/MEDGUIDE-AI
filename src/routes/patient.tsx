@@ -107,19 +107,28 @@ function PatientPage() {
     setEditingId(null);
   };
 
+  const getPatientFolder = (subfolder: "photos" | "documents") => {
+    const uid = auth.currentUser?.uid || "clinician";
+    const patientSlug = (editingId || form.name || "patient")
+      .toLowerCase()
+      .replace(/[^a-z0-9_-]/g, "_")
+      .slice(0, 32);
+    return `medguide/${uid}/patients/${patientSlug}/${subfolder}`;
+  };
+
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     try {
       setUploadingDoc(true);
-      toast.info("Uploading photo to Cloudinary...");
+      toast.info("Uploading photo to secure cloud storage...");
       const res = await uploadToCloudinary(file, {
-        folder: "medguide-patients/photos",
+        folder: getPatientFolder("photos"),
         tags: ["patient-photo", form.name || "patient"],
       });
       const url = res.secureUrl || res.url;
       setForm((f) => ({ ...f, photoUrl: url }));
-      toast.success(res.isLocalFallback ? "Photo stored locally" : "Photo uploaded to Cloudinary CDN!");
+      toast.success(res.isLocalFallback ? "Photo stored locally" : "Photo uploaded to secure cloud!");
     } catch (err) {
       toast.error("Failed to upload photo: " + (err as Error).message);
     } finally {
@@ -133,9 +142,9 @@ function PatientPage() {
     if (!file) return;
     try {
       setUploadingDoc(true);
-      toast.info(`Uploading document "${file.name}" to Cloudinary...`);
+      toast.info(`Uploading document "${file.name}" to secure cloud...`);
       const res = await uploadToCloudinary(file, {
-        folder: "medguide-patients/documents",
+        folder: getPatientFolder("documents"),
         tags: ["patient-document", form.name || "patient"],
       });
       const newDoc: PatientDocument = {
