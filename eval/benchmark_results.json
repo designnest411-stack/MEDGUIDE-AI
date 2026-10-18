@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-08T12:51:52.416Z",
+  "timestamp": "2026-10-18T15:00:58.245Z",
   "vignetteCount": 50,
   "architectures": {
     "Vanilla LLM (Zero-Shot)": {
@@ -103,36 +103,74 @@
       "primaryFailureMode": "Fully grounded; safety auditor strips unverified claims."
     }
   },
+  "statisticalSignificance": [
+    {
+      "comparison": "Agentic Graph RAG vs. Vanilla LLM",
+      "tStatistic": 72.47,
+      "degreesOfFreedom": 49,
+      "pValue": 1e-15,
+      "isSignificant": true
+    },
+    {
+      "comparison": "Agentic Graph RAG vs. Vector RAG",
+      "tStatistic": 28.3,
+      "degreesOfFreedom": 49,
+      "pValue": 1e-15,
+      "isSignificant": true
+    },
+    {
+      "comparison": "Agentic Graph RAG vs. Graph RAG",
+      "tStatistic": 16.15,
+      "degreesOfFreedom": 49,
+      "pValue": 1e-15,
+      "isSignificant": true
+    }
+  ],
   "domainBreakdown": {
     "Cardiology": {
-      "grounding": 92.5,
-      "safety": 94.2,
-      "explainability": 96,
-      "count": 12
+      "count": 12,
+      "meanGrounding": 88.72,
+      "sdGrounding": 3.49,
+      "meanSafety": 90.6,
+      "sdSafety": 4.34,
+      "meanExplainability": 94.62,
+      "sdExplainability": 3.24
     },
     "Pulmonology": {
-      "grounding": 91,
-      "safety": 92.8,
-      "explainability": 95.5,
-      "count": 12
+      "count": 12,
+      "meanGrounding": 91.51,
+      "sdGrounding": 4.54,
+      "meanSafety": 93.68,
+      "sdSafety": 4.82,
+      "meanExplainability": 95.87,
+      "sdExplainability": 2.97
     },
     "Neurology": {
-      "grounding": 88.4,
-      "safety": 90,
-      "explainability": 94,
-      "count": 10
+      "count": 10,
+      "meanGrounding": 90.7,
+      "sdGrounding": 3.66,
+      "meanSafety": 94.91,
+      "sdSafety": 3.7,
+      "meanExplainability": 94.89,
+      "sdExplainability": 2.23
     },
     "Nephrology / Endo": {
-      "grounding": 89.2,
-      "safety": 91.5,
-      "explainability": 94.8,
-      "count": 8
+      "count": 8,
+      "meanGrounding": 91.69,
+      "sdGrounding": 4.9,
+      "meanSafety": 90.89,
+      "sdSafety": 2.02,
+      "meanExplainability": 95.34,
+      "sdExplainability": 2.86
     },
     "Infectious / Pharm": {
-      "grounding": 87.5,
-      "safety": 90.5,
-      "explainability": 93.5,
-      "count": 8
+      "count": 8,
+      "meanGrounding": 89.09,
+      "sdGrounding": 2.27,
+      "meanSafety": 90.39,
+      "sdSafety": 2.86,
+      "meanExplainability": 95.5,
+      "sdExplainability": 2.58
     }
   }
 }

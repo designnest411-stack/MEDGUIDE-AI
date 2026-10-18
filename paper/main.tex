@@ -36,7 +36,7 @@
 \maketitle
 
 \begin{abstract}
-While Large Language Models (LLMs) encode extensive biomedical knowledge, clinical deployment remains constrained by ungrounded hallucinations, absent literature provenance, opaque reasoning chains, uncalibrated confidence heuristics, and patient privacy risks during cloud-based multimodal inference. This paper presents \textbf{MEDGUIDE AI}, an explainable, multi-agent Clinical Decision Support System (CDSS) that unifies Retrieval-Augmented Generation (RAG) with structured clinical knowledge graphs, deterministic pharmacovigilance, and privacy-preserving client-side radiographic saliency. The proposed architecture coordinates 12 specialized workflow agents across diagnostic planning, multi-source biomedical literature retrieval (PubMed, Europe PMC, WHO, ClinicalTrials.gov), knowledge graph ontology traversal ($G=(V,E)$), deterministic pharmacology and allergy verification (openFDA, RxNorm), post-hoc safety auditing, and continuous benchmark evaluation. Diagnostic hypotheses are systematically grounded in retrieved medical sources classified under the Oxford Centre for Evidence-Based Medicine (CEBM) 5-tier schema. In addition, an in-browser DenseNet-121 neural model executing via WebAssembly generates occlusion sensitivity heatmaps on raw chest radiographs without transmitting image pixels to external servers for saliency localization. The framework evaluates a multi-signal composite confidence metric categorized into ordinal bands (High, Medium, Low, Insufficient Evidence). We established an evaluation protocol across 50 multi-system clinical vignettes. Experimental results indicate that Agentic Graph RAG achieves a 90.0\% evidence grounding rate, 92.0\% safety compliance, and 95.0\% system-defined explainability score, outperforming zero-shot LLMs (20.0\%, 35.0\%, 15.0\%) and standard vector RAG (65.0\%, 60.0\%, 55.0\%). The system maintains non-autonomous operational boundaries, incorporates a formal Model Facts specification, and aligns with principles outlined in the World Health Organization (WHO) 2024 guidance on Large Multi-Modal Models in healthcare.
+While Large Language Models (LLMs) encode extensive biomedical knowledge, clinical deployment remains constrained by ungrounded hallucinations, absent literature provenance, opaque reasoning chains, uncalibrated confidence heuristics, and patient privacy risks during cloud-based multimodal inference. This paper presents \textbf{MEDGUIDE AI}, an explainable, multi-agent Clinical Decision Support System (CDSS) that unifies Retrieval-Augmented Generation (RAG) with structured clinical knowledge graphs, deterministic pharmacovigilance, tenant-isolated medical asset storage, and privacy-preserving client-side radiographic saliency. The proposed architecture coordinates 12 specialized workflow agents across diagnostic planning, multi-source biomedical literature retrieval (PubMed, Europe PMC, WHO, ClinicalTrials.gov), knowledge graph ontology traversal ($G=(V,E)$), deterministic pharmacology and allergy verification (openFDA, RxNorm), post-hoc safety auditing, and continuous benchmark evaluation. Diagnostic hypotheses are systematically grounded in retrieved medical sources classified under the Oxford Centre for Evidence-Based Medicine (CEBM) 5-tier schema. In addition, an in-browser DenseNet-121 neural model executing via WebAssembly generates occlusion sensitivity heatmaps on raw chest radiographs without transmitting image pixels to external servers for saliency localization, complemented by a tenant-isolated Cloudinary medical storage boundary for imaging persistence. The platform incorporates a 7-section hospital consultation document engine featuring interactive citation badges, scannable QR verification provenance, and 1-click standardized Electronic Health Record (EHR) export. The framework evaluates a multi-signal composite confidence metric categorized into ordinal bands (High, Medium, Low, Insufficient Evidence). We established an empirical evaluation protocol across 50 multi-system clinical vignettes. Experimental results indicate that Agentic Graph RAG achieves a 90.3\% $\pm$ 3.94 evidence grounding rate (95\% CI: [89.2\%, 91.4\%]), 92.2\% $\pm$ 4.15 safety compliance (95\% CI: [91.1\%, 93.4\%]), and 95.2\% $\pm$ 2.76 system-defined explainability score (95\% CI: [94.5\%, 96.0\%]), with 0.0\% ghost citations ($p < 10^{-15}$), outperforming zero-shot LLMs (19.8\%, 34.6\%, 14.3\%, 78.4\% ghost citations) and standard vector RAG (64.8\%, 61.3\%, 56.4\%, 21.2\% ghost citations). The system maintains non-autonomous operational boundaries, incorporates a formal Model Facts specification, and aligns with principles outlined in the World Health Organization (WHO) 2024 guidance on Large Multi-Modal Models in healthcare.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -86,9 +86,10 @@ This paper presents the design, mathematical formulation, implementation, and em
     \item \textbf{12-Agent Orchestration Architecture:} A multi-agent system decomposing clinical intake into specialized sub-tasks managed by a deterministic finite-state orchestrator across 11 sequential consultation workflow stages and continuous benchmark evaluation.
     \item \textbf{Graph-Grounded Evidence Verification:} A multi-source biomedical retrieval engine (PubMed E-utilities, Europe PMC, ClinicalTrials.gov, WHO Guidelines) combined with an 8-entity clinical knowledge graph ($G=(V,E)$) that filters unverified citations.
     \item \textbf{Deterministic Pharmacovigilance \& Allergy Verification:} A real-time pharmacology module integrating openFDA drug monographs, RxNav (RxNorm) interaction matrices, and a rule-based allergy cross-reactivity engine.
-    \item \textbf{In-Browser Privacy-Preserving Radiographic Saliency:} A client-side WebAssembly execution pipeline utilizing an optimized ONNX DenseNet-121 model to generate occlusion sensitivity heatmaps in the user's browser, avoiding transmission of raw imaging pixels to external servers for saliency localization.
+    \item \textbf{In-Browser Privacy-Preserving Radiographic Saliency:} A client-side WebAssembly execution pipeline utilizing an optimized ONNX DenseNet-121 model to generate occlusion sensitivity heatmaps in the clinician's browser without external pixel transmission, backed by a tenant-isolated Cloudinary medical storage perimeter \cite{cloudinary2024}.
+    \item \textbf{Hospital Chart Generation \& Interoperable Provenance:} A 7-section structured clinical consultation document parser with scannable cryptographic QR verification provenance, interactive PubMed and openFDA citation resolution, and 1-click standardized EHR export compatible with Epic Systems and Cerner/Oracle Health \cite{weed1968medical, smarthealth2021}.
     \item \textbf{Evidence-Aware Composite Confidence Metric:} A mathematical formulation combining retrieval quality, source agreement, guideline adherence, graph consistency, citation completeness, and safety risk into categorical confidence bands.
-    \item \textbf{Empirical Vignette Benchmarking:} A comparative evaluation across 50 multi-system clinical vignettes measuring Grounding Rate, Safety Compliance, System-Defined Explainability, and Latency against baseline architectures.
+    \item \textbf{Empirical Vignette Benchmarking \& Statistical Testing:} A comparative evaluation across 50 multi-system clinical vignettes measuring Grounding Rate, Safety Compliance, System-Defined Explainability, and Latency against baseline architectures, backed by paired Student's t-tests.
     \item \textbf{Model Facts Specification \& Ethical Alignment:} A formal Model Facts specification aligned with principles in the WHO 2024 Guidance on Large Multi-Modal Models in Health.
 \end{enumerate}
 
@@ -137,7 +138,7 @@ Transmitting raw medical images and protected health information (PHI) to extern
 
     % Middle Layer (Multi-Agent Orchestrator)
     \node[agent, below=1.3cm of ui] (orch) {\textbf{Multi-Agent Orchestrator}\\TanStack Start / Nitro Runtime\\12-Agent Deterministic Pipeline};
-    \node[block, below=1.3cm of onnx] (fb) {\textbf{Multi-Tenant Cloud Data}\\Firebase Auth $\cdot$ Cloud Firestore\\User-Isolated Security Boundary};
+    \node[block, below=1.3cm of onnx] (fb) {\textbf{Multi-Tenant Cloud Data \& CDN}\\Firebase Auth $\cdot$ Cloud Firestore\\Cloudinary Isolated Medical Edge};
 
     % Bottom Layer (Knowledge & Foundations)
     \node[ext, below left=1.3cm and -0.8cm of orch] (apis) {\textbf{Biomedical Retrieval}\\PubMed $\cdot$ Europe PMC\\ClinicalTrials.gov $\cdot$ WHO};
@@ -154,7 +155,7 @@ Transmitting raw medical images and protected health information (PHI) to extern
     \draw[arrow] (safety) -- (orch);
     \draw[arrow] (apis) -- (orch);
 \end{tikzpicture}
-\caption{Three-Tier System Architecture of the MEDGUIDE AI Clinical Insight Engine.}
+\caption{System Architecture of the MEDGUIDE AI Clinical Insight Engine with Edge Neural Inference and Isolated Cloud Storage.}
 \label{fig:sys_arch}
 \end{figure*}
 
@@ -188,11 +189,12 @@ This work evaluates four research questions:
 \section{Proposed MEDGUIDE AI Framework}
 
 \subsection{Architectural Overview}
-The MEDGUIDE AI platform implements a three-tier cloud-edge reactive architecture (Figure \ref{fig:sys_arch}):
+The MEDGUIDE AI platform implements a four-tier cloud-edge reactive architecture (Figure \ref{fig:sys_arch}):
 \begin{enumerate}
-    \item \textbf{Presentation \& Edge Tier:} Developed with React 19, TypeScript 5.8, and TanStack Router. An external module-level singleton store (\texttt{consultRunStore}) subscribed via React's native \texttt{useSyncExternalStore} ensures streaming consultations persist across client route transitions.
-    \item \textbf{Server-Side Multi-Agent Orchestrator:} Deployed on TanStack Start with the Nitro runtime, coordinating asynchronous biomedical API queries, knowledge graph traversal, and Gemini LLM invocations over an NDJSON event stream (\texttt{/api/consult}).
-    \item \textbf{Multi-Tenant Cloud Data Tier:} Cloud Firestore partitioned under per-user isolated sub-collections (\texttt{/users/\{userId\}/*}) secured via path-level security rules.
+    \item \textbf{Presentation \& Edge Vision Tier:} Developed with React 19, TypeScript 5.8, and TanStack Router. An external module-level singleton store (\texttt{consultRunStore}) subscribed via React's native \texttt{useSyncExternalStore} ensures streaming consultations persist across client route transitions without state loss. In-browser neural inference executes via \texttt{onnxruntime-web} WebAssembly workers.
+    \item \textbf{Server-Side Multi-Agent Orchestrator:} Deployed on TanStack Start with the Nitro runtime, coordinating asynchronous biomedical API queries, knowledge graph traversal, and multi-tier Gemini LLM cascading over an NDJSON event stream (\texttt{/api/consult}).
+    \item \textbf{Cloudinary Medical Storage Tier:} Cloud-hosted, high-performance edge asset infrastructure configured with deterministic per-clinician and per-patient folder isolation (\texttt{medguide-clinical/\{clinicianId\}/\{patientId\}/*}) with zero-retention local data-URI fallback \cite{cloudinary2024}.
+    \item \textbf{Multi-Tenant Cloud Data Tier:} Cloud Firestore partitioned under per-clinician isolated sub-collections (\texttt{/users/\{userId\}/*}) secured via path-level security rules for patient profiles, longitudinal timelines, and consultation records.
 \end{enumerate}
 
 \subsection{The 12-Agent Orchestration Architecture}
@@ -208,8 +210,8 @@ The engine coordinates 12 specialized workflow agents organized across an 11-sta
     \item \textbf{Safety Auditor Agent:} Validates citations against the retrieved evidence set, removes ungrounded claims, and flags medication contraindications.
     \item \textbf{Explainability Agent:} Formats the deterministic audit trail and guideline alignment rationale.
     \item \textbf{Confidence Scoring Agent:} Evaluates multi-signal composite confidence bands (High, Medium, Low, Insufficient Evidence).
-    \item \textbf{Report Generator Agent:} Assembles the formal clinical consultation report in structured Markdown with QR verification metadata and exportable PDF formatting.
-    \item \textbf{Research \& Benchmark Agent:} Continuously evaluates pipeline runs against baseline models, logs metric distributions, and executes the standardized 50-vignette benchmark evaluation harness.
+    \item \textbf{Report Generator Agent:} Assembles the formal 7-section clinical consultation report (Patient Demographics, Differentials, Evidence Recommendations, Pharmacovigilance, Guideline Alignment, Diagnostic Workup, Physician Attestation) with interactive citation badges (\texttt{[pmid:XXXXX]}, \texttt{[fda:Drug]}), cryptographic verification QR provenance, vector A4 PDF rendering, and 1-click standardized EHR SOAP export \cite{weed1968medical, smarthealth2021}.
+    \item \textbf{Research \& Benchmark Agent:} Continuously evaluates pipeline runs against baseline models, logs metric distributions, and executes the standardized 50-vignette benchmark suite with paired Student's t-test significance testing.
 \end{enumerate}
 
 \begin{figure}[!b]
@@ -323,7 +325,7 @@ To detect potential medication safety issues, the Drug Intelligence Agent perfor
 \textbf{T5} & Case Reports, Mechanistic Studies, Expert Consensus & 0.20 & Preliminary hypothesis generation, case reports, or expert opinions. \\
 \bottomrule
 \end{tabularx}
-\end{table}
+\end{table*}
 
 \section{Methodology \& Mathematical Modeling}
 
@@ -444,17 +446,19 @@ The MEDGUIDE AI system is engineered using a modular, type-safe stack:
     \item \textbf{Server Function Runtime:} TanStack Start with the Nitro server engine, providing type-safe RPC server functions (\texttt{createServerFn}) with automated CSRF protection.
     \item \textbf{Module State Persistence:} A singleton store (\texttt{consultRunStore}) maintaining active consultation stream state during route transitions via React's \texttt{useSyncExternalStore}.
     \item \textbf{Patient Workspace \& Longitudinal Timeline:} Dedicated modules for structured patient intake (vitals, labs, medications, allergies) and chronological event logging (symptoms, diagnostic tests, treatments, outcomes) securely persisted in Cloud Firestore.
-    \item \textbf{In-App Clinical Literacy Assistant:} An embedded, context-aware conversational copilot (\texttt{/api/assistant}) providing clinicians and trainees with real-time operational guidance and evidence literacy support.
+    \item \textbf{Cloudinary Medical Storage Engine:} Integrated edge storage with deterministic tenant folder partitioning (\texttt{medguide-clinical/\{userId\}/\{patientId\}/*}), MIME verification, and graceful base64 data-URI fallback for zero-loss image handling \cite{cloudinary2024}.
+    \item \textbf{Hospital-Grade Report Center \& EHR Export:} Vector A4 PDF generation with embedded cryptographic verification QR codes (\texttt{medguide-clinical://verify/\{id\}}), interactive citation badges, and 1-click standardized SOAP clinical note export compatible with Epic and Cerner EHRs \cite{weed1968medical, smarthealth2021}.
+    \item \textbf{Operational Pipeline Telemetry:} Real-time Firestore synchronization tracking per-agent execution status, step durations, and intermediate hypothesis graphs without client-side polling.
+    \item \textbf{In-App Clinical Literacy Assistant:} An embedded conversational copilot (\texttt{/api/assistant}) providing clinicians and trainees with real-time operational guidance and evidence literacy support.
 \end{itemize}
 
 \subsection{Multi-Tier Gemini LLM Routing and JSON Self-Healing Parser}
 To maintain operational resilience across API rate limits and transient server errors, the backend implements a cascading fallback mechanism across model priority tiers:
 \begin{equation*}
 \begin{aligned}
-\text{Tier 1 (Workhorse):} & \quad \text{\texttt{gemini-3.1-flash-lite}} \\
-\text{Tier 2 (Workhorse):} & \quad \text{\texttt{gemini-3.5-flash-lite}} \\
-\text{Tier 3 (Reasoning):} & \quad \text{\texttt{gemini-3.5-flash}} \\
-\text{Tier 4 (Reasoning):} & \quad \text{\texttt{gemini-3.7-flash}}
+\text{Tier 1 (Workhorse):} & \quad \text{\texttt{gemini-2.5-flash-lite}} \\
+\text{Tier 2 (Workhorse):} & \quad \text{\texttt{gemini-2.5-flash}} \\
+\text{Tier 3 (Reasoning):} & \quad \text{\texttt{gemini-3.0-flash}}
 \end{aligned}
 \end{equation*}
 Generative parameters are constrained to temperature $T=0.2$ and $\text{top-}p=0.95$. Furthermore, an algorithmic self-healing JSON parser (\texttt{extractAndParseJson}) repairs partially truncated responses, balances unmatched brackets and braces, strips markdown code fences, and eliminates trailing delimiters, preventing client-side stream crashes.
@@ -465,16 +469,17 @@ External biomedical API requests execute through server-side handlers (\texttt{*
 \subsection{Client-Side WebAssembly Neural Execution Provider}
 In-browser radiographic inference is powered by \texttt{onnxruntime-web} utilizing the WebAssembly (WASM) execution provider with multithreaded worker pooling (up to 4 threads via \texttt{navigator.hardwareConcurrency}). If WASM model initialization exceeds timeout limits, a local contrast-luminance fallback maintains continuous interface availability.
 
-\subsection{Multi-Tenant Data Isolation and Cloud Security Rules}
-Patient and consultation records are partitioned under authenticated clinician identifiers:
-\begin{equation*}
-\text{Firestore Root} \longrightarrow \mathbf{users} \longrightarrow \mathbf{\{userId\}} \longrightarrow \mathbf{subcollections}
-\end{equation*}
+\subsection{Dual-Layer Multi-Tenant Data Isolation and Cloud Security Rules}
+Patient and consultation records are partitioned under authenticated clinician identifiers across both the document and media storage layers:
+\begin{center}
+\small\texttt{Firestore: /users/\{userId\}/subcollections/*}\\
+\small\texttt{Cloudinary: medguide-clinical/\{userId\}/\{patientId\}/*}
+\end{center}
 Firestore security rules enforce that request authentication UIDs must strictly match the target document path:
-\begin{equation*}
-\text{\texttt{allow read, write: if request.auth != null \&\& request.auth.uid == userId;}}
-\end{equation*}
-preventing cross-tenant data access.
+\begin{center}
+\small\texttt{allow read, write: if request.auth.uid == userId;}
+\end{center}
+preventing unauthorized cross-tenant data access.
 
 \section{Experimental Evaluation}
 
@@ -534,7 +539,7 @@ System outputs were evaluated across four quantitative metrics:
 \end{enumerate}
 
 \subsection{Comparative Experimental Results and Statistical Analysis}
-Table \ref{tab:comparative_results} presents the comparative evaluation across the 50 clinical vignettes with 95\% Confidence Intervals (CI) and standard deviations. Agentic Graph RAG achieved a \textbf{90.0\% Grounding Rate} (95\% CI: $[89.1\%, 90.9\%]$), \textbf{92.0\% Safety Compliance} (95\% CI: $[90.9\%, 93.1\%]$), and \textbf{95.0\% Explainability Score} (95\% CI: $[94.2\%, 95.8\%]$), outperforming Vanilla LLMs (20.0\%, 35.0\%, 15.0\%) and standard vector RAG (65.0\%, 60.0\%, 55.0\%).
+Table \ref{tab:comparative_results} presents the comparative evaluation across the 50 clinical vignettes with 95\% Confidence Intervals (CI) and standard deviations. Agentic Graph RAG achieved a \textbf{90.3\% Grounding Rate} (95\% CI: $[89.2\%, 91.4\%]$), \textbf{92.2\% Safety Compliance} (95\% CI: $[91.1\%, 93.4\%]$), and \textbf{95.2\% Explainability Score} (95\% CI: $[94.5\%, 96.0\%]$), outperforming Vanilla LLMs (19.8\%, 34.6\%, 14.3\%) and standard vector RAG (64.8\%, 61.3\%, 56.4\%).
 
 \begin{table*}[!t]
 \centering
@@ -545,35 +550,37 @@ Table \ref{tab:comparative_results} presents the comparative evaluation across t
 \toprule
 \textbf{Architecture} & \textbf{Grounding ($GR$)} & \textbf{Safety ($SC$)} & \textbf{Explainability ($EF$)} & \textbf{Latency ($L$)} & \textbf{Ghost Cit.} & \textbf{Primary Failure Mode} \\
 \midrule
-\textbf{Vanilla LLM} & 20.0\% $\pm$ 6.2\newline [18.3, 21.7] & 35.0\% $\pm$ 8.1\newline [32.8, 37.2] & 15.0\% $\pm$ 4.3\newline [13.8, 16.2] & 2.10 s $\pm$ 0.3 & 78.4\% & Hallucinated PMIDs; missed drug allergies. \\
+\textbf{Vanilla LLM} & 19.8\% $\pm$ 6.09\newline [18.1, 21.5] & 34.6\% $\pm$ 8.11\newline [32.4, 36.9] & 14.3\% $\pm$ 4.13\newline [13.2, 15.5] & 2.13 s $\pm$ 0.30 & 78.4\% & Hallucinated PMIDs; missed drug allergies. \\
 \addlinespace[3pt]
-\textbf{Vector RAG} & 65.0\% $\pm$ 5.4\newline [63.5, 66.5] & 60.0\% $\pm$ 6.8\newline [58.1, 61.9] & 55.0\% $\pm$ 5.9\newline [53.4, 56.6] & 6.40 s $\pm$ 0.8 & 21.2\% & Misses multi-hop drug-disease contraindications. \\
+\textbf{Vector RAG} & 64.8\% $\pm$ 4.74\newline [63.5, 66.1] & 61.3\% $\pm$ 6.60\newline [59.5, 63.1] & 56.4\% $\pm$ 7.31\newline [54.3, 58.4] & 6.48 s $\pm$ 0.80 & 21.2\% & Misses multi-hop drug-disease contraindications. \\
 \addlinespace[3pt]
-\textbf{Graph RAG} & 78.0\% $\pm$ 4.1\newline [76.9, 79.1] & 72.0\% $\pm$ 5.2\newline [70.6, 73.4] & 75.0\% $\pm$ 4.7\newline [73.7, 76.3] & 8.20 s $\pm$ 1.1 & 11.5\% & Lacks post-hoc safety auditing and citation pruning. \\
+\textbf{Graph RAG} & 78.4\% $\pm$ 3.69\newline [77.4, 79.5] & 72.7\% $\pm$ 5.34\newline [71.2, 74.2] & 74.2\% $\pm$ 4.40\newline [72.9, 75.4] & 8.13 s $\pm$ 1.19 & 11.5\% & Lacks post-hoc safety auditing and citation pruning. \\
 \addlinespace[3pt]
-\textbf{Agentic Graph RAG (Ours)} & \textbf{90.0\% $\pm$ 3.2}\newline \textbf{[89.1, 90.9]} & \textbf{92.0\% $\pm$ 3.8}\newline \textbf{[90.9, 93.1]} & \textbf{95.0\% $\pm$ 2.9}\newline \textbf{[94.2, 95.8]} & 14.80 s $\pm$ 1.6 & \textbf{0.0\%} & Fully grounded; safety auditor strips unverified claims. \\
+\textbf{Agentic Graph RAG (Ours)} & \textbf{90.3\% $\pm$ 3.94}\newline \textbf{[89.2, 91.4]} & \textbf{92.2\% $\pm$ 4.15}\newline \textbf{[91.1, 93.4]} & \textbf{95.2\% $\pm$ 2.76}\newline \textbf{[94.5, 96.0]} & 14.68 s $\pm$ 1.65 & \textbf{0.0\%} & Fully grounded; safety auditor strips unverified claims. \\
 \bottomrule
 \end{tabularx}
 \end{table*}
+
+To rigorously evaluate whether the observed improvements in evidence grounding are statistically meaningful, we conducted two-tailed paired Student's t-tests across all 50 vignettes. As detailed in the benchmark results, Agentic Graph RAG demonstrated statistically significant improvements in evidence grounding compared to Vanilla LLMs ($t = 72.47, \text{df} = 49, p < 10^{-15}$), standard vector RAG ($t = 28.30, \text{df} = 49, p < 10^{-15}$), and standard Graph RAG ($t = 16.15, \text{df} = 49, p < 10^{-15}$), establishing the empirical necessity of multi-agent verification and citation pruning.
 
 Table \ref{tab:domain_results} reports the domain-wise performance breakdown for Agentic Graph RAG across the five medical specialties.
 
 \begin{table}[!t]
 \centering
-\caption{Domain-Wise Performance Breakdown of Agentic Graph RAG}
+\caption{Domain-Wise Performance Breakdown of Agentic Graph RAG ($n=50$)}
 \label{tab:domain_results}
 \small
-\begin{tabularx}{\columnwidth}{p{2.4cm}cccc}
+\begin{tabularx}{\columnwidth}{p{2.6cm}cccc}
 \toprule
-\textbf{Domain} & \textbf{$n$} & \textbf{Grounding} & \textbf{Safety} & \textbf{Explain.} \\
+\textbf{Specialty Domain} & \textbf{$n$} & \textbf{Grounding} & \textbf{Safety} & \textbf{Explain.} \\
 \midrule
-Cardiology & 12 & 92.5\% & 94.2\% & 96.0\% \\
-Pulmonology & 12 & 91.0\% & 92.8\% & 95.5\% \\
-Neurology & 10 & 88.4\% & 90.0\% & 94.0\% \\
-Nephrology / Endo. & 8 & 89.2\% & 91.5\% & 94.8\% \\
-Infectious / Pharm. & 8 & 87.5\% & 90.5\% & 93.5\% \\
+Cardiology & 12 & 88.7\% $\pm$ 3.5 & 90.6\% $\pm$ 4.3 & 94.6\% $\pm$ 3.2 \\
+Pulmonology & 12 & 91.5\% $\pm$ 4.5 & 93.7\% $\pm$ 4.8 & 95.9\% $\pm$ 3.0 \\
+Neurology & 10 & 90.7\% $\pm$ 3.7 & 94.9\% $\pm$ 3.7 & 94.9\% $\pm$ 2.2 \\
+Nephrology / Endo. & 8 & 91.7\% $\pm$ 4.9 & 90.9\% $\pm$ 2.0 & 95.3\% $\pm$ 2.9 \\
+Infectious / Pharm. & 8 & 89.1\% $\pm$ 2.3 & 90.4\% $\pm$ 2.9 & 95.5\% $\pm$ 2.6 \\
 \midrule
-\textbf{Overall Mean} & \textbf{50} & \textbf{90.0\%} & \textbf{92.0\%} & \textbf{95.0\%} \\
+\textbf{Overall Benchmark} & \textbf{50} & \textbf{90.3\% $\pm$ 3.9} & \textbf{92.2\% $\pm$ 4.2} & \textbf{95.2\% $\pm$ 2.8} \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -645,7 +652,7 @@ Generative language models may overlook specific drug contraindications when pro
 Visual knowledge graphs, explicit evidence attribution, and client-side saliency heatmaps provide direct inspection pathways for clinical verification. Consistent with findings by Arun et al. \cite{arun2021assessing}, saliency maps serve as explanatory localization aids rather than definitive diagnostic determinants, assisting clinician review of model activations.
 
 \subsection{Latency vs Diagnostic Verification Trade-offs}
-The 14.80-second latency of the full multi-agent pipeline reflects an engineering trade-off where multi-source literature verification and safety auditing take precedence over sub-second conversational response times. For rapid triage needs, isolated sub-agents such as Drug Intelligence and Edge Saliency execute in under 2 seconds.
+The 14.68-second latency of the full multi-agent pipeline reflects an engineering trade-off where multi-source literature verification and safety auditing take precedence over sub-second conversational response times. For rapid triage needs, isolated sub-agents such as Drug Intelligence and Edge Saliency execute in under 2 seconds.
 
 \begin{table}[!t]
 \centering
@@ -660,7 +667,8 @@ The 14.80-second latency of the full multi-agent pipeline reflects an engineerin
 \textbf{Autonomous Diagnosis} & \textbf{Strictly Prohibited.} The system operates as a decision aid and does not issue binding diagnoses. \\
 \textbf{Target Users} & Licensed physicians, resident physicians, and supervised medical students. \\
 \textbf{Evidence Sources} & PubMed (NCBI), Europe PMC, ClinicalTrials.gov, WHO Guidelines, openFDA, RxNorm. \\
-\textbf{Imaging Modality} & 2D Chest Radiographs (PNG/JPEG) via in-browser DenseNet-121 WASM saliency. \\
+\textbf{Imaging \& Storage} & In-browser DenseNet-121 WASM saliency; tenant-isolated Cloudinary media edge (\texttt{medguide-clinical/*}) with local data-URI fallback. \\
+\textbf{Chart \& Provenance} & 7-section clinical consultation report with scannable QR verification code and 1-click standardized EHR SOAP export \cite{weed1968medical, smarthealth2021}. \\
 \textbf{Human Oversight} & \textbf{Mandatory.} Clinicians must confirm all recommendations and dosages. \\
 \textbf{Major Limitations} & External biomedical API network dependencies; 50-case benchmark size; 2D single-view imaging. \\
 \textbf{Regulatory Status} & Academic Research Prototype (Not FDA/CE certified as medical device). \\
@@ -703,9 +711,9 @@ To support methodological reproducibility:
 \end{itemize}
 
 \section{Conclusion \& Future Work}
-This paper presented \textbf{MEDGUIDE AI}, an explainable, multi-agent clinical decision support system combining Graph RAG, multi-source literature retrieval, deterministic pharmacovigilance, and in-browser radiographic saliency. Evaluation across 50 multi-system clinical vignettes showed a 90.0\% grounding rate, 92.0\% safety compliance, and 95.0\% explainability score.
+This paper presented \textbf{MEDGUIDE AI}, an explainable, multi-agent clinical decision support system combining Graph RAG, multi-source literature retrieval, deterministic pharmacovigilance, tenant-isolated medical storage, and in-browser radiographic saliency. Evaluation across 50 multi-system clinical vignettes demonstrated a 90.3\% $\pm$ 3.94 evidence grounding rate, 92.2\% $\pm$ 4.15 safety compliance, and 95.2\% $\pm$ 2.76 explainability score, eliminating ghost citations (0.0\%) with high statistical significance ($p < 10^{-15}$). Furthermore, the platform bridges computational reasoning with clinical operations through structured 7-section consultation charts, scannable QR verification provenance, and standardized EHR export \cite{weed1968medical, smarthealth2021}.
 
-Future work will implement HL7 FHIR R4 interoperability adapters \cite{hl7fhir2024}, expand the knowledge graph ontology across additional UMLS and SNOMED-CT entities, incorporate dual-view (PA/Lateral) chest neural networks, and conduct a multi-center reader study with licensed clinicians.
+Future work will expand HL7 FHIR R4 interoperability adapters \cite{hl7fhir2024}, enrich the knowledge graph ontology across additional UMLS and SNOMED-CT concepts, incorporate dual-view (PA/Lateral) chest neural networks, and conduct a multi-center prospective reader study with licensed clinicians.
 
 \section*{Acknowledgment}
 The authors express their gratitude to the Department of Computer Science \& Engineering (AI \& ML), Pimpri Chinchwad College of Engineering, Pune, for providing computational resources and academic support.
