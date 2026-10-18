@@ -9,8 +9,8 @@ export interface AssistantMessage {
   role: "user" | "assistant";
   content: string;
   createdAt: number;
-  model?: string;
-  failovers?: number;
+  model?: string | undefined;
+  failovers?: number | undefined;
 }
 
 export interface AssistantThread {
@@ -81,10 +81,35 @@ export function saveThread(id: string, messages: AssistantMessage[]) {
   if (idx === -1) threads.unshift(next);
   else threads[idx] = next;
   write(threads);
+
+  // Background dual-write to Firestore if user is logged in
+  if (typeof window !== "undefined") {
+    import("@/lib/firebase").then(({ auth, db }) => {
+      const user = auth.currentUser;
+      if (!user) return;
+      import("firebase/firestore").then(({ doc, setDoc }) => {
+        const ref = doc(db, `users/${user.uid}/assistantThreads/${id}`);
+        setDoc(ref, next, { merge: true }).catch(() => {
+          /* ignore background sync errors */
+        });
+      });
+    }).catch(() => {});
+  }
 }
 
 export function deleteThread(id: string) {
   write(read().filter((t) => t.id !== id));
+
+  if (typeof window !== "undefined") {
+    import("@/lib/firebase").then(({ auth, db }) => {
+      const user = auth.currentUser;
+      if (!user) return;
+      import("firebase/firestore").then(({ doc, deleteDoc }) => {
+        const ref = doc(db, `users/${user.uid}/assistantThreads/${id}`);
+        deleteDoc(ref).catch(() => {});
+      });
+    }).catch(() => {});
+  }
 }
 
 /** Reactive thread list (syncs across the widget and the full page). */

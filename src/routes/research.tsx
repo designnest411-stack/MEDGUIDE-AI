@@ -65,6 +65,19 @@ export const Route = createFileRoute("/research")({
       },
     ],
   }),
+  errorComponent: ({ error, reset }) => (
+    <AppShell title="Research Bench" subtitle="Empirical evaluation">
+      <GlassCard className="p-8 text-center">
+        <h2 className="text-lg font-semibold text-destructive">Research Suite Error</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {(error as Error)?.message || "Failed to load research benchmark datasets."}
+        </p>
+        <Button onClick={reset} className="mt-4" size="sm">
+          Retry Benchmarks
+        </Button>
+      </GlassCard>
+    </AppShell>
+  ),
   component: ResearchPage,
 });
 

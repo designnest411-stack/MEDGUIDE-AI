@@ -45,13 +45,25 @@ export const Route = createFileRoute("/timeline")({
         content:
           "Track symptoms, tests, medications, imaging and clinical outcomes chronologically.",
       },
-      { property: "og:title", content: "Clinical Timeline : MEDGUIDE AI" },
       {
         property: "og:description",
-        content: "A chronological clinical log for structured patient course tracking.",
+        content: "Track symptoms, tests, medications, imaging and clinical outcomes chronologically.",
       },
     ],
   }),
+  errorComponent: ({ error, reset }) => (
+    <AppShell title="Clinical Timeline" subtitle="Patient trajectory">
+      <GlassCard className="p-8 text-center">
+        <h2 className="text-lg font-semibold text-destructive">Timeline Error</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {(error as Error)?.message || "Failed to load clinical timeline events."}
+        </p>
+        <Button onClick={reset} className="mt-4" size="sm">
+          Retry Timeline
+        </Button>
+      </GlassCard>
+    </AppShell>
+  ),
   component: TimelinePage,
 });
 

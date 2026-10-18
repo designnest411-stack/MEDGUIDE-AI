@@ -4,6 +4,7 @@ import { Activity } from "lucide-react";
 
 import { AppShell } from "@/components/app-shell";
 import { AgentPill, GlassCard, SectionTitle } from "@/components/medical-ui";
+import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader } from "@/components/ui/card";
 import { consultRunStore } from "@/lib/consult-run-store";
 import { AGENTS, type AgentId } from "@/lib/agents/types";
@@ -15,6 +16,19 @@ export const Route = createFileRoute("/pipeline")({
       { name: "description", content: "Live status of the clinical reasoning agent pipeline." },
     ],
   }),
+  errorComponent: ({ error, reset }) => (
+    <AppShell title="Agent Pipeline" subtitle="Pipeline monitoring">
+      <GlassCard className="p-8 text-center">
+        <h2 className="text-lg font-semibold text-destructive">Pipeline Status Error</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {(error as Error)?.message || "Failed to load agent pipeline telemetry."}
+        </p>
+        <Button onClick={reset} className="mt-4" size="sm">
+          Retry Pipeline
+        </Button>
+      </GlassCard>
+    </AppShell>
+  ),
   component: PipelinePage,
 });
 

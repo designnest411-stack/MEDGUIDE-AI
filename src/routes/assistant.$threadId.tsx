@@ -3,6 +3,8 @@ import { useEffect } from "react";
 import { Plus, Trash2 } from "lucide-react";
 
 import { AppShell } from "@/components/app-shell";
+import { GlassCard } from "@/components/medical-ui";
+import { Button } from "@/components/ui/button";
 import { AssistantChat } from "@/components/assistant-chat";
 import {
   createThread,
@@ -30,6 +32,19 @@ export const Route = createFileRoute("/assistant/$threadId")({
       },
     ],
   }),
+  errorComponent: ({ error, reset }) => (
+    <AppShell title="Ask MedGuide" subtitle="Clinical guidance assistant">
+      <GlassCard className="p-8 text-center">
+        <h2 className="text-lg font-semibold text-destructive">Assistant Conversation Error</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {(error as Error)?.message || "Failed to load assistant conversation."}
+        </p>
+        <Button onClick={reset} className="mt-4" size="sm">
+          Retry Conversation
+        </Button>
+      </GlassCard>
+    </AppShell>
+  ),
   component: AssistantThreadPage,
 });
 

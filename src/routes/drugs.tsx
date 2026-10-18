@@ -30,6 +30,19 @@ export const Route = createFileRoute("/drugs")({
       },
     ],
   }),
+  errorComponent: ({ error, reset }) => (
+    <AppShell title="Drug Intelligence" subtitle="Pharmacological safety">
+      <GlassCard className="p-8 text-center">
+        <h2 className="text-lg font-semibold text-destructive">Drug Checker Error</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {(error as Error)?.message || "Failed to load pharmacological safety data."}
+        </p>
+        <Button onClick={reset} className="mt-4" size="sm">
+          Retry Safety Check
+        </Button>
+      </GlassCard>
+    </AppShell>
+  ),
   component: DrugsPage,
 });
 

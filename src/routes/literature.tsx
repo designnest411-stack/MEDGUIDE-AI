@@ -27,6 +27,19 @@ export const Route = createFileRoute("/literature")({
       },
     ],
   }),
+  errorComponent: ({ error, reset }) => (
+    <AppShell title="Literature Explorer" subtitle="Medical literature retrieval">
+      <GlassCard className="p-8 text-center">
+        <h2 className="text-lg font-semibold text-destructive">Literature Search Error</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {(error as Error)?.message || "Failed to query biomedical literature databases."}
+        </p>
+        <Button onClick={reset} className="mt-4" size="sm">
+          Retry Search
+        </Button>
+      </GlassCard>
+    </AppShell>
+  ),
   component: LiteraturePage,
 });
 

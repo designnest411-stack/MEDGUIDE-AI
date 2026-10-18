@@ -11,6 +11,16 @@ import { useCollection, useDocument } from "react-firebase-hooks/firestore";
 import { db as firestoreDb, auth } from "./firebase";
 import type { ConsultationResult, ImagingResult } from "@/lib/agents/types";
 
+export interface PatientDocument {
+  id: string;
+  name: string;
+  url: string;
+  publicId?: string;
+  type: string;
+  size?: number;
+  uploadedAt: number;
+}
+
 export interface PatientRecord {
   id?: string;
   name: string;
@@ -22,6 +32,8 @@ export interface PatientRecord {
   allergies: string;
   vitals: string;
   labs: string;
+  photoUrl?: string;
+  documents?: PatientDocument[];
   createdAt: number;
 }
 
@@ -48,6 +60,9 @@ export interface ImagingRecord {
   patientId?: string;
   name: string;
   imageDataUrl: string;
+  publicId?: string;
+  thumbnailUrl?: string;
+  storageProvider?: "cloudinary" | "local";
   result: ImagingResult;
   createdAt: number;
 }
@@ -66,6 +81,20 @@ export interface SettingRecord {
   value: string;
 }
 
+export interface AssistantThreadRecord {
+  id?: string;
+  title: string;
+  updatedAt: number;
+  messages: Array<{
+    id: string;
+    role: "user" | "assistant";
+    content: string;
+    createdAt: number;
+    model?: string | undefined;
+    failovers?: number | undefined;
+  }>;
+}
+
 export interface UserCollections {
   patients: CollectionReference<PatientRecord>;
   consultations: CollectionReference<ConsultationRecord>;
@@ -73,6 +102,7 @@ export interface UserCollections {
   imaging: CollectionReference<ImagingRecord>;
   reports: CollectionReference<ReportRecord>;
   settings: CollectionReference<SettingRecord>;
+  assistantThreads: CollectionReference<AssistantThreadRecord>;
 }
 
 export const getCollections = (userId: string): UserCollections => {
@@ -101,6 +131,10 @@ export const getCollections = (userId: string): UserCollections => {
       firestoreDb,
       `users/${userId}/settings`,
     ) as CollectionReference<SettingRecord>,
+    assistantThreads: collection(
+      firestoreDb,
+      `users/${userId}/assistantThreads`,
+    ) as CollectionReference<AssistantThreadRecord>,
   };
 };
 
@@ -116,6 +150,32 @@ export function useTypedCollection<T>(
     })) as (T & { id: string })[];
   }, [snapshot]);
   return [data, loading, error] as const;
+}
+
+export function usePaginatedCollection<T>(
+  queryRef: Query<T> | CollectionReference<T> | null | undefined,
+  pageSize = 10,
+) {
+  const [snapshot, loading, error] = useCollection(queryRef);
+  const allData = useMemo(() => {
+    if (!snapshot) return [];
+    return snapshot.docs.map((d) => ({
+      ...d.data(),
+      id: d.id,
+    })) as (T & { id: string })[];
+  }, [snapshot]);
+
+  return {
+    allData,
+    loading,
+    error,
+    totalCount: allData.length,
+    totalPages: Math.ceil(allData.length / pageSize) || 1,
+    getPage: (pageIndex: number) => {
+      const start = pageIndex * pageSize;
+      return allData.slice(start, start + pageSize);
+    },
+  };
 }
 
 export function useTypedDocument<T>(docRef: DocumentReference<T> | null | undefined) {

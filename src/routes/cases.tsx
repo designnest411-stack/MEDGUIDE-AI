@@ -5,6 +5,7 @@ import { Microscope, Search } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { EmptyState, GlassCard, SectionTitle } from "@/components/medical-ui";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { query, orderBy, limit } from "firebase/firestore";
@@ -29,6 +30,19 @@ export const Route = createFileRoute("/cases")({
       },
     ],
   }),
+  errorComponent: ({ error, reset }) => (
+    <AppShell title="Case Similarity" subtitle="Reference cases">
+      <GlassCard className="p-8 text-center">
+        <h2 className="text-lg font-semibold text-destructive">Case Library Error</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {(error as Error)?.message || "Failed to load clinical cases."}
+        </p>
+        <Button onClick={reset} className="mt-4" size="sm">
+          Retry Cases
+        </Button>
+      </GlassCard>
+    </AppShell>
+  ),
   component: CasesPage,
 });
 

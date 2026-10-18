@@ -1,10 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type { ConsultationInput, StreamEvent } from "@/lib/agents/types";
+import { checkRateLimit } from "@/lib/rate-limit.server";
 
 export const Route = createFileRoute("/api/consult")({
   server: {
     handlers: {
       POST: async ({ request }) => {
+        const rateLimit = checkRateLimit(request, "consult", {
+          windowMs: 60_000,
+          maxRequests: 15,
+        });
+        if (!rateLimit.success && rateLimit.response) {
+          return rateLimit.response;
+        }
+
         const input = (await request.json()) as ConsultationInput;
         if (!input?.question || typeof input.question !== "string" || !input.question.trim()) {
           return new Response("Missing question", { status: 400 });

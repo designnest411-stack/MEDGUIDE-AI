@@ -5,6 +5,13 @@ import type { DrugFinding, EvidenceSource } from "@/lib/agents/types";
 const EUTILS = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils";
 const UA = { "User-Agent": "MedGuideAI/1.0 (clinical decision support)" };
 
+interface CacheEntry<T> {
+  data: T;
+  expiresAt: number;
+}
+const pubmedCache = new Map<string, CacheEntry<EvidenceSource[]>>();
+const PUBMED_CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
+
 async function safeJson<T>(url: string, fallback: T, attempts = 2): Promise<T> {
   for (let i = 0; i < attempts; i++) {
     try {
@@ -21,6 +28,12 @@ async function safeJson<T>(url: string, fallback: T, attempts = 2): Promise<T> {
 }
 
 export async function searchPubMed(query: string, limit = 8): Promise<EvidenceSource[]> {
+  const cacheKey = `${query.toLowerCase().trim()}:${limit}`;
+  const cached = pubmedCache.get(cacheKey);
+  if (cached && Date.now() < cached.expiresAt) {
+    return cached.data;
+  }
+
   const term = encodeURIComponent(query);
   const search = await safeJson<{ esearchresult?: { idlist?: string[] } }>(
     `${EUTILS}/esearch.fcgi?db=pubmed&retmode=json&sort=relevance&retmax=${limit}&term=${term}`,
@@ -36,7 +49,7 @@ export async function searchPubMed(query: string, limit = 8): Promise<EvidenceSo
     >;
   }>(`${EUTILS}/esummary.fcgi?db=pubmed&retmode=json&id=${ids.join(",")}`, {});
 
-  return ids
+  const results = ids
     .map((id) => {
       const item = summary.result?.[id];
       if (!item?.title) return null;
@@ -55,6 +68,13 @@ export async function searchPubMed(query: string, limit = 8): Promise<EvidenceSo
       };
     })
     .filter(Boolean) as EvidenceSource[];
+
+  pubmedCache.set(cacheKey, {
+    data: results,
+    expiresAt: Date.now() + PUBMED_CACHE_TTL_MS,
+  });
+
+  return results;
 }
 
 export async function searchFdaLabel(drug: string): Promise<{

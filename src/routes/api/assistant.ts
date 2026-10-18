@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { checkRateLimit } from "@/lib/rate-limit.server";
 
 interface AssistantRequest {
   messages?: { role: "user" | "assistant"; content: string }[];
@@ -44,6 +45,14 @@ export const Route = createFileRoute("/api/assistant")({
   server: {
     handlers: {
       POST: async ({ request }) => {
+        const rateLimit = checkRateLimit(request, "assistant", {
+          windowMs: 60_000,
+          maxRequests: 30,
+        });
+        if (!rateLimit.success && rateLimit.response) {
+          return rateLimit.response;
+        }
+
         const body = (await request.json()) as AssistantRequest;
         const messages = (body.messages ?? [])
           .filter((m) => typeof m?.content === "string" && m.content.trim())

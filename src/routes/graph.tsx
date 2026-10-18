@@ -5,6 +5,7 @@ import { GitBranch } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { GlassCard, SectionTitle } from "@/components/medical-ui";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader } from "@/components/ui/card";
 import { query, orderBy, limit } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -34,6 +35,19 @@ export const Route = createFileRoute("/graph")({
       },
     ],
   }),
+  errorComponent: ({ error, reset }) => (
+    <AppShell title="Knowledge Graph" subtitle="Clinical entity network">
+      <GlassCard className="p-8 text-center">
+        <h2 className="text-lg font-semibold text-destructive">Knowledge Graph Error</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {(error as Error)?.message || "Failed to load clinical knowledge topology."}
+        </p>
+        <Button onClick={reset} className="mt-4" size="sm">
+          Retry Graph
+        </Button>
+      </GlassCard>
+    </AppShell>
+  ),
   component: GraphPage,
 });
 

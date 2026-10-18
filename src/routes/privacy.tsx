@@ -23,6 +23,19 @@ export const Route = createFileRoute("/privacy")({
       },
     ],
   }),
+  errorComponent: ({ error, reset }) => (
+    <AppShell title="Privacy Policy" subtitle="Data governance">
+      <GlassCard className="p-8 text-center">
+        <h2 className="text-lg font-semibold text-destructive">Privacy Notice Error</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {(error as Error)?.message || "Failed to load policy statement."}
+        </p>
+        <Button onClick={reset} className="mt-4" size="sm">
+          Retry
+        </Button>
+      </GlassCard>
+    </AppShell>
+  ),
   component: PrivacyPage,
 });
 

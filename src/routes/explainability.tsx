@@ -14,6 +14,7 @@ import {
   SectionTitle,
 } from "@/components/medical-ui";
 import { CardContent, CardHeader } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   getCollections,
   useTypedCollection,
@@ -43,6 +44,19 @@ export const Route = createFileRoute("/explainability")({
       },
     ],
   }),
+  errorComponent: ({ error, reset }) => (
+    <AppShell title="Explainability" subtitle="Clinical reasoning traces">
+      <GlassCard className="p-8 text-center">
+        <h2 className="text-lg font-semibold text-destructive">Explainability Trace Error</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {(error as Error)?.message || "Failed to load reasoning trace for this consultation."}
+        </p>
+        <Button onClick={reset} className="mt-4" size="sm">
+          Retry Trace
+        </Button>
+      </GlassCard>
+    </AppShell>
+  ),
   component: ExplainPage,
 });
 

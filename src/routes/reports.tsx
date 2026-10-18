@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { query, orderBy, deleteDoc, doc } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
 import jsPDF from "jspdf";
-import { Download, FileText, QrCode, Trash2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Download, FileText, QrCode, Trash2 } from "lucide-react";
 import QRCode from "qrcode";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
@@ -13,6 +13,7 @@ import { AppShell } from "@/components/app-shell";
 import { EmptyState, GlassCard, SectionTitle } from "@/components/medical-ui";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { getCollections, useTypedCollection, type ReportRecord } from "@/lib/db";
 import { auth } from "@/lib/firebase";
 import { DISCLAIMER } from "@/lib/agents/types";
@@ -33,17 +34,35 @@ export const Route = createFileRoute("/reports")({
       },
     ],
   }),
+  errorComponent: ({ error, reset }) => (
+    <AppShell title="Report Center" subtitle="Clinical reports module">
+      <GlassCard className="p-8 text-center">
+        <h2 className="text-lg font-semibold text-destructive">Reports Error</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {(error as Error)?.message || "Failed to load clinical reports."}
+        </p>
+        <Button onClick={reset} className="mt-4" size="sm">
+          Retry Reports
+        </Button>
+      </GlassCard>
+    </AppShell>
+  ),
   component: ReportsPage,
 });
 
 function ReportsPage() {
   const [user] = useAuthState(auth);
   const cols = user ? getCollections(user.uid) : null;
-  const [reports] = useTypedCollection<ReportRecord>(
+  const [reports, reportsLoading] = useTypedCollection<ReportRecord>(
     cols ? query(cols.reports, orderBy("createdAt", "desc")) : null,
   );
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [page, setPage] = useState(0);
+  const pageSize = 7;
+
+  const totalPages = Math.ceil(reports.length / pageSize) || 1;
+  const paginatedReports = reports.slice(page * pageSize, (page + 1) * pageSize);
   const selected = reports.find((r) => r.id === selectedId) ?? reports[0];
 
   const exportPdf = async (report: ReportRecord) => {
@@ -98,7 +117,29 @@ function ReportsPage() {
       title="Report Center"
       subtitle="Professional clinical reports with citations and confidence"
     >
-      {reports.length === 0 ? (
+      {reportsLoading ? (
+        <div className="grid gap-4 lg:grid-cols-[300px_1fr]">
+          <GlassCard>
+            <CardHeader className="pb-2">
+              <SectionTitle title="Reports" hint="Loading..." />
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="rounded-lg border border-border/60 p-3 space-y-1.5">
+                  <Skeleton className="h-3.5 w-3/4" />
+                  <Skeleton className="h-2.5 w-1/3" />
+                </div>
+              ))}
+            </CardContent>
+          </GlassCard>
+          <GlassCard className="p-6">
+            <Skeleton className="h-6 w-1/3 mb-4" />
+            <Skeleton className="h-4 w-full mb-2" />
+            <Skeleton className="h-4 w-5/6 mb-2" />
+            <Skeleton className="h-4 w-2/3" />
+          </GlassCard>
+        </div>
+      ) : reports.length === 0 ? (
         <EmptyState
           icon={FileText}
           title="No reports yet"
@@ -111,7 +152,7 @@ function ReportsPage() {
               <SectionTitle title="Reports" hint={`${reports.length} saved`} />
             </CardHeader>
             <CardContent className="space-y-2">
-              {reports.map((r) => (
+              {paginatedReports.map((r) => (
                 <div
                   key={r.id}
                   className={`flex items-start gap-2 rounded-lg border p-3 transition-colors ${
@@ -134,11 +175,42 @@ function ReportsPage() {
                     type="button"
                     onClick={() => cols && deleteDoc(doc(cols.reports, r.id!))}
                     className="text-muted-foreground transition-colors hover:text-destructive"
+                    aria-label="Delete report"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
                   </button>
                 </div>
               ))}
+
+              {totalPages > 1 && (
+                <div className="flex items-center justify-between border-t border-border/60 pt-2 text-xs text-muted-foreground">
+                  <span>
+                    {page + 1}/{totalPages}
+                  </span>
+                  <div className="flex items-center gap-1">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-6 px-1.5"
+                      disabled={page === 0}
+                      onClick={() => setPage((p) => Math.max(0, p - 1))}
+                      aria-label="Previous reports page"
+                    >
+                      <ChevronLeft className="h-3 w-3" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-6 px-1.5"
+                      disabled={page >= totalPages - 1}
+                      onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+                      aria-label="Next reports page"
+                    >
+                      <ChevronRight className="h-3 w-3" />
+                    </Button>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </GlassCard>
 

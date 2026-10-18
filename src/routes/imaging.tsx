@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { query, orderBy, addDoc, deleteDoc, doc } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { Image as ImageIcon, Loader2, ScanEye, Trash2, Upload } from "lucide-react";
+import { Cloud, ExternalLink, Image as ImageIcon, Loader2, ScanEye, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
 
 import { AppShell } from "@/components/app-shell";
@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 
 import { Label } from "@/components/ui/label";
@@ -19,6 +20,7 @@ import { getCollections, useTypedCollection, type ImagingRecord } from "@/lib/db
 import { auth } from "@/lib/firebase";
 import { SALIENCY_GRID, computeSaliency, heatColor } from "@/lib/imaging/xray";
 import { analyzeXray } from "@/lib/imaging/imaging.functions";
+import { uploadToCloudinary, getCloudinaryThumbnail, isCloudinaryUrl } from "@/lib/cloudinary";
 import type { ImagingResult } from "@/lib/agents/types";
 
 export const Route = createFileRoute("/imaging")({
@@ -28,16 +30,29 @@ export const Route = createFileRoute("/imaging")({
       {
         name: "description",
         content:
-          "Upload a chest radiograph for candidate findings and an explainable in-browser saliency heatmap.",
+          "Upload a chest radiograph for candidate findings, Cloudinary asset storage, and an explainable in-browser saliency heatmap.",
       },
       { property: "og:title", content: "Chest X-ray Analysis : MEDGUIDE AI" },
       {
         property: "og:description",
         content:
-          "Explainable chest X-ray review with saliency overlays: clinician confirmation required.",
+          "Explainable chest X-ray review with saliency overlays and Cloudinary cloud CDN storage.",
       },
     ],
   }),
+  errorComponent: ({ error, reset }) => (
+    <AppShell title="Chest X-ray Analysis" subtitle="Diagnostic imaging module">
+      <GlassCard className="p-8 text-center">
+        <h2 className="text-lg font-semibold text-destructive">Imaging Engine Error</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {(error as Error)?.message || "Failed to initialize imaging workspace."}
+        </p>
+        <Button onClick={reset} className="mt-4" size="sm">
+          Retry Imaging
+        </Button>
+      </GlassCard>
+    </AppShell>
+  ),
   component: ImagingPage,
 });
 
@@ -49,13 +64,14 @@ function ImagingPage() {
   const [dataUrl, setDataUrl] = useState<string | null>(null);
   const [fileName, setFileName] = useState("");
   const [busy, setBusy] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
   const [overlay, setOverlay] = useState(true);
   const [result, setResult] = useState<ImagingResult | null>(null);
 
   const [user] = useAuthState(auth);
   const cols = user ? getCollections(user.uid) : null;
-  const [studies] = useTypedCollection<ImagingRecord>(
+  const [studies, studiesLoading] = useTypedCollection<ImagingRecord>(
     cols ? query(cols.imaging, orderBy("createdAt", "desc")) : null,
   );
 
@@ -192,17 +208,37 @@ function ImagingPage() {
 
       if (cols) {
         try {
-          const thumbnail = await createThumbnail(dataUrl);
+          setUploadStatus("Optimizing and storing asset on Cloudinary...");
+          const uploadRes = await uploadToCloudinary(dataUrl, {
+            folder: "medguide-imaging",
+            tags: ["chest-xray", fileName || "scan"],
+          });
+
+          const imageUrl = uploadRes.secureUrl || dataUrl;
+          const thumbUrl = uploadRes.isLocalFallback
+            ? await createThumbnail(dataUrl)
+            : getCloudinaryThumbnail(uploadRes.secureUrl, 160, 160);
+
           await addDoc(cols.imaging, {
             name: fileName || "chest-xray",
-            imageDataUrl: thumbnail,
+            imageDataUrl: imageUrl,
+            thumbnailUrl: thumbUrl,
+            publicId: uploadRes.publicId,
+            storageProvider: uploadRes.isLocalFallback ? "local" : "cloudinary",
             result: final,
             createdAt: Date.now(),
           });
-          toast.success("Analysis saved: it will attach to your next consultation.");
+
+          if (uploadRes.isLocalFallback) {
+            toast.success("Analysis saved locally. (Add Cloudinary keys to sync across devices)");
+          } else {
+            toast.success("Analysis and high-resolution scan saved to Cloudinary CDN!");
+          }
         } catch (dbErr) {
           console.warn("Firestore imaging save warning:", dbErr);
           toast.info("Analysis complete (local view).");
+        } finally {
+          setUploadStatus(null);
         }
       } else {
         toast.success("Analysis complete.");
@@ -212,6 +248,7 @@ function ImagingPage() {
       toast.error("Image analysis encountered an error. Please try again.");
     } finally {
       setBusy(false);
+      setUploadStatus(null);
     }
   };
 
@@ -305,9 +342,10 @@ function ImagingPage() {
               <div className="mt-4">
                 <Progress value={progress} />
                 <p className="mt-1.5 text-center text-xs text-muted-foreground">
-                  {progress > 0
-                    ? `Computing in-browser saliency… ${progress}% (first run downloads the model)`
-                    : "Medical Image Agent is reviewing the radiograph: this can take up to a minute…"}
+                  {uploadStatus ||
+                    (progress > 0
+                      ? `Computing in-browser saliency… ${progress}% (first run downloads the model)`
+                      : "Medical Image Agent is reviewing the radiograph: this can take up to a minute…")}
                 </p>
               </div>
             )}
@@ -420,41 +458,88 @@ function ImagingPage() {
 
           <GlassCard>
             <CardHeader className="pb-2">
-              <SectionTitle title="Saved studies" hint={`${studies.length} local`} />
+              <SectionTitle
+                title="Saved studies"
+                hint={studiesLoading ? "Loading..." : `${studies.length} total`}
+              />
             </CardHeader>
             <CardContent className="space-y-2">
-              {studies.length === 0 ? (
+              {studiesLoading ? (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 p-2">
+                    <Skeleton className="h-10 w-10 rounded" />
+                    <div className="flex-1 space-y-1">
+                      <Skeleton className="h-3 w-28" />
+                      <Skeleton className="h-2 w-20" />
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 p-2">
+                    <Skeleton className="h-10 w-10 rounded" />
+                    <div className="flex-1 space-y-1">
+                      <Skeleton className="h-3 w-32" />
+                      <Skeleton className="h-2 w-24" />
+                    </div>
+                  </div>
+                </div>
+              ) : studies.length === 0 ? (
                 <p className="text-xs text-muted-foreground">No studies saved yet.</p>
               ) : (
-                studies.map((s) => (
-                  <div
-                    key={s.id}
-                    className="flex items-center gap-2 rounded-lg border border-border/60 bg-card/40 p-2"
-                  >
-                    <img
-                      src={s.imageDataUrl}
-                      alt={s.name}
-                      className="h-10 w-10 rounded object-cover"
-                    />
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-xs">{s.name}</p>
-                      <p className="text-[0.65rem] text-muted-foreground">
-                        {s.result.findings[0]?.label ?? "No findings"} ·{" "}
-                        {new Date(s.createdAt).toLocaleDateString()}
-                      </p>
-                    </div>
-                    <Badge variant="outline" className="text-[0.6rem]">
-                      {s.result.findings.length}
-                    </Badge>
-                    <button
-                      type="button"
-                      onClick={() => cols && s.id && deleteDoc(doc(cols.imaging, s.id))}
-                      className="text-muted-foreground transition-colors hover:text-destructive"
+                studies.map((s) => {
+                  const isCloud = s.storageProvider === "cloudinary" || isCloudinaryUrl(s.imageDataUrl);
+                  const displayImage = s.thumbnailUrl || s.imageDataUrl;
+                  return (
+                    <div
+                      key={s.id}
+                      className="flex items-center gap-2 rounded-lg border border-border/60 bg-card/40 p-2"
                     >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
-                  </div>
-                ))
+                      <img
+                        src={displayImage}
+                        alt={s.name}
+                        className="h-10 w-10 rounded object-cover ring-1 ring-border/50"
+                      />
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-1.5">
+                          <p className="truncate text-xs font-medium">{s.name}</p>
+                          {isCloud && (
+                            <span
+                              className="inline-flex items-center gap-0.5 rounded bg-primary/10 px-1 py-0.2 text-[0.55rem] font-medium text-primary"
+                              title="Hosted on Cloudinary CDN"
+                            >
+                              <Cloud className="h-2.5 w-2.5" />
+                              CDN
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-[0.65rem] text-muted-foreground">
+                          {s.result.findings[0]?.label ?? "No findings"} ·{" "}
+                          {new Date(s.createdAt).toLocaleDateString()}
+                        </p>
+                      </div>
+                      {isCloud && (
+                        <a
+                          href={s.imageDataUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          title="View high-resolution original"
+                          className="text-muted-foreground transition-colors hover:text-primary"
+                        >
+                          <ExternalLink className="h-3 w-3" />
+                        </a>
+                      )}
+                      <Badge variant="outline" className="text-[0.6rem]">
+                        {s.result.findings.length}
+                      </Badge>
+                      <button
+                        type="button"
+                        onClick={() => cols && s.id && deleteDoc(doc(cols.imaging, s.id))}
+                        className="text-muted-foreground transition-colors hover:text-destructive"
+                        aria-label="Delete study"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  );
+                })
               )}
             </CardContent>
           </GlassCard>

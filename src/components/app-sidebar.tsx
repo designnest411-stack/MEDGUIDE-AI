@@ -34,6 +34,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { auth, logout } from "@/lib/firebase";
+import { ThemeToggle } from "./theme-toggle";
 
 const clinical = [
   { title: "Platform Overview", url: "/", icon: Sparkles },
@@ -167,23 +168,30 @@ export function AppSidebar() {
           )}
 
           {collapsed ? (
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  tooltip="Sign out"
-                  onClick={() => logout()}
-                  className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-                >
-                  <LogOut className="h-4 w-4 shrink-0" />
-                  <span className="sr-only">Sign out</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
+            <div className="flex flex-col items-center gap-2">
+              <ThemeToggle collapsed />
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    tooltip="Sign out"
+                    onClick={() => logout()}
+                    className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                    aria-label="Sign out"
+                  >
+                    <LogOut className="h-4 w-4 shrink-0" />
+                    <span className="sr-only">Sign out</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </div>
           ) : (
-            <div className="rounded border border-sidebar-border/80 px-2.5 py-2">
+            <div className="space-y-1.5 rounded border border-sidebar-border/80 p-2">
+              <ThemeToggle />
               <button
+                type="button"
                 onClick={() => logout()}
                 className="group flex w-full items-center gap-2 rounded-md bg-destructive/10 px-2 py-1.5 text-xs font-medium text-destructive transition-colors hover:bg-destructive hover:text-destructive-foreground"
+                aria-label="Sign out of clinical session"
               >
                 <LogOut className="h-3.5 w-3.5" />
                 Sign out

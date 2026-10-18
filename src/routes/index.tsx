@@ -48,6 +48,19 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
+  errorComponent: ({ error, reset }) => (
+    <AppShell title="Platform Overview" subtitle="Clinical decision support platform">
+      <GlassCard className="p-8 text-center">
+        <h2 className="text-lg font-semibold text-destructive">Platform Overview Error</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {(error as Error)?.message || "Failed to load platform overview."}
+        </p>
+        <Button onClick={reset} className="mt-4" size="sm">
+          Retry
+        </Button>
+      </GlassCard>
+    </AppShell>
+  ),
   component: PlatformOverview,
 });
 

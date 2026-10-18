@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Cpu, Database, Globe, Lock, ShieldAlert, Sparkles, CheckCircle2, RefreshCw } from "lucide-react";
+import { Cpu, Database, Globe, Lock, ShieldAlert, CheckCircle2, RefreshCw } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -25,6 +25,19 @@ export const Route = createFileRoute("/settings")({
       },
     ],
   }),
+  errorComponent: ({ error, reset }) => (
+    <AppShell title="Settings" subtitle="System controls">
+      <GlassCard className="p-8 text-center">
+        <h2 className="text-lg font-semibold text-destructive">Settings Error</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {(error as Error)?.message || "Failed to load platform configuration."}
+        </p>
+        <Button onClick={reset} className="mt-4" size="sm">
+          Retry Settings
+        </Button>
+      </GlassCard>
+    </AppShell>
+  ),
   component: SettingsPage,
 });
 

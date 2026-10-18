@@ -15,6 +15,7 @@ import { Toaster } from "../components/ui/sonner";
 import { AssistantWidget } from "../components/assistant-widget";
 import { ConsultRunIndicator } from "../components/consult-run-indicator";
 import { AuthProvider } from "../components/auth-provider";
+import { ThemeProvider } from "../components/theme-provider";
 
 function NotFoundComponent() {
   return (
@@ -115,6 +116,11 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("medguide-theme");var d=window.matchMedia("(prefers-color-scheme: dark)").matches;if(t==="dark"||(!t&&d)){document.documentElement.classList.add("dark");}}catch(e){}})();`,
+          }}
+        />
       </head>
       <body
         className="min-h-screen antialiased bg-background text-foreground"
@@ -132,13 +138,15 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-        <Outlet />
-        <AssistantWidget />
-        <ConsultRunIndicator />
-      </AuthProvider>
-      <Toaster position="top-right" richColors />
+      <ThemeProvider>
+        <AuthProvider>
+          {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+          <Outlet />
+          <AssistantWidget />
+          <ConsultRunIndicator />
+        </AuthProvider>
+        <Toaster position="top-right" richColors />
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

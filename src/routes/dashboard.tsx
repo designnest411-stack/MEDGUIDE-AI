@@ -5,6 +5,8 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import {
   Activity,
   ArrowRight,
+  ChevronLeft,
+  ChevronRight,
   FileText,
   GitBranch,
   Image as ImageIcon,
@@ -21,6 +23,7 @@ import { GlassCard, EmptyState, SectionTitle, ConfidenceBadge } from "@/componen
 import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   getCollections,
   useTypedCollection,
@@ -48,6 +51,19 @@ export const Route = createFileRoute("/dashboard")({
       },
     ],
   }),
+  errorComponent: ({ error, reset }) => (
+    <AppShell title="Dashboard" subtitle="Clinical workspace overview">
+      <GlassCard className="p-8 text-center">
+        <h2 className="text-lg font-semibold text-destructive">Dashboard Load Error</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {(error as Error)?.message || "Failed to load dashboard metrics."}
+        </p>
+        <Button onClick={reset} className="mt-4" size="sm">
+          Retry Dashboard
+        </Button>
+      </GlassCard>
+    </AppShell>
+  ),
   component: Dashboard,
 });
 
@@ -55,19 +71,29 @@ function Dashboard() {
   const [user] = useAuthState(auth);
   const cols = user ? getCollections(user.uid) : null;
   const [searchQuery, setSearchQuery] = useState("");
+  const [page, setPage] = useState(0);
+  const pageSize = 6;
 
-  const [consultations] = useTypedCollection<ConsultationRecord>(
+  const [consultations, consultationsLoading] = useTypedCollection<ConsultationRecord>(
     cols ? query(cols.consultations, orderBy("createdAt", "desc")) : null,
   );
-  const [patients] = useTypedCollection<PatientRecord>(cols?.patients);
-  const [reports] = useTypedCollection<ReportRecord>(cols?.reports);
-  const [imaging] = useTypedCollection<ImagingRecord>(cols?.imaging);
+  const [patients, patientsLoading] = useTypedCollection<PatientRecord>(cols?.patients);
+  const [reports, reportsLoading] = useTypedCollection<ReportRecord>(cols?.reports);
+  const [imaging, imagingLoading] = useTypedCollection<ImagingRecord>(cols?.imaging);
 
   const filteredConsultations = searchQuery.trim()
     ? consultations.filter((c) =>
         c.question.toLowerCase().includes(searchQuery.toLowerCase()),
       )
     : consultations;
+
+  const totalPages = Math.ceil(filteredConsultations.length / pageSize) || 1;
+  const paginatedConsultations = filteredConsultations.slice(
+    page * pageSize,
+    (page + 1) * pageSize,
+  );
+
+  const isStatsLoading = consultationsLoading || patientsLoading || reportsLoading || imagingLoading;
 
   const evidenceCount = consultations.reduce((n, c) => n + (c.result?.evidence?.length ?? 0), 0);
 
@@ -97,19 +123,29 @@ function Dashboard() {
       }
     >
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-        {stats.map((s) => (
-          <Link key={s.label} to={s.to}>
-            <GlassCard className="h-full transition-transform hover:-translate-y-0.5">
-              <CardContent className="p-3.5 sm:p-4">
-                <s.icon className="h-4 w-4 text-primary" />
-                <p className="mt-2 sm:mt-3 font-display text-xl sm:text-2xl font-semibold">
-                  {s.value}
-                </p>
-                <p className="text-[11px] sm:text-xs text-muted-foreground">{s.label}</p>
-              </CardContent>
-            </GlassCard>
-          </Link>
-        ))}
+        {isStatsLoading
+          ? Array.from({ length: 5 }).map((_, i) => (
+              <GlassCard key={i} className="h-full">
+                <CardContent className="p-3.5 sm:p-4 space-y-2">
+                  <Skeleton className="h-4 w-4 rounded-full" />
+                  <Skeleton className="h-7 w-14" />
+                  <Skeleton className="h-3 w-20" />
+                </CardContent>
+              </GlassCard>
+            ))
+          : stats.map((s) => (
+              <Link key={s.label} to={s.to}>
+                <GlassCard className="h-full transition-transform hover:-translate-y-0.5">
+                  <CardContent className="p-3.5 sm:p-4">
+                    <s.icon className="h-4 w-4 text-primary" />
+                    <p className="mt-2 sm:mt-3 font-display text-xl sm:text-2xl font-semibold">
+                      {s.value}
+                    </p>
+                    <p className="text-[11px] sm:text-xs text-muted-foreground">{s.label}</p>
+                  </CardContent>
+                </GlassCard>
+              </Link>
+            ))}
       </div>
 
       <div className="mt-6 grid gap-4 lg:grid-cols-3">
@@ -118,7 +154,7 @@ function Dashboard() {
             <SectionTitle
               icon={Activity}
               title="Recent consultations"
-              hint="Synced with your clinical cloud"
+              hint={consultationsLoading ? "Loading..." : `${consultations.length} total`}
             />
           </CardHeader>
           <CardContent>
@@ -127,13 +163,32 @@ function Dashboard() {
                 <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setPage(0);
+                  }}
                   placeholder="Search consultations…"
                   className="h-8 pl-8 text-xs"
                 />
               </div>
             )}
-            {consultations.length === 0 ? (
+            {consultationsLoading ? (
+              <div className="space-y-2">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center gap-3 rounded-lg border border-border/60 bg-card/40 p-3"
+                  >
+                    <Skeleton className="h-4 w-4 rounded-full" />
+                    <div className="flex-1 space-y-1.5">
+                      <Skeleton className="h-3.5 w-3/4" />
+                      <Skeleton className="h-2.5 w-1/3" />
+                    </div>
+                    <Skeleton className="h-5 w-16 rounded" />
+                  </div>
+                ))}
+              </div>
+            ) : consultations.length === 0 ? (
               <EmptyState
                 icon={Stethoscope}
                 title="No consultations yet"
@@ -150,7 +205,7 @@ function Dashboard() {
               </p>
             ) : (
               <div className="space-y-2">
-                {filteredConsultations.slice(0, 8).map((c) => (
+                {paginatedConsultations.map((c) => (
                   <Link
                     key={c.id}
                     to="/explainability"
@@ -174,6 +229,36 @@ function Dashboard() {
                     )}
                   </Link>
                 ))}
+
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-between border-t border-border/60 pt-3 text-xs text-muted-foreground">
+                    <span>
+                      Page {page + 1} of {totalPages} ({filteredConsultations.length} total)
+                    </span>
+                    <div className="flex items-center gap-1">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="h-7 px-2"
+                        disabled={page === 0}
+                        onClick={() => setPage((p) => Math.max(0, p - 1))}
+                        aria-label="Previous page"
+                      >
+                        <ChevronLeft className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="h-7 px-2"
+                        disabled={page >= totalPages - 1}
+                        onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+                        aria-label="Next page"
+                      >
+                        <ChevronRight className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </CardContent>

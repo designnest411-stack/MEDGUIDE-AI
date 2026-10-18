@@ -66,6 +66,19 @@ export const Route = createFileRoute("/consultation")({
   }),
   validateSearch: (search: Record<string, unknown>): { patient?: string } =>
     typeof search["patient"] === "string" ? { patient: search["patient"] as string } : {},
+  errorComponent: ({ error, reset }) => (
+    <AppShell title="AI Consultation" subtitle="Multi-agent clinical decision support">
+      <GlassCard className="p-8 text-center">
+        <h2 className="text-lg font-semibold text-destructive">Consultation Pipeline Error</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {(error as Error)?.message || "Failed to initialize consultation session."}
+        </p>
+        <Button onClick={reset} className="mt-4" size="sm">
+          Restart Consultation
+        </Button>
+      </GlassCard>
+    </AppShell>
+  ),
   component: Consultation,
 });
 
