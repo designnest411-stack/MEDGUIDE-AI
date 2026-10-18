@@ -298,8 +298,34 @@
   }
 }
 
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes ai-orb-glow {
+  0%, 100% {
+    box-shadow: 0 0 15px 2px rgba(8, 145, 178, 0.45), 0 0 28px 4px rgba(6, 182, 212, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 24px 6px rgba(8, 145, 178, 0.65), 0 0 40px 8px rgba(14, 165, 233, 0.4);
+  }
+}
+
 @utility pulse-ring {
   animation: pulse-ring 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@utility float-slow {
+  animation: float-slow 3.5s ease-in-out infinite;
+}
+
+@utility ai-orb-glow {
+  animation: ai-orb-glow 2.8s ease-in-out infinite;
 }
 
 ::-webkit-scrollbar {
