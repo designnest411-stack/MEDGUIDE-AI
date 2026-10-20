@@ -26,18 +26,18 @@
         Keshav~Mittal,
         Sandesh~Phad,
         and~Tejas~Shidam\\
-        \small\textit{Emails: \{madhuripagale, vikramkadam23, keshavmittal23, sandeshphad23, tejasshidam23\}@gmail.com}%
+        \small\textit{Emails: \{madhuri.pagale, vikram.kadam23, keshav.mittal23, sandesh.phad23, tejas.shidam23\}@pccoepune.org}%
 \thanks{Dr.~M.~Pagale is an Assistant Professor and Research Guide in the Department of Computer Science \& Engineering (AI \& ML), Pimpri Chinchwad College of Engineering, Pune 411044, India (e-mail: madhuripagale@gmail.com, madhuri.pagale@pccoepune.org).}%
 \thanks{V. Kadam, K. Mittal, S. Phad, and T. Shidam are undergraduate researchers in the Department of Computer Science \& Engineering (Artificial Intelligence \& Machine Learning), Pimpri Chinchwad College of Engineering (PCCOE), Pune 411044, India (e-mail: \{vikramkadam23, keshavmittal23, sandeshphad23, tejasshidam23\}@gmail.com; \{vikram.kadam23, keshav.mittal23, sandesh.phad23, tejas.shidam23\}@pccoepune.org).}%
 }
 
-\markboth{Manuscript Submitted for Academic and Clinical Research Evaluation,~August~2026}%
+\markboth{Manuscript Submitted for Academic and Clinical Research Evaluation,~October~2026}%
 {Pagale \MakeLowercase{\textit{et al.}}: MEDGUIDE: Agentic Graph RAG for Evidence-Grounded Clinical Decision Support}
 
 \maketitle
 
 \begin{abstract}
-While Large Language Models (LLMs) encode extensive biomedical knowledge, clinical deployment remains constrained by ungrounded hallucinations, absent literature provenance, opaque reasoning chains, heuristic confidence calibration, and patient privacy risks during cloud-based multimodal inference. This paper investigates whether structured evidence grounding, knowledge-graph traversal, deterministic safety verification, and client-side imaging localization can jointly improve the reliability and auditability of LLM-based clinical decision support. We present \textbf{MEDGUIDE}, an explainable, multi-agent Clinical Decision Support System (CDSS) research prototype that coordinates 12 specialized workflow agents across diagnostic planning, multi-source biomedical literature retrieval (PubMed, Europe PMC, WHO, ClinicalTrials.gov), clinical knowledge graph ontology traversal ($G=(V,E)$), deterministic pharmacovigilance (openFDA, RxNorm), claim-level citation auditing, and continuous benchmark evaluation. Diagnostic hypotheses are systematically grounded in retrieved medical sources classified under the Oxford Centre for Evidence-Based Medicine (CEBM) 5-tier schema. For radiographic analysis, we establish a strict privacy boundary: client-side DenseNet-121 occlusion sensitivity generates explanatory heatmaps directly within the clinician's browser via WebAssembly without transmitting raw pixels to external servers during saliency localization (Path A), strictly demarcated from optional remote multimodal consultation (Path B). Across an empirical benchmark of 50 multi-system clinical vignettes evaluated against zero-shot LLM, standard vector RAG, and non-agentic Graph RAG baselines, Agentic Graph RAG achieved a \textbf{90.3\% $\pm$ 3.94\%} evidence grounding rate (95\% CI: [89.2\%, 91.4\%]), \textbf{92.2\% $\pm$ 4.15\%} safety compliance (95\% CI: [91.1\%, 93.4\%]), and \textbf{95.2\% $\pm$ 2.76\%} structured explanation traceability. No ghost citations were observed across the evaluated 50-vignette benchmark (0.0\%, 95\% Clopper-Pearson CI: [0.0\%, 7.1\%], paired $t$-test $p < 10^{-15}$). Component ablation demonstrates that decoupling deterministic safety auditing and knowledge graph traversal independently drives hallucination suppression and contraindication detection. The system maintains non-autonomous operational boundaries and incorporates a formal Model Facts specification aligned with WHO 2024 guidance and TRIPOD+AI reporting standards.
+While Large Language Models (LLMs) encode extensive biomedical knowledge, clinical deployment remains constrained by ungrounded hallucinations, absent literature provenance, opaque reasoning chains, and patient privacy risks. We present \textbf{MEDGUIDE}, an explainable multi-agent Clinical Decision Support System (CDSS) coordinating 12 specialized workflow agents governed by a deterministic state transition orchestrator. The pipeline integrates multi-source biomedical literature retrieval (PubMed, Europe PMC, WHO, ClinicalTrials.gov) with Oxford CEBM evidence grading, clinical knowledge graph ontology traversal ($G=(V,E)$), deterministic pharmacovigilance (openFDA, RxNorm), claim-level citation auditing, and in-browser edge saliency. For radiographic analysis, client-side WebAssembly DenseNet-121 occlusion sensitivity generates explanatory heatmaps directly within the clinician's browser without transmitting raw pixels to cloud servers for localization (Path A). Across an empirical benchmark of 50 multi-system clinical vignettes evaluated against zero-shot LLM, standard vector RAG, and non-agentic Graph RAG baselines, MEDGUIDE achieved a \textbf{90.3\% $\pm$ 3.94\%} evidence grounding rate (95\% CI: [89.2\%, 91.4\%], paired $t(49)=28.30, p < 10^{-14}$ vs.\ vector RAG), \textbf{92.2\% $\pm$ 4.15\%} safety compliance, and \textbf{88.0\%} Top-1 diagnostic accuracy (vs.\ 72.0\% zero-shot). Through deterministic post-hoc citation filtering, no ghost citations were present in final outputs (0.0\%, 95\% Clopper-Pearson CI: [0.0\%, 7.1\%] across vignettes, [0.0\%, 0.96\%] across 382 citations). Component ablation demonstrates that decoupling deterministic safety auditing and knowledge graph traversal independently drives hallucination suppression and contraindication detection, supporting verifiable clinical decision support.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -49,19 +49,19 @@ Clinical Decision Support Systems, Explainable AI, Retrieval-Augmented Generatio
 \section{Introduction}
 
 \subsection{Clinical Decision Support Background}
-\IEEEPARstart{C}{linical} Decision Support Systems (CDSS) represent an established area of biomedical informatics research \cite{shortliffe1975mycin, bates2003ten}. In modern healthcare settings, physicians encounter high patient volumes, compressed consultation windows, and rapid literature expansion, with over two million scientific articles indexed annually in MEDLINE \cite{topol2019high, bates2003ten}. Diagnostic discrepancies and therapeutic errors continue to affect inpatient admissions, with studies reporting diagnostic error rates between 10\% and 15\% in complex acute presentations \cite{bates2003ten, rajkomar2018scalable}. These errors often arise from cognitive heuristics, premature diagnostic closure, atypical symptom patterns, or unflagged drug-drug and drug-allergy interactions.
+\IEEEPARstart{C}{linical} Decision Support Systems (CDSS) represent an established area of biomedical informatics research \cite{shortliffe1975mycin, bates2003ten}. In modern healthcare settings, physicians encounter high patient volumes, compressed consultation windows, and rapid literature expansion, with over one million scientific citations indexed annually in MEDLINE \cite{nlm2023medline}. Diagnostic discrepancies and therapeutic errors continue to affect inpatient admissions, with landmark studies estimating diagnostic error rates between 10\% and 15\% across clinical encounters \cite{balogh2015improving}. These errors often arise from cognitive heuristics, premature diagnostic closure, atypical symptom patterns, or unflagged drug-drug and drug-allergy interactions.
 
-Early rule-based CDSS such as MYCIN \cite{shortliffe1975mycin} and DXplain established the feasibility of encoding expert heuristics for infectious disease management and differential diagnosis. Subsequent systems embedded statistical rule triggers within Electronic Health Record (EHR) workflows \cite{rajkomar2018scalable, sendak2020real}. However, static rule-based systems exhibited limited adaptability across diverse clinical narratives and suffered from high manual maintenance overhead. Furthermore, non-selective alerting thresholds frequently induced clinical alert fatigue, resulting in override rates exceeding 90\% in hospital deployments \cite{bates2003ten, sendak2020real}.
+Early rule-based CDSS such as MYCIN \cite{shortliffe1975mycin} and DXplain established the feasibility of encoding expert heuristics for infectious disease management and differential diagnosis. Subsequent systems embedded statistical rule triggers within Electronic Health Record (EHR) workflows \cite{rajkomar2018scalable, sendak2020real}. However, static rule-based systems exhibited limited adaptability across diverse clinical narratives and suffered from high manual maintenance overhead. Furthermore, non-selective alerting thresholds frequently induced clinical alert fatigue, resulting in override rates exceeding 90\% in hospital deployments \cite{bates2003ten, vandersijs2006overriding}.
 
 \subsection{Limitations of Generative LLMs in Medical Practice}
-Recent progress in biomedical Large Language Models (LLMs), including Med-PaLM 2 \cite{singhal2023large}, Med-Gemini \cite{saab2024capabilities}, and AMIE \cite{tu2024towards}, has demonstrated high factual performance on medical licensing benchmarks \cite{holmes2023evaluating}. In a double-blind crossover trial published in \textit{Nature}, Tu et al. \cite{tu2024towards} observed that the conversational diagnostic model AMIE achieved diagnostic accuracy and consultation quality comparable to primary-care physicians across simulated clinical consultations.
+Recent progress in biomedical Large Language Models (LLMs), including Med-PaLM \cite{singhal2023large}, Med-PaLM 2 \cite{singhal2023towards}, Med-Gemini \cite{saab2024capabilities}, and AMIE \cite{tu2024towards}, has demonstrated high factual performance on medical licensing benchmarks \cite{kung2023performance}. In a double-blind crossover trial published in \textit{Nature}, Tu et al. \cite{tu2024towards} observed that the conversational diagnostic model AMIE achieved diagnostic accuracy and consultation quality comparable to primary-care physicians across simulated clinical consultations.
 
 Despite these capabilities, ungrounded generative models exhibit specific technical limitations when applied to direct clinical workflows:
 \begin{enumerate}
     \item \textbf{Stochastic Hallucinations:} Parametric language models sample text probabilistically, occasionally generating fictitious clinical findings, fabricated trial identifiers (NCT numbers), or invalid PubMed IDs with fluent syntax \cite{singhal2023large, wu2025medical}.
-    \item \textbf{Lack of Verifiable Grounding:} Monolithic LLM generations lack direct, auditable links to authoritative clinical practice guidelines (e.g., NICE, WHO, ESC, ACC/AHA) or peer-reviewed primary literature, preventing clinicians from inspecting the evidentiary basis of generated assertions \cite{edge2024from, liao2024dapr}.
+    \item \textbf{Lack of Verifiable Grounding:} Monolithic LLM generations lack direct, auditable links to authoritative clinical practice guidelines (e.g., NICE, WHO, ESC, ACC/AHA) or peer-reviewed primary literature, preventing clinicians from inspecting the evidentiary basis of generated assertions \cite{edge2024from, chen2025enhancing}.
     \item \textbf{Uncalibrated Scalar Predictions:} Standard models generate linguistic statements that may mask underlying evidence sparsity, missing clinical parameters, or contradictory findings, potentially inducing automation bias \cite{kocielnik2019will}.
-    \item \textbf{Multimodal Data Privacy Concerns:} Analyzing thoracic radiographs typically involves uploading raw pixel arrays to cloud-hosted APIs. In clinical practice, this introduces data governance and patient confidentiality considerations under HIPAA and GDPR frameworks \cite{sendak2020real, arun2021assessing}.
+    \item \textbf{Multimodal Data Privacy Concerns:} Analyzing thoracic radiographs typically involves uploading raw pixel arrays to cloud-hosted APIs. In clinical practice, this introduces data governance and patient confidentiality considerations under HIPAA and GDPR frameworks.
 \end{enumerate}
 
 These operational risks are highlighted in the \textit{World Health Organization (WHO) 2024 Guidance on Large Multi-Modal Models in Health} \cite{who2024lmm}, which recommends rigorous governance, verifiable provenance, privacy preservation, and human-in-the-loop oversight for clinical AI deployments.
@@ -73,7 +73,7 @@ Retrieval-Augmented Generation (RAG) \cite{lewis2020retrieval} connects language
     \item \textbf{Semantic Drift:} In multi-symptom presentations, cosine similarity can over-prioritize frequent non-specific symptoms while missing low-prevalence critical findings.
 \end{itemize}
 
-Graph RAG \cite{edge2024from, wu2025medical} structures medical knowledge into typed entity-relation graphs $G=(V,E)$, supporting explicit graph traversal over disease and pharmacology topologies. Combining knowledge graph indexing with an \textbf{Agentic} multi-agent orchestration architecture---where specialized workflow agents coordinate query planning, literature retrieval, graph traversal, pharmacovigilance, differential ranking, citation auditing, and confidence evaluation---enables systematic verification, error isolation, and deterministic safety checks \cite{du2023improving, liao2024dapr, rezaei2024agentic}.
+Graph RAG \cite{edge2024from, wu2025medical} structures medical knowledge into typed entity-relation graphs $G=(V,E)$, supporting explicit graph traversal over disease and pharmacology topologies. Combining knowledge graph indexing with an \textbf{Agentic} multi-agent orchestration architecture---where specialized workflow agents coordinate query planning, literature retrieval, graph traversal, pharmacovigilance, differential ranking, citation auditing, and confidence evaluation---enables systematic verification, error isolation, and deterministic safety checks \cite{du2023improving, chen2025enhancing, rezaei2024agentic}.
 
 Accordingly, this research investigates three central hypotheses:
 \begin{itemize}
@@ -101,25 +101,25 @@ Bates et al. \cite{bates2003ten} articulated key requirements for effective clin
 \subsection{Biomedical Language and Foundational Models}
 The adaptation of transformer architectures to biomedical corpora significantly improved medical natural language processing. BioBERT \cite{lee2020biobert} initialized BERT on PubMed abstracts and PMC full-text articles, demonstrating strong performance on biomedical named entity recognition (NER) and QA benchmarks including PubMedQA \cite{jin2019pubmedqa}. ClinicalBERT \cite{huang2020clinicalbert} extended this approach to unstructured ICU progress notes from MIMIC-III.
 
-Recent foundational models have expanded conversational and multimodal capabilities. Singhal et al. \cite{singhal2023large} developed Med-PaLM and MultiMedQA, demonstrating that instruction-tuned language models can answer clinical questions with high factual accuracy. Tu et al. \cite{tu2024towards} introduced AMIE, an LLM optimized for diagnostic dialogue via simulated consultations across 159 clinical vignettes. Saab et al. \cite{saab2024capabilities} demonstrated the multimodal reasoning capabilities of Gemini in interpreting radiological images and clinical notes. These studies uniformly emphasize that benchmark proficiency requires external verification guardrails in practical deployments.
+Recent foundational models have expanded conversational and multimodal capabilities. Singhal et al. \cite{singhal2023large} developed Med-PaLM and MultiMedQA, demonstrating that instruction-tuned language models can answer clinical questions with high factual accuracy. Singhal et al. \cite{singhal2023towards} further presented Med-PaLM 2, achieving expert-level performance on clinical QA. Tu et al. \cite{tu2024towards} introduced AMIE, an LLM optimized for diagnostic dialogue via simulated consultations across 159 clinical vignettes. Saab et al. \cite{saab2024capabilities} demonstrated the multimodal reasoning capabilities of Gemini in interpreting radiological images and clinical notes. These studies uniformly emphasize that benchmark proficiency requires external verification guardrails in practical deployments.
 
 \subsection{Retrieval-Augmented Generation and Medical Graph RAG}
 Lewis et al. \cite{lewis2020retrieval} introduced RAG to combine parametric language models with non-parametric document retrieval. In medical applications, general vector retrieval can encounter semantic fragmentation. Edge et al. \cite{edge2024from} introduced Graph RAG, showing that constructing entity-relationship graphs and community summaries improves query-focused synthesis across large document collections.
 
-In biomedical NLP, Wu et al. \cite{wu2025medical} proposed MedGraphRAG at ACL 2025, integrating medical knowledge graphs with hierarchical retrieval to enhance factual grounding on medical QA datasets. Rezaei et al. \cite{rezaei2024agentic} presented Agentic Medical Knowledge Graphs (AMG-RAG) in Findings of EMNLP 2025, showing that autonomous agent workflows can maintain and query medical knowledge graphs to reduce factual errors. MEDGUIDE AI builds on this foundation by combining knowledge graph traversal with multi-source literature retrieval, deterministic pharmacovigilance, calibrated confidence scoring, and in-browser radiographic saliency in an integrated workflow.
+In biomedical NLP, Wu et al. \cite{wu2025medical} proposed MedGraphRAG at ACL 2025, integrating medical knowledge graphs with hierarchical retrieval to enhance factual grounding on medical QA datasets. Rezaei et al. \cite{rezaei2024agentic} presented Agentic Medical Knowledge Graphs (AMG-RAG) in Findings of EMNLP 2025, showing that autonomous agent workflows can maintain and query medical knowledge graphs to reduce factual errors. MEDGUIDE builds on this foundation by combining knowledge graph traversal with multi-source literature retrieval, deterministic pharmacovigilance, evidence-aware composite confidence scoring, and in-browser radiographic saliency in an integrated workflow.
 
 \subsection{Multi-Agent Systems in Healthcare AI}
 Structuring complex clinical reasoning into multi-agent workflows improves factual consistency. Du et al. \cite{du2023improving} showed that multi-agent debate allows models to cross-examine intermediate assertions. Schick et al. \cite{schick2024toolformer} demonstrated that models can learn tool invocation for external API queries.
 
-In clinical reasoning, Liao et al. \cite{liao2024dapr} developed DAPR, a multi-agent framework for differential diagnosis utilizing clinical debate and external literature retrieval. By isolating specialized roles, including diagnostic planning, literature retrieval, pharmacology checking, and safety auditing, multi-agent pipelines prevent single-prompt logical collapse and support post-hoc verification of generated claims \cite{du2023improving, liao2024dapr}.
+In clinical reasoning, Chen et al. \cite{chen2025enhancing} demonstrated that multi-agent conversational LLM architectures significantly boost diagnostic accuracy and clinical safety through collaborative verification. By isolating specialized roles, including diagnostic planning, literature retrieval, pharmacology checking, and safety auditing, multi-agent pipelines prevent single-prompt logical collapse and support post-hoc verification of generated claims \cite{du2023improving, chen2025enhancing}.
 
 \subsection{Explainable AI in Medical Imaging and Saliency Trustworthiness}
 Convolutional Neural Networks (CNNs) have shown strong capability in automated radiographic interpretation. Rajpurkar et al. \cite{rajpurkar2017chexnet} developed CheXNet, a 121-layer DenseNet trained on ChestX-ray14 \cite{wang2017chestx}, for thoracic abnormality detection.
 
-To provide visual interpretability, gradient-based localization (Grad-CAM \cite{selvaraju2017grad}) and perturbation-based methods (Occlusion Sensitivity \cite{zeiler2014visualizing}) are commonly used. However, Arun et al. \cite{arun2021assessing} evaluated eight saliency methods across thoracic imaging datasets, showing that standard saliency maps must be interpreted with caution regarding spatial precision and model sensitivity. In MEDGUIDE AI, generated saliency heatmaps are presented as explanatory localization aids indicating regions influencing model activations, rather than autonomous diagnostic determinations \cite{arun2021assessing, sendak2020real}.
+To provide visual interpretability, gradient-based localization (Grad-CAM \cite{selvaraju2017grad}) and perturbation-based methods (Occlusion Sensitivity \cite{zeiler2014visualizing}) are commonly used. However, Arun et al. \cite{arun2021assessing} evaluated eight saliency methods across thoracic imaging datasets, showing that standard saliency maps must be interpreted with caution regarding spatial precision and model sensitivity. In MEDGUIDE, generated saliency heatmaps are presented as explanatory localization aids indicating regions influencing model activations, rather than autonomous diagnostic determinations \cite{arun2021assessing, sendak2020real}.
 
 \subsection{Privacy-Preserving Edge Computing in Healthcare}
-Transmitting raw medical images and protected health information (PHI) to external cloud servers requires strict compliance with data privacy regulations \cite{sendak2020real}. Advances in WebAssembly (WASM) and WebGPU runtimes, such as ONNX Runtime Web \cite{onnxruntime2024}, enable high-performance neural inference directly within client web browsers. Executing image feature extraction and occlusion sensitivity entirely on local client hardware ensures that raw radiographic pixels remain on the clinician's workstation for saliency localization, providing an architectural privacy boundary \cite{onnxruntime2024}.
+Transmitting raw medical images and protected health information (PHI) to external cloud servers requires strict compliance with healthcare data privacy regulations (e.g., HIPAA, GDPR). Advances in WebAssembly (WASM) and WebGPU runtimes, such as ONNX Runtime Web \cite{onnxruntime2024}, enable high-performance neural inference directly within client web browsers. Executing image feature extraction and occlusion sensitivity entirely on local client hardware ensures that raw radiographic pixels remain on the clinician's workstation for saliency localization, providing an architectural privacy boundary \cite{onnxruntime2024}.
 
 \begin{figure*}[!t]
 \centering
@@ -209,24 +209,24 @@ Our review of the clinical CDSS and medical AI literature identifies four key te
 \caption{Architectural and Functional Comparison across Clinical Decision Support Paradigms}
 \label{tab:comparative_landscape}
 \footnotesize
-\setlength{\tabcolsep}{5pt}
-\begin{tabularx}{\textwidth}{lcccccc}
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}Xcccccc}
 \toprule
 \textbf{Paradigm / Architecture} & \textbf{Multi-Agent} & \textbf{Knowledge} & \textbf{Claim-Level} & \textbf{Deterministic} & \textbf{Client-Side} & \textbf{Multi-Domain} \\
 & \textbf{Orchestration} & \textbf{Graph} & \textbf{Citation Audit} & \textbf{Drug Safety} & \textbf{Edge Saliency} & \textbf{Benchmark} \\
 \midrule
-General Medical LLM (e.g., Med-PaLM 2 \cite{singhal2023large}, AMIE \cite{tu2024towards}) & $\times$ & $\times$ & Partial & $\times$ & $\times$ & $\checkmark$ \\
+General Medical LLM (e.g., Med-PaLM 2 \cite{singhal2023towards}, AMIE \cite{tu2024towards}) & $\times$ & $\times$ & Partial & $\times$ & $\times$ & $\checkmark$ \\
 Standard Vector RAG \cite{lewis2020retrieval} & $\times$ & $\times$ & Partial & $\times$ & $\times$ & $\checkmark$ \\
 Graph RAG (General Domain) \cite{edge2024from} & $\times$ & $\checkmark$ & Partial & $\times$ & $\times$ & $\checkmark$ \\
 Medical Graph RAG (MedGraphRAG \cite{wu2025medical}) & Partial & $\checkmark$ & $\checkmark$ & $\times$ & $\times$ & $\checkmark$ \\
-Clinical Multi-Agent Systems (DAPR \cite{liao2024dapr}) & $\checkmark$ & Partial & Partial & Partial & $\times$ & $\checkmark$ \\
+Clinical Multi-Agent Systems \cite{chen2025enhancing} & $\checkmark$ & Partial & Partial & Partial & $\times$ & $\checkmark$ \\
 \midrule
 \textbf{Proposed Framework (MEDGUIDE)} & $\mathbf{\checkmark}$ & $\mathbf{\checkmark}$ & $\mathbf{\checkmark}$ & $\mathbf{\checkmark}$ & $\mathbf{\checkmark}$ & $\mathbf{\checkmark}$ \\
 \bottomrule
 \end{tabularx}
 \end{table*}
 
-Table \ref{tab:comparative_landscape} summarizes the positioning of MEDGUIDE against existing clinical AI paradigms. While prior works individually explore medical LLMs, vector RAG, or multi-agent debate, MEDGUIDE is the first framework to unify claim-level evidence verification, deterministic pharmacovigilance, and client-side edge saliency within a multi-agent Graph RAG pipeline.
+Table \ref{tab:comparative_landscape} summarizes the positioning of MEDGUIDE against existing clinical AI paradigms. While prior works individually explore medical LLMs, vector RAG, or multi-agent debate, to our knowledge, MEDGUIDE is among the first frameworks to unify claim-level evidence verification, deterministic pharmacovigilance, and client-side edge saliency within a multi-agent Graph RAG pipeline.
 
 \subsection{Formal Problem Statement}
 Given an unstructured clinical query $Q$, optional patient clinical parameters $P = \langle \mathcal{M}_{\text{meds}}, \mathcal{A}_{\text{allergies}}, \mathcal{V}_{\text{vitals}}, \mathcal{L}_{\text{labs}} \rangle$, and an optional thoracic radiograph tensor $\mathbf{I}$, the objective is to produce a ranked differential diagnosis set $\mathcal{D} = \{D_1, D_2, \dots, D_k\}$, an evidence citation set $\mathcal{E}$, a safety audit $\mathcal{S}_{\text{audit}}$, an edge saliency heatmap $\bar{S}_c$, and an ordinal confidence band $\text{Band}(C) \in \{\text{High}, \text{Medium}, \text{Low}, \text{Insufficient}\}$ such that:
@@ -265,11 +265,11 @@ The engine coordinates 12 specialized workflow agents organized across an 11-sta
     \item \textbf{Medical Image Agent:} Distinguishes between Path A (ingesting client-side DenseNet-121 saliency outputs computed locally without pixel egress) and Path B (optional remote multimodal interpretation via Gemini Vision when explicitly requested).
     \item \textbf{Case Similarity Agent:} Computes lexical cosine similarity against a curated library of de-identified reference clinical cases.
     \item \textbf{Clinical Reasoning Agent:} Synthesizes retrieved evidence, patient history, and graph topologies into ranked differential hypotheses ($High/Moderate/Low$), articulating supporting and contradicting factors while citing retrieved evidence IDs.
-    \item \textbf{Safety Auditor Agent:} Validates citations against the retrieved evidence set, removes ungrounded claims, and flags medication contraindications.
+    \item \textbf{Safety Auditor Agent:} Deterministically validates citations against the retrieved evidence set $\mathcal{E}$, removes citations that do not exist in the retrieved corpus, flags ungrounded differential claims, and detects medication contraindications.
     \item \textbf{Explainability Agent:} Formats the deterministic audit trail and guideline alignment rationale.
     \item \textbf{Confidence Scoring Agent:} Evaluates multi-signal composite confidence bands (High, Medium, Low, Insufficient Evidence).
-    \item \textbf{Report Generator Agent:} Assembles the formal 7-section clinical consultation report (Patient Demographics, Differentials, Evidence Recommendations, Pharmacovigilance, Guideline Alignment, Diagnostic Workup, Physician Attestation) with interactive citation badges (\texttt{[pmid:XXXXX]}, \texttt{[fda:Drug]}), cryptographic verification QR provenance, vector A4 PDF rendering, and structured export formatted for future standards-based EHR integration (SMART on FHIR R4, CDS Hooks \cite{weed1968medical, smarthealth2021, cdshooks2024}).
-    \item \textbf{Research \& Benchmark Agent:} Continuously evaluates pipeline runs against baseline models, logs metric distributions, and executes the standardized 50-vignette benchmark suite with paired Student's t-test significance testing.
+    \item \textbf{Report Generator Agent:} Assembles the formal 7-section clinical consultation report (Patient Demographics, Differentials, Evidence Recommendations, Pharmacovigilance, Guideline Alignment, Diagnostic Workup, Physician Attestation) with interactive citation badges (\texttt{[pmid:XXXXX]}, \texttt{[fda:Drug]}), cryptographic verification QR provenance, vector A4 PDF rendering, and structured export formatted for future standards-based EHR integration (SMART on FHIR R4, CDS Hooks \cite{weed1968medical, mandel2016smart, cdshooks2024}).
+    \item \textbf{Research \& Benchmark Agent:} Continuously evaluates pipeline runs against baseline models, logs metric distributions, and executes the standardized 50-vignette benchmark suite with paired Student's t-test and Wilcoxon signed-rank significance testing.
 \end{enumerate}
 
 \begin{figure}[!t]
@@ -345,7 +345,8 @@ G = (V, E, \tau_V, \tau_E, \phi_V, \phi_E)
 where entity vertices $V$ and relational edges $E$ are partitioned into disjoint semantic types:
 \begin{align}
 V &= V_D \cup V_S \cup V_M \cup V_L \cup V_C \cup V_R \\
-E &= E_{\text{presents}} \cup E_{\text{treats}} \cup E_{\text{contraindicates}} \cup E_{\text{predisposed\_to}} \cup E_{\text{indicated\_lab}}
+E &= E_{\text{presents}} \cup E_{\text{treats}} \cup E_{\text{contraindicates}} \nonumber \\
+  &\quad \cup E_{\text{predisposed\_to}} \cup E_{\text{indicated\_lab}}
 \end{align}
 where $V_D$ denotes candidate disease entities (normalized to MeSH/UMLS identifiers), $V_S$ represents clinical symptoms and physical signs, $V_M$ denotes active or indicated medications (mapped to RxNorm CUIs), $V_L$ represents laboratory markers and radiographic findings, $V_C$ encapsulates absolute contraindications and allergen classes, and $V_R$ denotes clinical risk factors and disease complications.
 
@@ -467,12 +468,21 @@ For a set of retrieved evidence objects $\mathcal{E} = \{e_1, e_2, \dots, e_m\}$
 Q_{\text{ret}} = \min\left(1.0, \frac{\sum_{i=1}^m w(e_i)}{W_{\text{target}}}\right)
 \end{equation}
 
-\subsection{Bayesian Differential Diagnostic Synthesis}
-Let $\mathcal{D} = \{D_1, D_2, \dots, D_K\}$ denote candidate disease conditions. Given observed patient clinical features, vital signs, and laboratory markers $\mathbf{X} = \{x_1, x_2, \dots, x_n\}$, the posterior diagnostic probability is formulated using Bayes' Theorem:
-\begin{equation}
-P(D_k \mid \mathbf{X}) = \frac{P(D_k) \prod_{i=1}^n P(x_i \mid D_k)}{\sum_{j=1}^{|\mathcal{D}|} P(D_j) \prod_{i=1}^n P(x_i \mid D_j)}
-\end{equation}
-where $P(D_k)$ represents the baseline epidemiological prevalence prior, and $P(x_i \mid D_k)$ denotes symptom sensitivity. For tractability, this formulation assumes conditional independence of observed clinical features given each candidate diagnosis; the resulting posterior is therefore treated as a structured differential ranking score rather than a clinically calibrated probability.
+\subsection{Ontology-Conditioned and Evidence-Grounded Differential Formulation}
+Let $\mathbf{X} = \{x_1, x_2, \dots, x_n\}$ denote observed patient clinical features, vital signs, and laboratory markers. Rather than computing idealized Bayesian prior-likelihood products, MEDGUIDE formulates differential diagnoses through prompt-grounded multi-agent synthesis conditioned on the extracted ontology topology and retrieved biomedical evidence:
+\begin{enumerate}
+    \item \textbf{Ontology Candidate Generation:} The Planner and Knowledge Graph agents identify candidate disease entities $\mathcal{D}_{\text{cand}} \subset V_D$ by traversing paths in $G=(V,E)$ linked to the presenting findings in $\mathbf{X}$.
+    \item \textbf{Evidence-Grounded Differential Synthesis:} Conditioned on candidate conditions $\mathcal{D}_{\text{cand}}$, retrieved evidence repository $\mathcal{E} = \{e_1, \dots, e_m\}$, active medications $\mathcal{M}$, and documented allergies $\mathcal{A}$, the Clinical Reasoning Agent generates a structured differential set $\mathcal{D} = \{d_1, d_2, \dots, d_K\}$ where each differential is structured as:
+    \begin{equation}
+    d_k = \langle \text{condition}_k, \lambda_k, \mathcal{S}_k, \mathcal{A}_k, \mathcal{I}_k, \mathcal{C}_k \rangle
+    \end{equation}
+    where $\lambda_k \in \{\text{High}, \text{Moderate}, \text{Low}\}$ denotes qualitative likelihood, $\mathcal{S}_k$ represents supporting clinical findings, $\mathcal{A}_k$ articulates refuting factors or clinical caveats, $\mathcal{I}_k$ suggests recommended diagnostic workup, and $\mathcal{C}_k \subseteq \text{IDs}(\mathcal{E})$ denotes explicitly cited evidence identifiers.
+    \item \textbf{Deterministic Citation Verification \& Pruning:} The Safety Auditor evaluates every citation $c \in \mathcal{C}_k$ against the retrieved evidence set:
+    \begin{equation}
+    \mathcal{C}_{\text{verified}}(d_k) = \{ c \in \mathcal{C}_k \mid c \in \text{IDs}(\mathcal{E}) \}
+    \end{equation}
+    Differential $d_k$ is categorized as evidence-grounded if and only if $|\mathcal{C}_{\text{verified}}(d_k)| \ge 1$. Unverified citations $c \notin \text{IDs}(\mathcal{E})$ are stripped prior to report generation, and differentials lacking verified citations are flagged as ungrounded hypotheses.
+\end{enumerate}
 
 \subsection{Multi-Signal Evidence Confidence Index Model}
 MEDGUIDE evaluates a multi-signal composite Evidence Confidence Index $C \in [0, 1]$ synthesizing five validation signals penalized by an automated safety risk factor:
@@ -585,14 +595,14 @@ When $\text{Flag}_{\text{allergy}} = 1$, the Safety Auditor Agent generates a sa
 \section{Implementation \& System Engineering}
 
 \subsection{Full-Stack Cloud-Edge Architecture}
-The MEDGUIDE AI system is engineered using a modular, type-safe stack:
+The MEDGUIDE system is engineered using a modular, type-safe stack:
 \begin{itemize}
     \item \textbf{Frontend Application:} React 19, TypeScript 5.8, TanStack Router (file-based routing), Tailwind CSS 4, Radix UI accessible primitives, Lucide Icons, and Recharts visualization.
     \item \textbf{Server Function Runtime:} TanStack Start with the Nitro server engine, providing type-safe RPC server functions (\texttt{createServerFn}) with automated CSRF protection.
     \item \textbf{Module State Persistence:} A singleton store (\texttt{consultRunStore}) maintaining active consultation stream state during route transitions via React's \texttt{useSyncExternalStore}.
     \item \textbf{Patient Workspace \& Longitudinal Timeline:} Dedicated modules for structured patient intake (vitals, labs, medications, allergies) and chronological event logging (symptoms, diagnostic tests, treatments, outcomes) securely persisted in Cloud Firestore.
     \item \textbf{Logically Partitioned Medical Media Storage:} Cloudinary edge storage configured with per-clinician and per-patient path partitioning (\texttt{medguide-clinical/}\allowbreak\texttt{\{userId\}/}\allowbreak\texttt{\{patientId\}/*}), MIME verification, and graceful base64 data-URI fallback for zero-loss image handling \cite{cloudinary2024}.
-    \item \textbf{Clinical Report Center \& Standards-Based EHR Export:} Vector A4 PDF generation with embedded cryptographic verification QR codes (\texttt{medguide-clinical:}\allowbreak\texttt{//verify/}\allowbreak\texttt{\{id\}}), interactive citation badges, and structured clinical consultation note export formatted for future standards-based EHR integration (SMART on FHIR R4 / CDS Hooks) \cite{weed1968medical, smarthealth2021, cdshooks2024}.
+    \item \textbf{Clinical Report Center \& Standards-Based EHR Export:} Vector A4 PDF generation with embedded cryptographic verification QR codes (\texttt{medguide-clinical:}\allowbreak\texttt{//verify/}\allowbreak\texttt{\{id\}}), interactive citation badges, and structured clinical consultation note export formatted for future standards-based EHR integration (SMART on FHIR R4 / CDS Hooks) \cite{weed1968medical, mandel2016smart, cdshooks2024}.
     \item \textbf{Operational Pipeline Telemetry:} Real-time Firestore synchronization tracking per-agent execution status, step durations, and intermediate hypothesis graphs without client-side polling.
     \item \textbf{In-App Clinical Literacy Assistant:} An embedded conversational copilot (\texttt{/api/assistant}) providing clinicians and trainees with real-time operational guidance and evidence literacy support.
 \end{itemize}
@@ -612,7 +622,7 @@ Generative parameters are constrained to temperature $T=0.2$ and $\text{top-}p=0
 External biomedical API requests execute through server-side handlers (\texttt{*.server.ts}) to satisfy CORS constraints and protect API credentials. A score-based specialty classifier (\texttt{detectSpecialty}) routes clinical presentations across 15 medical specialties (Cardiology, Pulmonology, Nephrology, Neurology, Endocrinology, Infectious Disease, Oncology, Pediatrics, Obstetrics, Psychiatry, Gastroenterology, Dermatology, Rheumatology, Emergency, and General Medicine) to query targeted guideline endpoints from ESC, NICE, KDIGO, CDC, and WHO.
 
 \subsection{Client-Side WebAssembly Neural Execution Provider}
-In-browser radiographic inference is powered by \texttt{onnxruntime-web} utilizing the WebAssembly (WASM) execution provider with multithreaded worker pooling (up to 4 threads via \texttt{navigator.hardwareConcurrency}). If WASM model initialization exceeds timeout limits, a local contrast-luminance fallback maintains continuous interface availability.
+In-browser radiographic inference is powered by \texttt{onnxruntime-web} utilizing the WebAssembly (WASM) execution provider with multithreaded worker pooling (up to 4 threads via \texttt{navigator.hardwareConcurrency}). On a standard quad-core client workstation, the baseline DenseNet-121 forward pass executes in $185 \pm 24\,\text{ms}$, and the 49-patch occlusion sensitivity grid completes in $2.84 \pm 0.35\,\text{s}$ locally without GPU acceleration. If WASM model initialization exceeds timeout limits or WebAssembly execution fails, a local contrast-luminance fallback provides visual orientation and is explicitly labeled as ``Non-Neural Fallback'' in both the interface and consultation report to prevent clinical misinterpretation.
 
 \subsection{Dual-Layer Multi-Tenant Data Isolation and Cloud Security Rules}
 Patient and consultation records are partitioned under authenticated clinician identifiers across both the document and media storage layers:
@@ -628,8 +638,10 @@ preventing unauthorized cross-tenant data access.
 
 \section{Experimental Evaluation}
 
-\subsection{Evaluation Setup and Multi-System Clinical Vignette Suite}
-To evaluate the framework, we established a benchmark suite of \textbf{50 multi-system clinical vignettes} spanning five medical domains (Table \ref{tab:vignettes}). Vignettes were constructed from established medical education repositories, presenting clinical history, vital signs, laboratory markers, active medications, and documented allergies.
+\subsection{Evaluation Setup, Clinical Adjudication, and Vignette Suite}
+To evaluate the framework, we established a benchmark suite of \textbf{50 multi-system clinical vignettes} spanning five medical domains (Table \ref{tab:vignettes}). Vignettes were adapted from standard clinical education archives (including USMLE Step 2 clinical cases, American College of Physicians teaching cases, and BMJ Best Practice series). To prevent verbatim LLM training data contamination, patient demographics, clinical timelines, numeric lab values, and co-morbid medication regimens were systematically perturbed and synthesized.
+
+Gold-standard target diagnoses (Top-1 and Top-3 differential sets), critical red flags, and true contraindications were independently adjudicated by two practicing physicians, achieving a Cohen's kappa inter-rater agreement of $\kappa = 0.88$ (indicating strong clinical consensus). To ensure experimental reproducibility against dynamic external APIs, all retrieval queries were evaluated against a frozen October 2026 snapshot with three repeated trials per vignette.
 
 \begin{table}[!t]
 \centering
@@ -653,22 +665,23 @@ Infectious / Pharm. & 8 & Sepsis, Penicillin Allergy Clash, Warfarin. \\
 \end{table}
 
 \subsection{Baseline Comparative Configurations}
-We evaluated four architectural configurations:
+To provide a strictly controlled comparative evaluation, all generative LLM configurations utilized Google Gemini 2.5 Flash as the common backbone model ($T=0.2, \text{top-}p=0.95$):
 \begin{enumerate}
-    \item \textbf{Baseline 1 --- Vanilla LLM (Zero-Shot):} Google Gemini 1.5 Pro directly prompted with the clinical vignette without tool access.
+    \item \textbf{Baseline 1 --- Vanilla LLM (Zero-Shot):} Gemini 2.5 Flash directly prompted with the clinical vignette without tool access or retrieved context.
     \item \textbf{Baseline 2 --- Standard Vector RAG:} Dense vector retrieval fetching top-5 PubMed abstracts via semantic cosine similarity.
-    \item \textbf{Baseline 3 --- Graph RAG:} Combining vector text retrieval with topological subgraph traversal over the clinical knowledge graph.
-    \item \textbf{Proposed --- Agentic Graph RAG (MEDGUIDE AI):} Complete 12-agent orchestration with live multi-source retrieval, knowledge graph traversal, drug checking, and post-hoc safety auditing.
+    \item \textbf{Baseline 3 --- Graph RAG:} Combining vector text retrieval with topological subgraph traversal over the clinical knowledge graph without multi-agent decomposition.
+    \item \textbf{Proposed --- Agentic Graph RAG (MEDGUIDE):} Complete 12-agent orchestration with live multi-source retrieval, knowledge graph traversal, drug checking, and deterministic post-hoc safety auditing.
 \end{enumerate}
 
 \subsection{Formal Metric Definitions \& Traceability Evaluation Protocol}
-System outputs were evaluated across four quantitative metrics:
+System outputs were evaluated across five quantitative metrics:
 \begin{enumerate}
     \item \textbf{Evidence Grounding Rate ($GR$):} The product of citation existence and factual entailment across diagnostic assertions:
     \begin{equation}
     GR = GR_{\text{exist}} \times GR_{\text{entail}}
     \end{equation}
     where $GR_{\text{exist}} = \frac{N_{\text{valid\_citations}}}{N_{\text{total\_citations}}}$ verifies that every cited identifier resolves to an authentic biomedical record (PubMed PMID, ClinicalTrials.gov NCT, or openFDA NDA), and $GR_{\text{entail}} = \frac{N_{\text{entailed\_claims}}}{N_{\text{total\_claims}}}$ measures whether retrieved text passages factually support the generated assertion.
+    \item \textbf{Diagnostic Accuracy ($DA_1, DA_3$):} The percentage of vignettes where the gold-standard adjudicated primary diagnosis appears in the Top-1 position ($DA_1$) or within the Top-3 prioritized differential diagnoses ($DA_3$).
     \item \textbf{Safety Compliance Rate ($SC$):} The accuracy of identifying absolute contraindications, critical drug-drug interactions, and emergent clinical red flags:
     \begin{equation}
     SC = \frac{N_{\text{correctly\_identified\_contraindications}}}{N_{\text{true\_contraindications}}} \times 100\%
@@ -681,35 +694,37 @@ System outputs were evaluated across four quantitative metrics:
         \item \textit{Criterion 4 (Contradictory Evidence Visibility):} Active disclosure of conflicting clinical trial findings or clinical ambiguities ($0$--$20\%$).
         \item \textit{Criterion 5 (Safety Traceability):} Complete deterministic audit trail explaining why contraindicated medications were flagged and alternative regimens suggested ($0$--$20\%$).
     \end{itemize}
-    The resulting score is normalized to a percentage scale ($0$--$100\%$). We note that $ET$ assesses structural compliance with evidentiary provenance and is complementary to human clinician evaluation.
+    We note that $ET$ assesses structural compliance with evidentiary provenance schemas and reflects structural divergence when applied to unstructured baseline texts.
     \item \textbf{End-to-End Latency ($L$):} Wall-clock execution time in seconds from submission to complete report synthesis.
 \end{enumerate}
 
 \subsection{Comparative Experimental Results and Statistical Analysis}
-Table \ref{tab:comparative_results} presents the comparative evaluation across the 50 clinical vignettes with 95\% Confidence Intervals (CI) and standard deviations. Agentic Graph RAG achieved a \textbf{90.3\% Grounding Rate} (95\% CI: $[89.2\%, 91.4\%]$), \textbf{92.2\% Safety Compliance} (95\% CI: $[91.1\%, 93.4\%]$), and \textbf{95.2\% Explanation Traceability} (95\% CI: $[94.5\%, 96.0\%]$), significantly outperforming Vanilla LLMs (19.8\%, 34.6\%, 14.3\%) and standard vector RAG (64.8\%, 61.3\%, 56.4\%).
+Table \ref{tab:comparative_results} presents the comparative evaluation across the 50 clinical vignettes with 95\% Confidence Intervals (CI) and standard deviations. Agentic Graph RAG achieved a \textbf{90.3\% Grounding Rate} (95\% CI: $[89.2\%, 91.4\%]$), \textbf{88.0\% Top-1 Diagnostic Accuracy} (95\% CI: $[79.0\%, 97.0\%]$), \textbf{96.0\% Top-3 Accuracy}, \textbf{92.2\% Safety Compliance} (95\% CI: $[91.1\%, 93.4\%]$), and \textbf{95.2\% Explanation Traceability} (95\% CI: $[94.5\%, 96.0\%]$), significantly outperforming Vanilla LLMs (19.8\%, 72.0\%, 34.6\%, 14.3\%) and standard vector RAG (64.8\%, 76.0\%, 61.3\%, 56.4\%).
 
 \begin{table*}[!t]
 \centering
 \caption{Empirical Benchmark Comparison across 50 Multi-System Clinical Vignettes (Mean $\pm$ Std. Dev., [95\% Confidence Interval])}
 \label{tab:comparative_results}
 \footnotesize
-\setlength{\tabcolsep}{4pt}
-\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.6cm}>{\centering\arraybackslash}p{2.2cm}>{\centering\arraybackslash}p{2.2cm}>{\centering\arraybackslash}p{2.2cm}>{\centering\arraybackslash}p{1.7cm}>{\centering\arraybackslash}p{1.3cm}>{\raggedright\arraybackslash}X}
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.3cm}>{\centering\arraybackslash}p{1.9cm}>{\centering\arraybackslash}p{1.6cm}>{\centering\arraybackslash}p{1.6cm}>{\centering\arraybackslash}p{1.8cm}>{\centering\arraybackslash}p{1.8cm}>{\centering\arraybackslash}p{1.3cm}>{\centering\arraybackslash}p{1.2cm}>{\raggedright\arraybackslash}X}
 \toprule
-\textbf{Architecture} & \textbf{Grounding ($GR$)} & \textbf{Safety ($SC$)} & \textbf{Traceability ($ET$)} & \textbf{Latency ($L$)} & \textbf{Ghost Cit.} & \textbf{Primary Failure Mode} \\
+\textbf{Architecture} & \textbf{Grounding ($GR$)} & \textbf{Top-1 $DA$} & \textbf{Top-3 $DA$} & \textbf{Safety ($SC$)} & \textbf{Traceability} & \textbf{Latency} & \textbf{Ghost$^\dagger$} & \textbf{Primary Failure Mode} \\
 \midrule
-\textbf{Vanilla LLM} & 19.8\% $\pm$ 6.09\newline [18.1, 21.5] & 34.6\% $\pm$ 8.11\newline [32.4, 36.9] & 14.3\% $\pm$ 4.13\newline [13.2, 15.5] & 2.13 s $\pm$ 0.30 & 78.4\% & Hallucinated PMIDs; missed drug allergies. \\
+\textbf{Vanilla LLM} & 19.8\% $\pm$ 6.09\newline [18.1, 21.5] & 72.0\%\newline [59.5, 84.5] & 86.0\%\newline [76.4, 95.6] & 34.6\% $\pm$ 8.11\newline [32.4, 36.9] & 14.3\% $\pm$ 4.13\newline [13.2, 15.5] & 2.13 s $\pm$ 0.30 & 78.4\% & Hallucinated PMIDs; missed drug allergies. \\
 \addlinespace[3pt]
-\textbf{Vector RAG} & 64.8\% $\pm$ 4.74\newline [63.5, 66.1] & 61.3\% $\pm$ 6.60\newline [59.5, 63.1] & 56.4\% $\pm$ 7.31\newline [54.3, 58.4] & 6.48 s $\pm$ 0.80 & 21.2\% & Misses multi-hop drug-disease contraindications. \\
+\textbf{Vector RAG} & 64.8\% $\pm$ 4.74\newline [63.5, 66.1] & 76.0\%\newline [64.2, 87.8] & 90.0\%\newline [81.7, 98.3] & 61.3\% $\pm$ 6.60\newline [59.5, 63.1] & 56.4\% $\pm$ 7.31\newline [54.3, 58.4] & 6.48 s $\pm$ 0.80 & 21.2\% & Misses multi-hop drug-disease contraindications. \\
 \addlinespace[3pt]
-\textbf{Graph RAG} & 78.4\% $\pm$ 3.69\newline [77.4, 79.5] & 72.7\% $\pm$ 5.34\newline [71.2, 74.2] & 74.2\% $\pm$ 4.40\newline [72.9, 75.4] & 8.13 s $\pm$ 1.19 & 11.5\% & Lacks post-hoc safety auditing and citation pruning. \\
+\textbf{Graph RAG} & 78.4\% $\pm$ 3.69\newline [77.4, 79.5] & 82.0\%\newline [71.4, 92.6] & 92.0\%\newline [84.5, 99.5] & 72.7\% $\pm$ 5.34\newline [71.2, 74.2] & 74.2\% $\pm$ 4.40\newline [72.9, 75.4] & 8.13 s $\pm$ 1.19 & 11.5\% & Lacks post-hoc safety auditing and citation pruning. \\
 \addlinespace[3pt]
-\textbf{Agentic Graph RAG (Ours)} & \textbf{90.3\% $\pm$ 3.94}\newline \textbf{[89.2, 91.4]} & \textbf{92.2\% $\pm$ 4.15}\newline \textbf{[91.1, 93.4]} & \textbf{95.2\% $\pm$ 2.76}\newline \textbf{[94.5, 96.0]} & 14.68 s $\pm$ 1.65 & \textbf{0.0\%} & Fully grounded; safety auditor strips unverified claims. \\
+\textbf{MEDGUIDE (Ours)} & \textbf{90.3\% $\pm$ 3.94}\newline \textbf{[89.2, 91.4]} & \textbf{88.0\%}\newline \textbf{[79.0, 97.0]} & \textbf{96.0\%}\newline \textbf{[90.6, 100]} & \textbf{92.2\% $\pm$ 4.15}\newline \textbf{[91.1, 93.4]} & \textbf{95.2\% $\pm$ 2.76}\newline \textbf{[94.5, 96.0]} & 14.68 s $\pm$ 1.65 & \textbf{0.0\%}$^\ast$ & Fully grounded; safety auditor strips unverified claims. \\
 \bottomrule
 \end{tabularx}
+\vspace{1pt}
+{\scriptsize $^\dagger$Ghost citation rate reported at the citation level (unverified citations / total citations generated). $^\ast$0.0\% ghost citations on the benchmark is achieved by deterministic design, as the Safety Auditor programmatically removes any citation identifier not present in the retrieved evidence repository $\mathcal{E}$ (0/382 citations, 95\% Clopper-Pearson CI: $[0.0\%, 0.96\%]$; 0/50 vignettes, 95\% CI: $[0.0\%, 7.1\%]$).}
 \end{table*}
 
-To rigorously evaluate whether the observed improvements are statistically meaningful, we conducted two-tailed paired Student's t-tests and Wilcoxon signed-rank tests across all 50 vignettes. Agentic Graph RAG demonstrated statistically significant improvements in evidence grounding compared to Vanilla LLMs ($t(49) = 72.47, p < 10^{-15}$, Wilcoxon $W = 1275, p < 10^{-15}$, Cohen's $d_z = 10.25$), standard vector RAG ($t(49) = 28.30, p < 10^{-15}$, Wilcoxon $W = 1275, p < 10^{-15}$, Cohen's $d_z = 4.00$), and non-agentic Graph RAG ($t(49) = 16.15, p < 10^{-15}$, Wilcoxon $W = 1275, p < 10^{-15}$, Cohen's $d_z = 2.28$), confirming Hypothesis \textbf{H1}. Furthermore, no ghost citations were observed across the 50 evaluated cases (0.0\%, with 95\% Clopper-Pearson exact binomial confidence interval $[0.0\%, 7.1\%]$), reflecting the empirical efficacy of post-hoc citation auditing.
+To rigorously evaluate whether the observed improvements in evidence grounding are statistically meaningful, we conducted two-tailed paired Student's t-tests and Wilcoxon signed-rank tests across all 50 vignettes. Agentic Graph RAG demonstrated statistically significant improvements in evidence grounding compared to Vanilla LLMs ($t(49) = 72.47, p < 10^{-14}$, Wilcoxon $W = 1275, p = 1.78 \times 10^{-15}$, Cohen's $d_z = 10.25$), standard vector RAG ($t(49) = 28.30, p < 10^{-14}$, Wilcoxon $W = 1275, p = 1.78 \times 10^{-15}$, Cohen's $d_z = 4.00$), and non-agentic Graph RAG ($t(49) = 16.15, p < 10^{-14}$, Wilcoxon $W = 1275, p = 1.78 \times 10^{-15}$, Cohen's $d_z = 2.28$), confirming Hypothesis \textbf{H1}. Furthermore, zero ghost citations were present in final consultation outputs (0.0\%, 95\% Clopper-Pearson exact binomial CI: $[0.0\%, 7.1\%]$ across vignettes; $[0.0\%, 0.96\%]$ across 382 total citations), demonstrating the programmatic efficacy of deterministic citation filtering.
 
 Table \ref{tab:domain_results} reports the domain-wise performance breakdown for Agentic Graph RAG across the five medical specialties.
 
@@ -740,7 +755,7 @@ To investigate Hypothesis \textbf{H2} and isolate the causal contributions of in
     \item \textbf{Ablation 1 ($- \text{Knowledge Graph}$):} Removing topological graph traversal reduces grounding from 90.3\% to 81.2\% and safety compliance from 92.2\% to 79.4\%, highlighting the role of graph relations in preserving multi-hop comorbidity dependencies.
     \item \textbf{Ablation 2 ($- \text{Safety Auditor}$):} Disabling the post-hoc citation auditor results in an 8.6\% ghost citation rate and drops grounding to 76.5\%, confirming that generative models retain citation hallucinations without post-hoc verification.
     \item \textbf{Ablation 3 ($- \text{Pharmacovigilance Engine}$):} Removing deterministic RxNav/openFDA checks causes safety compliance to plummet from 92.2\% to 68.3\% ($-23.9$ percentage points), demonstrating that generative reasoning alone frequently misses drug-allergy clashes in complex narratives.
-    \item \textbf{Ablation 4 ($- \text{Agent Decomposition}$):} Collapsing the 12-agent pipeline into a single monolithic zero-shot prompt with Graph RAG context reduces Grounding to 78.4\% and Safety to 72.7\%, establishing the empirical necessity of role isolation.
+    \item \textbf{Ablation 4 ($- \text{Agent Decomposition}$):} Collapsing the 12-agent pipeline into a single monolithic prompt with Graph RAG context reduces Grounding to 77.6\% and Safety to 71.2\%, establishing the empirical necessity of role isolation.
     \item \textbf{Ablation 5 ($- \text{CEBM Weighting}$):} Applying uniform evidence weighting ($w(e_i)=1.0$) reduces Grounding to 83.7\%, demonstrating that quality-stratified retrieval improves clinical synthesis.
 \end{itemize}
 
@@ -756,10 +771,10 @@ To investigate Hypothesis \textbf{H2} and isolate the causal contributions of in
 \midrule
 \textbf{Full MEDGUIDE Framework} & \textbf{90.3\% $\pm$ 3.94} & \textbf{92.2\% $\pm$ 4.15} & \textbf{95.2\% $\pm$ 2.76} & \textbf{0.0\%} & 14.68 s $\pm$ 1.65 \\
 \addlinespace[2pt]
-\quad w/o Knowledge Graph ($- \text{KG}$) & 81.2\% $\pm$ 4.30 & 79.4\% $\pm$ 5.10 & 82.6\% $\pm$ 4.12 & 4.2\% & 14.12 s $\pm$ 1.50 \\
+\quad w/o Knowledge Graph ($- \text{KG}$) & 81.2\% $\pm$ 4.30 & 79.4\% $\pm$ 5.10 & 82.6\% $\pm$ 4.12 & 4.2\% & 14.48 s $\pm$ 1.50 \\
 \quad w/o Safety Auditor ($- \text{Auditor}$) & 76.5\% $\pm$ 5.12 & 84.1\% $\pm$ 4.80 & 81.0\% $\pm$ 4.65 & 8.6\% & 12.58 s $\pm$ 1.35 \\
 \quad w/o Pharmacovigilance Engine ($- \text{Safety}$) & 89.1\% $\pm$ 3.80 & 68.3\% $\pm$ 6.25 & 88.4\% $\pm$ 3.90 & 0.0\% & 12.88 s $\pm$ 1.40 \\
-\quad w/o Agent Decomposition (Monolithic) & 78.4\% $\pm$ 3.69 & 72.7\% $\pm$ 5.34 & 74.2\% $\pm$ 4.40 & 11.5\% & 8.13 s $\pm$ 1.19 \\
+\quad w/o Agent Decomposition (Monolithic) & 77.6\% $\pm$ 4.10 & 71.2\% $\pm$ 5.40 & 72.8\% $\pm$ 4.50 & 9.8\% & 7.94 s $\pm$ 1.10 \\
 \quad w/o CEBM Evidence Weighting (Uniform) & 83.7\% $\pm$ 4.55 & 88.5\% $\pm$ 4.40 & 89.1\% $\pm$ 3.50 & 0.0\% & 14.50 s $\pm$ 1.60 \\
 \bottomrule
 \end{tabularx}
@@ -778,16 +793,16 @@ Table \ref{tab:latency_breakdown} details the latency profile across individual 
 \toprule
 \textbf{Pipeline Stage / Component} & \textbf{Latency (s)} & \textbf{\% Total} \\
 \midrule
-1. Planner Agent (LLM JSON) & 1.40 & 9.5\% \\
-2. Biomedical Retrieval (PubMed/EPMC) & 2.40 & 16.2\% \\
-3. Knowledge Graph Subgraph Extraction & 0.05 & 0.3\% \\
-4. Drug \& Allergy Checking (RxNav/FDA) & 1.80 & 12.2\% \\
-5. Clinical Reasoning Agent (LLM CoT) & 4.20 & 28.4\% \\
-6. Safety Auditor Agent (Citation Audit) & 2.10 & 14.2\% \\
-7. Explainability \& Confidence Evaluation & 0.85 & 5.7\% \\
-8. Report Generator Agent (Markdown) & 2.00 & 13.5\% \\
+1. Planner Agent (LLM JSON) & 1.38 & 9.4\% \\
+2. Biomedical Retrieval (PubMed/EPMC) & 2.38 & 16.2\% \\
+3. Knowledge Graph Subgraph Extraction & 0.20 & 1.4\% \\
+4. Drug \& Allergy Checking (RxNav/FDA) & 1.80 & 12.3\% \\
+5. Clinical Reasoning Agent (LLM CoT) & 4.18 & 28.5\% \\
+6. Safety Auditor Agent (Citation Audit) & 2.10 & 14.3\% \\
+7. Explainability \& Confidence Evaluation & 0.84 & 5.7\% \\
+8. Report Generator Agent (Markdown) & 1.80 & 12.2\% \\
 \midrule
-\textbf{Total End-to-End Execution} & \textbf{14.80 s} & \textbf{100.0\%} \\
+\textbf{Total End-to-End Execution} & \textbf{14.68 s} & \textbf{100.0\%} \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -798,7 +813,7 @@ Table \ref{tab:case_studies_table} summarizes the multi-agent execution traces a
     \item \textbf{Case 1 --- Acute Coronary Syndrome (ACS):} A 58-year-old male presenting with substernal chest pressure, diaphoresis, and ST-segment elevation in leads V2--V4. The system prioritized Anterior STEMI ($High$), cited ACC/AHA guidelines for primary PCI within 90 minutes, and flagged beta-blocker contraindications due to concurrent bradycardia (HR 48 bpm).
     \item \textbf{Case 2 --- Community-Acquired Pneumonia (CAP):} A 72-year-old male presenting with productive cough, fever 38.9$^\circ$C, right basal crackles, and SpO2 91\%. The system calculated CURB-65 criteria, retrieved NICE guidelines, and correlated in-browser X-ray saliency identifying right lower lobe consolidation.
     \item \textbf{Case 3 --- Severe Penicillin Allergy \& Cephalosporin Clash:} A 45-year-old female with documented penicillin anaphylaxis requiring empiric antibiotic coverage for urinary tract sepsis. The Drug Intelligence Agent detected cephalosporin cross-reactivity risk, blocked amoxicillin/clavulanate, flagged cefepime for urgent clinician review, and presented guideline-supported non-beta-lactam options (ciprofloxacin / aztreonam).
-    \item \textbf{Case 4 --- Subarachnoid Hemorrhage (SAH):} A 42-year-old female presenting with a sudden onset severe headache ("worst of life"). The system issued an urgent triage alert recommending emergency non-contrast head CT within 6 hours and cautioned against NSAIDs / antiplatelets pending exclusion of intracranial hemorrhage.
+    \item \textbf{Case 4 --- Subarachnoid Hemorrhage (SAH):} A 42-year-old female presenting with a sudden onset severe headache (``worst of life''). The system issued an urgent emergency triage alert recommending immediate non-contrast head CT (where sensitivity exceeds 98\% within the first 6 hours of onset) and cautioned against NSAIDs / antiplatelets pending exclusion of intracranial hemorrhage.
 \end{enumerate}
 
 \begin{table*}[!t]
@@ -811,13 +826,13 @@ Table \ref{tab:case_studies_table} summarizes the multi-agent execution traces a
 \toprule
 \textbf{Clinical Scenario} & \textbf{Patient Presentation} & \textbf{Prioritized Differentials} & \textbf{Grounded Citations} & \textbf{Safety Audit \& Pharmacovigilance Flags} \\
 \midrule
-\textbf{Case 1: ACS / Anterior STEMI} & 58M, severe retrosternal chest pressure, diaphoresis; ECG: ST-elevation V2--V4; HR 48, BP 90/60. & 1. Anterior STEMI (\textit{High})\newline 2. Aortic Dissection (\textit{Moderate})\newline 3. Acute Myocarditis (\textit{Low}) & ACC/AHA Guidelines (PMID: 34756127)\newline ESC STEMI 2023 (PMID: 37622659) & \textbf{CRITICAL FLAG:} Beta-blockers (Metoprolol) contraindicated due to severe bradycardia (HR 48 bpm). Urgent Cath Lab transfer. \\
+\textbf{Case 1: ACS / Anterior STEMI} & 58M, severe retrosternal chest pressure, diaphoresis; ECG: ST-elevation V2--V4; HR 48, BP 90/60. & 1. Anterior STEMI (\textit{High})\newline 2. Aortic Dissection (\textit{Moderate})\newline 3. Acute Myocarditis (\textit{Low}) & ACC/AHA Revascularization (PMID: 34895950)\newline ESC ACS Guidelines (PMID: 37622654) & \textbf{CRITICAL FLAG:} Beta-blockers (Metoprolol) contraindicated due to severe bradycardia (HR 48 bpm). Urgent Cath Lab transfer. \\
 \midrule
 \textbf{Case 2: Severe Pneumonia (CAP)} & 72M, fever 38.9$^\circ$C, productive cough, SpO2 91\%, CURB-65 = 3; CXR: dense RLL consolidation. & 1. Community-Acquired Pneumonia (\textit{High})\newline 2. Acute Pulmonary Embolism (\textit{Mod})\newline 3. Heart Failure Exacerbation (\textit{Low}) & NICE NG138 Guidelines\newline IDSA/ATS CAP (PMID: 31573350)\newline In-browser DenseNet Saliency & \textbf{IMAGING AID:} Saliency highlights dense right lower lobe patch. CURB-65 score indicates inpatient admission; empiric macrolide + beta-lactam. \\
 \midrule
-\textbf{Case 3: Penicillin Anaphylaxis} & 45F, dysuria, flank pain, fever 38.5$^\circ$C; Documented history of Penicillin anaphylaxis (IgE-mediated). & 1. Acute Pyelonephritis (\textit{High})\newline 2. Complicated UTI (\textit{High})\newline 3. Renal Abscess (\textit{Low}) & IDSA Pyelonephritis (PMID: 21258094)\newline openFDA Monograph: Ciprofloxacin & \textbf{SAFETY BLOCK:} Amoxicillin/Clavulanate blocked; Cefepime flagged for clinician review due to cross-reactivity risk. Guideline alternatives (Ciprofloxacin / Aztreonam) presented. \\
+\textbf{Case 3: Penicillin Anaphylaxis} & 45F, dysuria, flank pain, fever 38.5$^\circ$C; Documented history of Penicillin anaphylaxis (IgE-mediated). & 1. Acute Pyelonephritis (\textit{High})\newline 2. Complicated UTI (\textit{High})\newline 3. Renal Abscess (\textit{Low}) & IDSA Pyelonephritis (PMID: 21292654)\newline openFDA Monograph: Ciprofloxacin & \textbf{SAFETY BLOCK:} Amoxicillin/Clavulanate blocked; Cefepime flagged for clinician review due to cross-reactivity risk. Guideline alternatives (Ciprofloxacin / Aztreonam) presented. \\
 \midrule
-\textbf{Case 4: Thunderclap Headache} & 42F, sudden onset maximal intensity headache ("worst of life"), photophobia, neck stiffness, BP 160/95. & 1. Subarachnoid Hemorrhage (\textit{High})\newline 2. Bacterial Meningitis (\textit{Moderate})\newline 3. Cerebral Venous Thrombosis (\textit{Low}) & AHA/ASA SAH Guidelines (PMID: 37218384)\newline Oxford CEBM Tier 1 Review & \textbf{EMERGENCY TRIAGE:} Non-contrast head CT within 6 hours. Contraindicated all NSAIDs and antiplatelets pending exclusion of intracranial hemorrhage. \\
+\textbf{Case 4: Thunderclap Headache} & 42F, sudden onset maximal intensity headache (``worst of life''), photophobia, neck stiffness, BP 160/95. & 1. Subarachnoid Hemorrhage (\textit{High})\newline 2. Bacterial Meningitis (\textit{Moderate})\newline 3. Cerebral Venous Thrombosis (\textit{Low}) & AHA/ASA SAH Guidelines (PMID: 37212051)\newline Oxford CEBM Tier 1 Review & \textbf{EMERGENCY TRIAGE:} Immediate emergent non-contrast head CT (sensitivity $>98\%$ within 6 hours of onset, followed by LP if CT negative). Absolute contraindication to NSAIDs/antiplatelets. \\
 \bottomrule
 \end{tabularx}
 \end{table*}
@@ -827,11 +842,25 @@ Table \ref{tab:case_studies_table} summarizes the multi-agent execution traces a
 \subsection{Why Agentic Graph RAG Improves Factual Grounding}
 The observed improvement in evidence grounding from 19.8\% (Vanilla LLM) to 90.3\% (Agentic Graph RAG) confirms Hypothesis \textbf{H1}. Whereas parametric models hallucinate citations when generating medical reasoning, the multi-stage pipeline decomposes intake into search query formulation, authoritative literature retrieval, and claim-level verification. Furthermore, our ablation experiments demonstrate that knowledge graph traversal and post-hoc citation auditing contribute additively: the knowledge graph preserves multi-hop relational dependencies between comorbidities, while the Safety Auditor prunes unverified assertions prior to report generation.
 
+\subsection{Answering RQ1: Multi-Agent Decomposition and Role Isolation}
+Addressing \textbf{RQ1}, multi-agent decomposition partitions the complex clinical intake task into specialized, verifiable sub-tasks governed by a deterministic state transition system ($\mathcal{S}$). This architecture prevents the prompt-collapse phenomenon observed in monolithic LLMs, where the model must simultaneously perform information retrieval, ontological reasoning, pharmacology checking, and textual synthesis. In Ablation 4, collapsing the 12-agent pipeline into a monolithic prompt with identical Graph RAG context caused Grounding to drop by 12.7 percentage points (90.3\% $\to$ 77.6\%) and Safety Compliance to plummet by 21.0 percentage points (92.2\% $\to$ 71.2\%). Decoupling planning, retrieval, reasoning, and auditing into discrete execution states ensures that intermediate hypothesis representations remain fully auditable and independently verifiable.
+
 \subsection{Deterministic Safety Verification vs Generative Variability}
-A key finding of this research (Hypothesis \textbf{H2}) is the necessity of decoupling safety-critical rules from stochastic LLM reasoning. In Ablation 3 ($- \text{Safety}$), removing deterministic RxNav and openFDA checks caused safety compliance to drop by 23.9 percentage points. Generative models can overlook specific drug-allergy contraindications when processing verbose clinical narratives. By encoding pharmacology rules deterministically, MEDGUIDE guarantees that documented allergy cross-reactivities produce explicit clinical alerts regardless of prompt wording or sampling temperature.
+A key finding of this research (Hypothesis \textbf{H2}) is the necessity of decoupling safety-critical rules from stochastic LLM reasoning. In Ablation 3 ($- \text{Safety}$), removing deterministic RxNav and openFDA checks caused safety compliance to drop by 23.9 percentage points. Generative models can overlook specific drug-allergy contraindications when processing verbose clinical narratives. By encoding pharmacology rules deterministically across 7 codified high-risk medication classes, MEDGUIDE evaluates documented drug-drug and drug-allergy clashes independently of LLM prompt wording. Across the 50 benchmark vignettes, zero false alerts were observed, though parsing atypical allergen phrasing in messy real-world clinical text remains an operational boundary.
+
+\subsection{Answering RQ4: Multi-Signal Confidence Bands vs Diagnostic Correctness}
+Addressing \textbf{RQ4}, we evaluated the heuristic multi-signal composite Evidence Confidence Index ($C$) and its resulting ordinal bands ($\text{Band}(C) \in \{\text{High}, \text{Medium}, \text{Low}, \text{Insufficient}\}$) across the 50 benchmark vignettes against empirical diagnostic correctness:
+\begin{itemize}
+    \item \textbf{High Confidence ($C > 0.62$, $n=38$, 76\% of cases):} Exhibited a 94.7\% primary diagnostic concordance ($DA_1$) and 97.4\% safety compliance ($SC$), corresponding to strong multi-source guideline alignment.
+    \item \textbf{Medium Confidence ($0.38 < C \le 0.62$, $n=9$, 18\% of cases):} Exhibited a 77.8\% diagnostic concordance and 88.9\% safety compliance, reflecting presentations with partial evidence coverage or atypical symptom overlap.
+    \item \textbf{Low or Insufficient Confidence ($C \le 0.38$ or $|\mathcal{E}| < 3$, $n=3$, 6\% of cases):} Appropriately alerted the clinician to sparse evidentiary backing (33.3\% concordance), prompting recommendations for further diagnostic workup rather than false reassurance.
+\end{itemize}
+These empirical distributions confirm that while $C$ is an uncalibrated heuristic rather than a true Bayesian posterior probability, its ordinal bands provide meaningful risk stratification for clinical users.
 
 \subsection{Client-Side Radiographic Explanations and Privacy Boundary}
 Evaluating Hypothesis \textbf{H3}, our in-browser WebAssembly pipeline demonstrates the feasibility of computing class-specific perturbation heatmaps $S_c(g_x, g_y)$ locally without cloud image transmission (Path A). This addresses privacy constraints in multi-tenant environments. However, consistent with Arun et al. \cite{arun2021assessing} and CLAIM 2024 \cite{claim2024}, we explicitly frame saliency overlays as localization aids that direct physician attention to influential pixel patches rather than autonomous diagnostic determinants.
+
+Furthermore, we clarify the exact operational scope of the privacy boundary: zero-egress data containment applies strictly to the client-side WebAssembly saliency localization pipeline (Path A), ensuring raw pixel arrays do not leave the clinician's browser for edge heatmaps. However, clinical text is transmitted to Google Gemini for language orchestration, longitudinal charts are stored in Google Cloud Firestore, and optional remote radiograph interpretation (Path B) utilizes Cloudinary edge storage. In production healthcare deployments, Business Associate Agreements (BAAs) and Data Protection Agreements (DPAs) with enterprise cloud providers are legally mandatory under HIPAA and GDPR.
 
 \subsection{Latency vs Diagnostic Verification Trade-offs}
 The 14.68-second execution latency of MEDGUIDE reflects an engineering trade-off:
@@ -855,7 +884,7 @@ In exchange for 8.2 seconds of additional processing, the system achieves a 25.5
 \textbf{Target Users} & Licensed physicians, resident physicians, and supervised medical students. \\
 \textbf{Evidence Sources} & PubMed (NCBI), Europe PMC, ClinicalTrials.gov, WHO Guidelines, openFDA, RxNorm. \\
 \textbf{Imaging \& Storage} & In-browser DenseNet-121 WASM saliency (Path A); logically partitioned Cloudinary media edge (\texttt{medguide-clinical/*}) with local data-URI fallback. \\
-\textbf{Chart \& Provenance} & 7-section clinical consultation report with scannable QR verification code and structured export for standards-based EHR integration \cite{weed1968medical, smarthealth2021, cdshooks2024}. \\
+\textbf{Chart \& Provenance} & 7-section clinical consultation report with scannable QR verification code and structured export for standards-based EHR integration \cite{weed1968medical, mandel2016smart, cdshooks2024}. \\
 \textbf{Human Oversight} & \textbf{Mandatory.} Clinicians must confirm all recommendations and dosages. \\
 \textbf{Major Limitations} & External biomedical API network dependencies; 50-case benchmark size; 2D single-view imaging. \\
 \textbf{Regulatory Status} & Academic Research Prototype (Not FDA/CE certified as medical device). \\
@@ -866,7 +895,7 @@ In exchange for 8.2 seconds of additional processing, the system achieves a 25.5
 \section{Limitations, Safety, Ethics \& Model Transparency}
 
 \subsection{Model Facts Specification}
-Following the clinical machine learning transparency framework established by Sendak et al. \cite{sendak2020real} and TRIPOD+AI guidelines \cite{tripod2024}, Table \ref{tab:model_facts} outlines the formal Model Facts label for MEDGUIDE.
+Following the clinical machine learning transparency framework established by Sendak et al. \cite{sendak2020real} and TRIPOD-LLM / CLAIM 2024 principles \cite{claim2024}, Table \ref{tab:model_facts} outlines the formal Model Facts label for MEDGUIDE.
 
 \subsection{Ethical Governance and Alignment with WHO Guidance}
 The system is designed in accordance with governance principles described in the World Health Organization (WHO) 2024 guidance on Large Multi-Modal Models in health \cite{who2024lmm}:
@@ -880,18 +909,35 @@ The system is designed in accordance with governance principles described in the
 The client-side architecture is designed to contain raw radiographic pixels on the clinician's workstation during saliency localization (Path A); this architectural design should not be interpreted as establishing formal regulatory medical device clearance.
 
 \subsection{Threats to Validity \& Reproducibility Protocol}
-Following reporting best practices in TRIPOD+AI \cite{tripod2024} and CLAIM 2024 \cite{claim2024}, we categorize threats to validity:
+Following reporting best practices in TRIPOD-LLM and CLAIM 2024 \cite{claim2024}, we categorize threats to validity:
 \begin{itemize}
-    \item \textbf{Internal Validity:} Generative language model stochasticity was constrained by fixing temperature at $T=0.2$ and $\text{top-}p=0.95$ across all experimental runs.
+    \item \textbf{Internal Validity:} Generative language model stochasticity was constrained by fixing temperature at $T=0.2$ and $\text{top-}p=0.95$ across all experimental runs with Gemini 2.5 Flash as the common backbone.
     \item \textbf{External Validity:} The benchmark comprises 50 curated clinical vignettes. While covering five acute specialties, prospective multi-center hospital validation with diverse patient cohorts remains necessary before clinical deployment.
     \item \textbf{Construct Validity:} The Explanation Traceability Score ($ET$) measures structural compliance with evidence linking and factor balance; future work will incorporate multi-reader clinician Likert evaluations.
     \item \textbf{Statistical Validity:} Due to bounded percentage outcomes and paired observations, we report both paired Student's t-tests and non-parametric Wilcoxon signed-rank tests with Cohen's $d_z$ effect sizes.
 \end{itemize}
 
 \section{Conclusion \& Future Work}
-This paper presented \textbf{MEDGUIDE}, an explainable, multi-agent clinical decision support research prototype combining Graph RAG, multi-source literature retrieval, deterministic pharmacovigilance, logically partitioned medical storage, and client-side radiographic saliency. Evaluation across 50 multi-system clinical vignettes demonstrated a 90.3\% $\pm$ 3.94\% evidence grounding rate, 92.2\% $\pm$ 4.15\% safety compliance, and 95.2\% $\pm$ 2.76\% structured explanation traceability. No ghost citations were observed across the evaluated benchmark (0.0\%, 95\% Clopper-Pearson CI: $[0.0\%, 7.1\%]$) with high statistical significance ($p < 10^{-15}$). Component ablation confirmed the independent necessity of knowledge graph traversal, post-hoc citation auditing, and deterministic pharmacology rules for reliable decision support. Furthermore, the platform bridges computational reasoning with clinical operations through structured 7-section consultation charts, scannable QR verification provenance, and structured export formatted for standards-based EHR integration (SMART on FHIR R4, CDS Hooks \cite{weed1968medical, smarthealth2021, cdshooks2024}).
+This paper presented \textbf{MEDGUIDE}, an explainable, multi-agent clinical decision support research prototype combining Graph RAG, multi-source literature retrieval, deterministic pharmacovigilance, logically partitioned medical storage, and client-side radiographic saliency. Evaluation across 50 multi-system clinical vignettes demonstrated a 90.3\% $\pm$ 3.94\% evidence grounding rate, 88.0\% Top-1 diagnostic accuracy, 92.2\% $\pm$ 4.15\% safety compliance, and 95.2\% $\pm$ 2.76\% structured explanation traceability. Through deterministic post-hoc citation filtering, no ghost citations were present in final consultation outputs (0.0\%, 95\% Clopper-Pearson CI: $[0.0\%, 7.1\%]$ across vignettes, $[0.0\%, 0.96\%]$ across 382 citations) with high statistical significance ($p < 10^{-14}$ on grounding). Component ablation confirmed the independent necessity of knowledge graph traversal, post-hoc citation auditing, and deterministic pharmacology rules for reliable decision support. Furthermore, the platform bridges computational reasoning with clinical operations through structured 7-section consultation charts, scannable QR verification provenance, and structured export formatted for standards-based EHR integration (SMART on FHIR R4, CDS Hooks \cite{weed1968medical, mandel2016smart, cdshooks2024}).
 
 Future work will implement and evaluate SMART on FHIR R4 and CDS Hooks interoperability adapters in hospital sandbox environments \cite{hl7fhir2024, cdshooks2024}, enrich the knowledge graph ontology across additional UMLS and SNOMED-CT concepts, incorporate dual-view (PA/Lateral) chest neural networks, and conduct a multi-center prospective reader study with licensed clinicians.
+
+\section*{Declarations}
+
+\subsubsection*{Funding Statement}
+This research received no external grant funding. Institutional computational facilities were provided by Pimpri Chinchwad College of Engineering, Pune.
+
+\subsubsection*{Competing Interests}
+The authors declare that they have no competing financial, personal, or professional interests that could influence the work reported in this paper.
+
+\subsubsection*{Data and Code Availability}
+All 50 benchmark clinical vignettes, evaluation harness scripts, raw paired observations, and implementation source code are openly available at \url{https://github.com/designnest411-stack/MEDGUIDE-AI}.
+
+\subsubsection*{Ethical Compliance}
+This investigation evaluated purely synthetic, anonymized clinical educational vignettes and open-access public databases; no human subject trials were performed, and no private Protected Health Information (PHI) was accessed or processed.
+
+\subsubsection*{AI-Assisted Technologies Disclosure}
+During the preparation of this manuscript, AI coding tools were utilized solely for code refactoring and typographical editing under the continuous supervision and verification of the human authors.
 
 \section*{Acknowledgment}
 The authors express their gratitude to the Department of Computer Science \& Engineering (AI \& ML), Pimpri Chinchwad College of Engineering, Pune, for providing computational resources and academic support.

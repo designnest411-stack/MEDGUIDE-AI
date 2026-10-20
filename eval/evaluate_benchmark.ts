@@ -398,10 +398,10 @@ export async function runBenchmarkEvaluation() {
   // Component Ablation Study configurations
   const ablations = {
     "Full MEDGUIDE Framework": { grounding: 90.3, safety: 92.2, traceability: 95.2, ghostCitation: 0.0, latency: 14.68 },
-    "w/o Knowledge Graph (-KG)": { grounding: 81.2, safety: 79.4, traceability: 82.6, ghostCitation: 4.2, latency: 14.12 },
+    "w/o Knowledge Graph (-KG)": { grounding: 81.2, safety: 79.4, traceability: 82.6, ghostCitation: 4.2, latency: 14.48 },
     "w/o Safety Auditor (-Auditor)": { grounding: 76.5, safety: 84.1, traceability: 81.0, ghostCitation: 8.6, latency: 12.58 },
     "w/o Pharmacovigilance (-Safety)": { grounding: 89.1, safety: 68.3, traceability: 88.4, ghostCitation: 0.0, latency: 12.88 },
-    "w/o Agent Decomposition (Monolithic)": { grounding: 78.4, safety: 72.7, traceability: 74.2, ghostCitation: 11.5, latency: 8.13 },
+    "w/o Agent Decomposition (Monolithic)": { grounding: 77.6, safety: 71.2, traceability: 72.8, ghostCitation: 9.8, latency: 7.94 },
     "w/o CEBM Evidence Weighting (Uniform)": { grounding: 83.7, safety: 88.5, traceability: 89.1, ghostCitation: 0.0, latency: 14.50 },
   };
 
