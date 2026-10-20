@@ -7,8 +7,9 @@
 \usepackage{graphicx}
 \usepackage{textcomp}
 \usepackage{xcolor}
+\definecolor{amber}{RGB}{217, 119, 6}
 \usepackage{tikz}
-\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, shadows}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.misc, calc, shadows, fit, backgrounds}
 \usepackage{booktabs}
 \usepackage{tabularx}
 \usepackage{url}
@@ -126,44 +127,74 @@ Transmitting raw medical images and protected health information (PHI) to extern
 \begin{figure*}[!t]
 \centering
 \begin{tikzpicture}[
-    node distance=1.1cm and 3.6cm,
-    block/.style={rectangle, draw=blue!80!black, fill=blue!5, thick, rounded corners=4pt, text width=5.2cm, minimum height=1.15cm, align=center, font=\footnotesize},
-    agent/.style={rectangle, draw=purple!85!black, fill=purple!5, thick, rounded corners=4pt, text width=5.2cm, minimum height=1.15cm, align=center, font=\footnotesize},
-    ext/.style={rectangle, draw=teal!85!black, fill=teal!5, thick, rounded corners=4pt, text width=4.0cm, minimum height=1.15cm, align=center, font=\footnotesize},
-    arrow/.style={-{Stealth[scale=0.9]}, thick, draw=blue!85!black},
-    lbl/.style={font=\scriptsize, fill=white, inner sep=1.5pt, text=black!90}
+    node distance=0.85cm and 0.5cm,
+    box1/.style={rectangle, draw=blue!80!black, fill=white, thick, rounded corners=3pt, text width=6.8cm, minimum height=1.05cm, align=center, font=\scriptsize},
+    box2/.style={rectangle, draw=purple!85!black, fill=white, thick, rounded corners=3pt, text width=4.8cm, minimum height=1.05cm, align=center, font=\scriptsize},
+    box2c/.style={rectangle, draw=purple!85!black, fill=white, thick, rounded corners=3pt, text width=5.6cm, minimum height=1.05cm, align=center, font=\scriptsize},
+    box3/.style={rectangle, draw=teal!85!black, fill=white, thick, rounded corners=3pt, text width=2.85cm, minimum height=1.05cm, align=center, font=\tiny},
+    box4/.style={rectangle, draw=amber!85!black, fill=white, thick, rounded corners=3pt, text width=3.35cm, minimum height=0.95cm, align=center, font=\tiny},
+    box4w/.style={rectangle, draw=amber!85!black, fill=white, thick, rounded corners=3pt, text width=7.1cm, minimum height=0.85cm, align=center, font=\tiny},
+    arrow/.style={-{Stealth[scale=0.85]}, thick, draw=blue!85!black},
+    lbl/.style={font=\tiny\bfseries, fill=white, inner sep=1.2pt, text=black!85}
 ]
-    % Top Layer (Presentation & Client-Side Edge)
-    \node[block] (ui) {\textbf{Presentation Layer (Browser Edge)}\\React 19 / TanStack Router / Radix UI\\Responsive Clinical Workspace};
-    \node[block, right=3.6cm of ui] (onnx) {\textbf{Client-Side Neural Vision Engine}\\ONNX Runtime Web (WASM Workers)\\DenseNet-121 Occlusion Saliency};
+    % ================= TIER 1: CLIENT EDGE =================
+    \node[box1] (ui) at (3.9, 0) {\textbf{Clinician Diagnostic Workspace (Presentation Layer)}\\React 19 $\cdot$ TanStack Router $\cdot$ Radix UI $\cdot$ Lucide $\cdot$ Tailwind 4\\Module Singleton Store (\texttt{consultRunStore}) $\cdot$ Longitudinal Timeline};
+    \node[box1] (onnx) at (12.9, 0) {\textbf{Client-Side Privacy-Preserving Neural Engine}\\ONNX Runtime Web (WebAssembly Multithreaded Workers)\\DenseNet-121 Occlusion Saliency $\cdot$ HTML5 Canvas (Local Memory)};
 
-    % Middle Layer (Multi-Agent Orchestrator & Cloud Persistence)
-    \node[agent, below=1.4cm of ui] (orch) {\textbf{Multi-Agent Orchestrator (Backend)}\\TanStack Start / Nitro Runtime (Node.js)\\12-Agent Deterministic Pipeline};
-    \node[block, below=1.4cm of onnx] (fb) {\textbf{Multi-Tenant Cloud Data \& CDN}\\Firebase Auth $\cdot$ Cloud Firestore\\Cloudinary Isolated Medical Edge};
+    % ================= TIER 2: SERVER ORCHESTRATOR =================
+    \node[box2] (nitro) at (2.7, -2.1) {\textbf{TanStack Start / Nitro Server}\\Type-Safe Server RPC (\texttt{*.server.ts})\\NDJSON Streaming Endpoint (\texttt{/api/consult})};
+    \node[box2c] (orch) at (8.5, -2.1) {\textbf{12-Agent Consultation Orchestrator}\\Deterministic State Machine ($\delta: \mathcal{Q} \times \Sigma \to \mathcal{Q}$)\\Cascading Gemini LLM Router: 2.5-Lite $\to$ 2.5 $\to$ 3.0};
+    \node[box2] (jsonh) at (14.3, -2.1) {\textbf{Algorithmic Self-Healing JSON Engine}\\Bracket \& Delimiter Balancer (\texttt{extractAndParseJson})\\Markdown Fence Stripper $\cdot$ Stream Fault Recovery};
 
-    % Bottom Layer (Knowledge & Foundations) - Symmetrically Spaced
-    \node[ext, below=1.4cm of orch] (apis) {\textbf{Biomedical Retrieval}\\PubMed $\cdot$ Europe PMC\\ClinicalTrials.gov $\cdot$ WHO};
-    \node[ext, below=1.4cm of $(orch)!0.5!(fb)$] (kg) {\textbf{Clinical Knowledge Graph}\\Topology $G=(V,E)$\\8 Entities $\times$ 7 Relations};
-    \node[ext, below=1.4cm of fb] (safety) {\textbf{Pharmacovigilance Engine}\\openFDA $\cdot$ RxNav (RxNorm)\\Allergy Cross-Reactivity Engine};
+    % ================= TIER 3: KNOWLEDGE & SAFETY (LEFT) =================
+    \node[box3] (apis) at (1.65, -4.3) {\textbf{Biomedical Retrieval}\\PubMed E-Utilities (NCBI)\\Europe PMC REST API\\ClinicalTrials.gov $\cdot$ WHO};
+    \node[box3] (kg) at (4.95, -4.3) {\textbf{Clinical Knowledge Graph}\\Topology $G=(V,E)$\\8 Entities $\times$ 7 Relations\\Max-Degree Pruning ($k=3$)};
+    \node[box3] (safety) at (8.25, -4.3) {\textbf{Pharmacovigilance Engine}\\NIH RxNav (RxNorm CUIs)\\openFDA Drug Label API\\Allergy Cross-Reactivity Engine};
 
-    % Clean Top Connections
-    \draw[arrow] (ui) -- node[lbl, above] {Local Image Tensor} (onnx);
-    
-    % Dual Vertical Arrows with Clean X-Shift
-    \draw[arrow] ([xshift=-6mm]ui.south) -- node[lbl, left=2pt] {Clinical Query} ([xshift=-6mm]orch.north);
-    \draw[arrow] ([xshift=6mm]orch.north) -- node[lbl, right=2pt] {NDJSON Stream} ([xshift=6mm]ui.south);
+    % ================= TIER 4: PERSISTENCE & INTEROPERABILITY (RIGHT) =================
+    \node[box4] (fb) at (11.85, -3.95) {\textbf{Multi-Tenant Cloud Firestore}\\Isolated Paths: \texttt{/users/\{userId\}/*}\\Path-Level Security Rules Enforcement};
+    \node[box4] (cloudin) at (15.65, -3.95) {\textbf{Tenant-Isolated Medical Media}\\Cloudinary Edge: \texttt{medguide-clinical/*}\\MIME Verification $\cdot$ Base64 Fallback};
+    \node[box4w] (ehr) at (13.75, -5.0) {\textbf{Hospital Charting \& Interoperability Center}\\Vector A4 Consultation PDF $\cdot$ Scannable Cryptographic QR Verification (\texttt{medguide-clinical://verify/\{id\}})\\1-Click Standardized EHR SOAP Note Export (Epic Systems / Cerner Oracle Health)};
 
-    % Horizontal & Edge Storage Sync
-    \draw[arrow, <->] (orch) -- node[lbl, above] {Session / Audit Sync} (fb);
-    \draw[arrow] (onnx) -- node[lbl, right] {Tenant Asset Path} (fb);
-    \draw[arrow, dashed] (ui.east) to[out=0, in=120] node[lbl, above, sloped] {OAuth Token} (fb.north west);
+    % ================= TIER CONTAINER BOXES (BACKGROUND) =================
+    \begin{scope}[on background layer]
+        \node[draw=blue!60!black, fill=blue!3, dashed, rounded corners=5pt, fit=(ui)(onnx), inner sep=7pt] (tier1) {};
+        \node[font=\tiny\bfseries\color{blue!80!black}, anchor=north west] at ([xshift=4pt, yshift=-3pt]tier1.north west) {TIER 1: CLINICIAN WORKSPACE \& IN-BROWSER EDGE VISION TIER (CLIENT RUNTIME)};
 
-    % Bottom Layer Connections
-    \draw[arrow, <->] (orch.south) -- node[lbl, left=1pt] {REST API} (apis.north);
-    \draw[arrow, <->] (orch.south east) -- node[lbl, fill=white, inner sep=1.2pt] {Subgraphs} (kg.north);
-    \draw[arrow, <->] (fb.south) -- node[lbl, right=1pt] {Checks} (safety.north);
+        \node[draw=purple!60!black, fill=purple!3, dashed, rounded corners=5pt, fit=(nitro)(orch)(jsonh), inner sep=7pt] (tier2) {};
+        \node[font=\tiny\bfseries\color{purple!80!black}, anchor=north west] at ([xshift=4pt, yshift=-3pt]tier2.north west) {TIER 2: ASYNCHRONOUS MULTI-AGENT ORCHESTRATION GATEWAY (SERVER RUNTIME)};
+
+        \node[draw=teal!60!black, fill=teal!3, dashed, rounded corners=5pt, fit=(apis)(kg)(safety), inner sep=7pt] (tier3) {};
+        \node[font=\tiny\bfseries\color{teal!80!black}, anchor=north west] at ([xshift=4pt, yshift=-3pt]tier3.north west) {TIER 3: HETEROGENEOUS BIOMEDICAL KNOWLEDGE \& SAFETY GROUNDING};
+
+        \node[draw=amber!60!black, fill=amber!3, dashed, rounded corners=5pt, fit=(fb)(cloudin)(ehr), inner sep=7pt] (tier4) {};
+        \node[font=\tiny\bfseries\color{amber!80!black}, anchor=north west] at ([xshift=4pt, yshift=-3pt]tier4.north west) {TIER 4: SECURE MULTI-TENANT PERSISTENCE \& EHR INTEROPERABILITY};
+    \end{scope}
+
+    % ================= DATAFLOW CONNECTIONS =================
+    % Tier 1 internal: local tensor pass
+    \draw[arrow] (ui) -- node[lbl, above] {Local Radiograph Tensor (Zero Cloud Image Upload)} (onnx);
+
+    % Tier 1 <-> Tier 2 streaming
+    \draw[arrow] ([xshift=-6mm]ui.south) -- node[lbl, left=2pt] {Clinical Query (POST)} ([xshift=-6mm]nitro.north);
+    \draw[arrow] ([xshift=6mm]nitro.north) -- node[lbl, right=2pt] {NDJSON Stream Chunk} ([xshift=6mm]ui.south);
+
+    % Tier 2 internal flow
+    \draw[arrow] (nitro) -- node[lbl, above] {Dispatch} (orch);
+    \draw[arrow] ([yshift=2mm]orch.east) -- node[lbl, above] {Tokens} ([yshift=2mm]jsonh.west);
+    \draw[arrow] ([yshift=-2mm]jsonh.west) -- node[lbl, below] {Repaired AST} ([yshift=-2mm]orch.east);
+
+    % Tier 2 -> Tier 3 Knowledge Querying
+    \draw[arrow, <->] (orch.south -| apis.north) -- node[lbl, left=1pt] {REST API} (apis.north);
+    \draw[arrow, <->] (orch.south -| kg.north) -- node[lbl, fill=white, inner sep=1.2pt] {Subgraphs} (kg.north);
+    \draw[arrow, <->] (orch.south -| safety.north) -- node[lbl, right=1pt] {Checks} (safety.north);
+
+    % Tier 2 & Tier 1 -> Tier 4 Persistence
+    \draw[arrow] (orch.east) to[out=0, in=180] node[lbl, above, sloped] {Session / Audit} (fb.west);
+    \draw[arrow] (onnx.south) to[out=270, in=90] node[lbl, right=1pt] {Tenant Path} (cloudin.north);
+    \draw[arrow] (orch.south east) to[out=320, in=150] node[lbl, fill=white, inner sep=1.2pt] {Compile Report} (ehr.north west);
 \end{tikzpicture}
-\caption{System Architecture of the MEDGUIDE AI Clinical Insight Engine with Edge Neural Inference and Isolated Cloud Storage.}
+\caption{Modular Four-Tier System Architecture of MEDGUIDE AI: Integrating Clinician Workspace, Client-Side WASM Vision, Asynchronous Multi-Agent Orchestration, Heterogeneous Biomedical Knowledge, and Tenant-Isolated Cloud Persistence.}
 \label{fig:sys_arch}
 \end{figure*}
 
@@ -222,47 +253,68 @@ The engine coordinates 12 specialized workflow agents organized across an 11-sta
     \item \textbf{Research \& Benchmark Agent:} Continuously evaluates pipeline runs against baseline models, logs metric distributions, and executes the standardized 50-vignette benchmark suite with paired Student's t-test significance testing.
 \end{enumerate}
 
-\begin{figure}[!b]
+\begin{figure}[!t]
 \centering
 \begin{tikzpicture}[
     node distance=0.22cm,
-    stepblock/.style={rectangle, draw=blue!80!black, fill=blue!5, thick, rounded corners=3pt, text width=3.75cm, minimum height=0.50cm, align=left, font=\tiny},
-    arrow/.style={-{Stealth[scale=0.75]}, thick, draw=blue!80!black}
+    phase1/.style={rectangle, draw=blue!80!black, fill=blue!5, thick, rounded corners=3pt, text width=7.4cm, minimum height=0.46cm, align=left, font=\tiny},
+    phase2/.style={rectangle, draw=teal!85!black, fill=teal!5, thick, rounded corners=3pt, text width=2.25cm, minimum height=0.72cm, align=center, font=\tiny},
+    phase3/.style={rectangle, draw=purple!85!black, fill=purple!5, thick, rounded corners=3pt, text width=7.4cm, minimum height=0.46cm, align=left, font=\tiny},
+    phase4a/.style={rectangle, draw=amber!90!black, fill=amber!8, thick, rounded corners=3pt, text width=7.4cm, minimum height=0.46cm, align=left, font=\tiny},
+    phase4b/.style={rectangle, draw=amber!90!black, fill=amber!8, thick, rounded corners=3pt, text width=4.3cm, minimum height=0.52cm, align=left, font=\tiny},
+    phase4c/.style={rectangle, draw=purple!80!black, fill=purple!5, thick, rounded corners=3pt, text width=2.8cm, minimum height=0.52cm, align=center, font=\tiny},
+    arrow/.style={-{Stealth[scale=0.8]}, thick, draw=blue!80!black},
+    tarrow/.style={-{Stealth[scale=0.8]}, thick, draw=teal!85!black},
+    parrow/.style={-{Stealth[scale=0.8]}, thick, draw=purple!85!black},
+    aarrow/.style={-{Stealth[scale=0.8]}, thick, draw=amber!90!black},
+    darrow/.style={-{Stealth[scale=0.8]}, thick, dashed, draw=purple!80!black},
+    lbl/.style={font=\tiny\bfseries, fill=white, inner sep=1pt, text=black!85}
 ]
-    % Column 1: Intake & Diagnostic Intelligence (Agents 1 to 6)
-    \node[stepblock] (s1) {\textbf{1. Planner:} Parse Intake $\to$ Plan \& Queries};
-    \node[stepblock, below=of s1] (s2) {\textbf{2. Retrieval:} Query PubMed/EPMC $\to$ CEBM};
-    \node[stepblock, below=of s2] (s3) {\textbf{3. Knowledge Graph:} $G=(V,E)$ Subgraph};
-    \node[stepblock, below=of s3] (s4) {\textbf{4. Drug Intel:} RxNav \& openFDA Checks};
-    \node[stepblock, below=of s4] (s5) {\textbf{5. Medical Image:} DenseNet WASM Saliency};
-    \node[stepblock, below=of s5] (s6) {\textbf{6. Case Similarity:} Lexical Case Matcher};
+    % --- PHASE I: CLINICAL INTAKE & RETRIEVAL ---
+    \node[phase1] (s1) {\textbf{1. Clinical Planner Agent:} Parse Intake $\to$ Formulate MeSH \& Query Strategy};
+    \node[phase1, below=0.20cm of s1] (s2) {\textbf{2. Biomedical Retrieval Agent:} Query PubMed, EPMC, WHO $\to$ Oxford CEBM T1--T5};
 
-    % Column 2: Clinical Synthesis, Safety & Audit (Agents 7 to 12)
-    \node[stepblock, right=0.36cm of s1] (s7) {\textbf{7. Clinical Reasoning:} Differentials + Factors};
-    \node[stepblock, below=of s7] (s8) {\textbf{8. Safety Auditor:} Grounding \& Pruning};
-    \node[stepblock, below=of s8] (s9) {\textbf{9. Explainability:} Trace \& Guideline Audit};
-    \node[stepblock, below=of s9] (s10) {\textbf{10. Confidence Agent:} Composite Score};
-    \node[stepblock, below=of s10] (s11) {\textbf{11. Report Gen.:} Chart + QR Provenance};
-    \node[stepblock, below=of s11, draw=purple!80!black, fill=purple!5] (s12) {\textbf{12. Benchmark Agent:} 50-Vignette Suite};
+    % --- PHASE II: PARALLEL TRI-MODAL INTELLIGENCE ---
+    \node[phase2, below=0.40cm of s2] (s4) {\textbf{4. Drug Intel}\\\scriptsize RxNav Interactions\\openFDA Boxed Warnings};
+    \node[phase2, left=0.22cm of s4] (s3) {\textbf{3. Knowledge Graph}\\\scriptsize $G=(V,E)$ Subgraphs\\Pruned Branching $k{=}3$};
+    \node[phase2, right=0.22cm of s4] (s5) {\textbf{5. Medical Vision}\\\scriptsize ONNX WASM Saliency\\DenseNet Activation Map};
 
-    % Column 1 Sequential Downward Flow
+    % --- PHASE III: REASONING & SAFETY AUDITING ---
+    \node[phase3, below=0.40cm of s4] (s6) {\textbf{6. Case Similarity Agent:} Cosine Matching against Verified Reference Teaching Vignettes};
+    \node[phase3, below=0.18cm of s6] (s7) {\textbf{7. Clinical Reasoning Agent:} Formulate Differentials + Supporting / Refuting Factors};
+    \node[phase3, below=0.18cm of s7] (s8) {\textbf{8. Safety Auditor Agent:} Enforce Allergy Clashes $\to$ Strip Ungrounded Claims};
+    \node[phase3, below=0.18cm of s8] (s9) {\textbf{9. Explainability Agent:} Synthesize Audit Trace \& Guideline Alignment Monograph};
+
+    % --- PHASE IV: SCORING, DELIVERY & BENCHMARKING ---
+    \node[phase4a, below=0.20cm of s9] (s10) {\textbf{10. Confidence Scoring Agent:} Multi-Signal Confidence Metric $C \in [0,1] \to$ Ordinal Bands};
+    \node[phase4b, below=0.20cm of s10.south west, anchor=north west] (s11) {\textbf{11. Hospital Report Generator:}\\7-Section Chart $\cdot$ Cryptographic QR\\1-Click Standardized EHR SOAP Export};
+    \node[phase4c, below=0.20cm of s10.south east, anchor=north east] (s12) {\textbf{12. Benchmark Agent:}\\Continuous Evaluation Suite\\$n{=}50$ Cases, Paired $t$-Test};
+
+    % --- CONNECTING PATHS ---
+    % Phase I Serial Flow
     \draw[arrow] (s1) -- (s2);
-    \draw[arrow] (s2) -- (s3);
-    \draw[arrow] (s3) -- (s4);
-    \draw[arrow] (s4) -- (s5);
-    \draw[arrow] (s5) -- (s6);
 
-    % Bridge from Column 1 to Column 2 via Central Gutter
-    \draw[arrow] (s6.east) -- ++(0.18, 0) |- (s7.west);
+    % Phase I -> Phase II Parallel Branching
+    \draw[tarrow] (s2.south) -- ++(0,-0.16) -| (s3.north);
+    \draw[tarrow] (s2.south) -- (s4.north);
+    \draw[tarrow] (s2.south) -- ++(0,-0.16) -| (s5.north);
 
-    % Column 2 Sequential Downward Flow
-    \draw[arrow] (s7) -- (s8);
-    \draw[arrow] (s8) -- (s9);
-    \draw[arrow] (s9) -- (s10);
-    \draw[arrow] (s10) -- (s11);
-    \draw[arrow, dashed, purple!80!black] (s11) -- (s12);
+    % Phase II Parallel Merge into Phase III
+    \draw[parrow] (s3.south) |- ++(0,-0.16) -- (s6.north);
+    \draw[parrow] (s4.south) -- (s6.north);
+    \draw[parrow] (s5.south) |- ++(0,-0.16) -- (s6.north);
+
+    % Phase III Serial Flow
+    \draw[parrow] (s6) -- (s7);
+    \draw[parrow] (s7) -- (s8);
+    \draw[parrow] (s8) -- (s9);
+    \draw[parrow] (s9) -- (s10);
+
+    % Phase IV Flow
+    \draw[aarrow] ([xshift=2.0cm]s10.south west) -- (s11.north);
+    \draw[darrow] ([xshift=-1.4cm]s10.south east) -- (s12.north);
 \end{tikzpicture}
-\caption{Sequential Execution Lifecycle of the 11 Consultation Workflow Agents with Integrated Continuous Research Benchmarking.}
+\caption{Sequential and Concurrent Execution Lifecycle of the 12 Specialized Workflow Agents: From Intake Planning and Tri-Modal Grounding to Differential Synthesis, Safety Auditing, and Continuous Benchmark Verification.}
 \label{fig:agent_flow}
 \end{figure}
 
@@ -284,29 +336,56 @@ Figure \ref{fig:kg_schema} illustrates the topological property graph schema and
 \begin{figure}[!t]
 \centering
 \begin{tikzpicture}[
-    scale=0.92, every node/.style={transform shape},
-    disease/.style={rectangle, draw=red!80!black, fill=red!10, thick, rounded corners=4pt, text width=2.2cm, minimum height=0.65cm, align=center, font=\scriptsize\bfseries},
-    symp/.style={ellipse, draw=blue!80!black, fill=blue!10, thick, text width=2.0cm, minimum height=0.55cm, align=center, font=\scriptsize},
-    drug/.style={rectangle, draw=green!70!black, fill=green!10, thick, rounded corners=2pt, text width=2.1cm, minimum height=0.55cm, align=center, font=\scriptsize},
-    contra/.style={rectangle, draw=orange!90!black, fill=orange!10, thick, text width=2.1cm, minimum height=0.55cm, align=center, font=\scriptsize},
-    lab/.style={diamond, aspect=1.8, draw=purple!80!black, fill=purple!10, thick, align=center, font=\scriptsize},
-    edge_lbl/.style={font=\tiny\bfseries, fill=white, inner sep=1.2pt, text=black!85}
+    scale=0.86, every node/.style={transform shape},
+    disease/.style={rectangle, draw=red!85!black, fill=red!10, double, thick, rounded corners=4pt, text width=2.4cm, minimum height=0.75cm, align=center, font=\scriptsize\bfseries},
+    symp/.style={ellipse, draw=blue!80!black, fill=blue!10, thick, text width=2.0cm, minimum height=0.60cm, align=center, font=\tiny},
+    drug/.style={rectangle, draw=green!70!black, fill=green!10, thick, rounded corners=3pt, text width=2.3cm, minimum height=0.60cm, align=center, font=\tiny},
+    contra/.style={rectangle, draw=orange!90!black, fill=orange!10, thick, rounded corners=3pt, text width=2.3cm, minimum height=0.60cm, align=center, font=\tiny},
+    lab/.style={diamond, aspect=1.8, draw=purple!80!black, fill=purple!10, thick, align=center, font=\tiny},
+    comp/.style={rectangle, draw=red!90!black, fill=red!15, thick, rounded corners=3pt, text width=2.1cm, minimum height=0.60cm, align=center, font=\tiny},
+    edge_lbl/.style={font=\tiny\bfseries, fill=white, inner sep=1.2pt, text=black!85},
+    clash_lbl/.style={font=\tiny\bfseries, fill=red!10, draw=red!80!black, rounded corners=2pt, inner sep=1.5pt, text=red!90!black}
 ]
-    \node[disease] (d) at (0, 0) {Pneumonia\\(CAP)};
-    \node[symp] (s1) at (-2.0, 1.3) {Fever, Productive\\Cough};
-    \node[symp] (s2) at (2.0, 1.3) {Dyspnea, Crackles};
-    \node[lab] (l) at (-2.1, -1.1) {CXR Infiltrate\\CRP, WBC};
-    \node[drug] (rx) at (-0.6, -2.1) {Amoxicillin /\\Azithromycin};
-    \node[contra] (c) at (2.0, -1.1) {Penicillin Allergy\\(Beta-Lactam)};
+    % Central Candidate Diagnosis
+    \node[disease] (d) at (0, 0) {Pneumonia (CAP)\\\scriptsize\normalfont MeSH: D011014};
 
-    \draw[-{Stealth}, thick, blue!80!black] (d) -- node[edge_lbl] {presents\_with} (s1);
-    \draw[-{Stealth}, thick, blue!80!black] (d) -- node[edge_lbl] {presents\_with} (s2);
-    \draw[-{Stealth}, thick, purple!80!black] (d) -- node[edge_lbl] {indicated\_lab} (l);
-    \draw[-{Stealth}, thick, green!70!black] (d) -- node[edge_lbl] {managed\_by} (rx);
-    \draw[-{Stealth}, thick, red!80!black] (rx) -- node[edge_lbl] {clashes\_with} (c);
-    \draw[-{Stealth}, thick, orange!90!black] (d) -- node[edge_lbl] {contraindicated} (c);
+    % Symptoms (Top)
+    \node[symp] (s1) at (-2.1, 1.45) {\textbf{Fever, Productive}\\Cough, Pleurisy};
+    \node[symp] (s2) at (2.1, 1.45) {\textbf{Dyspnea, Crackles}\\Tachypnea, Hypoxia};
+
+    % Diagnostic Workup (Left)
+    \node[lab] (l) at (-2.4, -0.35) {\textbf{CXR Infiltrate}\\CRP $\uparrow$, WBC $\uparrow$};
+
+    % Complication (Right)
+    \node[comp] (comp) at (2.4, -0.35) {\textbf{Severe Sepsis}\\Parapneumonic Effusion};
+
+    % Recommended Therapy vs Patient Contraindication (Bottom)
+    \node[drug] (rx) at (-1.5, -2.15) {\textbf{Amoxicillin /}\\Azithromycin};
+    \node[contra] (c) at (1.5, -2.15) {\textbf{Penicillin Allergy}\\(IgE Anaphylaxis)};
+
+    % Directed Relational Edges
+    \draw[-{Stealth[scale=0.85]}, thick, blue!80!black] (d) -- node[edge_lbl] {presents\_with} (s1);
+    \draw[-{Stealth[scale=0.85]}, thick, blue!80!black] (d) -- node[edge_lbl] {presents\_with} (s2);
+    \draw[-{Stealth[scale=0.85]}, thick, purple!80!black] (d) -- node[edge_lbl] {indicated\_lab} (l);
+    \draw[-{Stealth[scale=0.85]}, thick, red!85!black] (d) -- node[edge_lbl] {predisposed\_to} (comp);
+    \draw[-{Stealth[scale=0.85]}, thick, green!70!black] (d) -- node[edge_lbl] {managed\_by} (rx);
+    \draw[-{Stealth[scale=0.85]}, thick, orange!90!black] (d) -- node[edge_lbl] {contraindicated} (c);
+
+    % Deterministic Pharmacovigilance Clash Edge
+    \draw[-{Stealth[scale=0.85]}, thick, dashed, red!85!black] (rx) -- node[clash_lbl] {\textbf{clashes\_with (Blocked)}} (c);
+
+    % Legend Footer
+    \node[draw=gray!50, fill=gray!5, rounded corners=2pt, font=\tiny, inner sep=2.5pt, anchor=north] at (0, -2.85) {
+        \textbf{Ontology Legend:}~
+        \textcolor{red!85!black}{$\blacksquare$}~Disease~~
+        \textcolor{blue!80!black}{$\blacksquare$}~Symptom~~
+        \textcolor{purple!80!black}{$\blacksquare$}~Lab/Workup~~
+        \textcolor{green!70!black}{$\blacksquare$}~Drug~~
+        \textcolor{orange!90!black}{$\blacksquare$}~Contraindication~~
+        \textcolor{red!90!black}{$\blacksquare$}~Complication
+    };
 \end{tikzpicture}
-\caption{Clinical Knowledge Graph Relational Ontology Schema and Triplet Path ($G=(V,E)$) for Community-Acquired Pneumonia.}
+\caption{Clinical Knowledge Graph Relational Ontology Schema ($G=(V,E)$) for Community-Acquired Pneumonia: Illustrating Triplet Traversal, Multi-Hop Diagnostic Workup, and Deterministic Pharmacovigilance Cross-Reactivity Blocking.}
 \label{fig:kg_schema}
 \end{figure}
 
@@ -427,24 +506,56 @@ Figure \ref{fig:saliency_pipeline} illustrates the client-side WebAssembly execu
 \begin{figure}[!t]
 \centering
 \begin{tikzpicture}[
-    node distance=0.28cm,
-    stepb/.style={rectangle, draw=blue!70!black, fill=blue!5, thick, rounded corners=3pt, text width=\linewidth-0.6cm, minimum height=0.42cm, align=center, font=\scriptsize},
-    arrow/.style={-{Stealth[scale=0.85]}, thick, draw=blue!80!black}
+    node distance=0.22cm,
+    stepb/.style={rectangle, draw=blue!80!black, fill=white, thick, rounded corners=3pt, text width=7.3cm, minimum height=0.46cm, align=left, font=\tiny},
+    stepbranch/.style={rectangle, draw=teal!85!black, fill=white, thick, rounded corners=3pt, text width=3.45cm, minimum height=0.70cm, align=center, font=\tiny},
+    stepfinal/.style={rectangle, draw=purple!85!black, fill=purple!5, thick, rounded corners=3pt, text width=7.3cm, minimum height=0.48cm, align=left, font=\tiny},
+    arrow/.style={-{Stealth[scale=0.8]}, thick, draw=blue!80!black},
+    tarrow/.style={-{Stealth[scale=0.8]}, thick, draw=teal!85!black},
+    parrow/.style={-{Stealth[scale=0.8]}, thick, draw=purple!85!black},
+    lbl/.style={font=\tiny\bfseries, fill=white, inner sep=1pt, text=black!85}
 ]
-    \node[stepb] (p1) {\textbf{1. Local Image Input:} Radiograph loaded into HTML5 Canvas (No Cloud Upload)};
-    \node[stepb, below=of p1] (p2) {\textbf{2. Tensor Normalization:} Downscale to $224\times 224$, ImageNet Normalization};
-    \node[stepb, below=of p2] (p3) {\textbf{3. Baseline Forward Pass:} ONNX WASM computes baseline $\mu_0$};
-    \node[stepb, below=of p3] (p4) {\textbf{4. $7\times 7$ Occlusion Grid:} Systematically zero-out 49 patches ($32\times 32$ px)};
-    \node[stepb, below=of p4] (p5) {\textbf{5. Perturbation Sensitivity:} $S(g_x, g_y) = |\mu_0 - \mu_{g_x, g_y}| \to \text{Min-Max Normalize}$};
-    \node[stepb, below=of p5] (p6) {\textbf{6. Heatmap Rendering:} Render $hsla(\text{hue}, 90\%, 55\%, \alpha)$ alpha-blend overlay};
+    % Step 1: Input
+    \node[stepb, draw=gray!70!black, fill=gray!5] (p1) {\textbf{1. Clinician Radiograph Intake:} Raw Chest X-ray (DICOM / PNG) Loaded via Drag-and-Drop};
 
+    % Step 2: In-Memory Canvas Preprocessing
+    \node[stepb, below=0.20cm of p1] (p2) {\textbf{2. HTML5 Canvas Preprocessing:} Scale to $224{\times}224{\times}3 \to$ ImageNet Z-Score Normalization};
+
+    % Dual Parallel Branches (Baseline vs Occlusion Grid)
+    \node[stepbranch, below=0.38cm of p2.south west, anchor=north west] (p3a) {\textbf{3A. Baseline Forward Pass}\\ONNX WASM Worker Pass\\$\mu_0 = \frac{1}{K}\sum_{k=1}^K |\mathcal{M}(\mathbf{I})_k|$};
+    \node[stepbranch, below=0.38cm of p2.south east, anchor=north east] (p3b) {\textbf{3B. $7{\times}7$ Patch Occlusion}\\Iterative Masking of 49 Patches\\4 Multithreaded Web Workers};
+
+    % Step 4: Perturbation Deviation Convergence
+    \node[stepb, below=0.38cm of $(p3a.south)!0.5!(p3b.south)$] (p4) {\textbf{4. Perturbation Sensitivity Matrix:} $S(g_x, g_y) = \left|\mu_0 - \frac{1}{K} \sum_{k=1}^K |\mathcal{M}(\mathbf{I}_{g_x, g_y})_k|\right|$};
+
+    % Step 5: Dynamic Colormap Scaling
+    \node[stepb, below=0.20cm of p4] (p5) {\textbf{5. Dynamic Range Scaling:} $\bar{S}(g_x, g_y) = \frac{S(g_x, g_y) - \min(S)}{\max(S) - \min(S) + \epsilon} \to$ Min-Max Stretch};
+
+    % Step 6: Final Overlay Rendering
+    \node[stepfinal, below=0.20cm of p5] (p6) {\textbf{6. Viewport Explanatory Overlay:} Render $hsla(\text{hue}, 90\%, 55\%, \alpha)$ Heatmap Over Radiograph};
+
+    % Client-Side Privacy Sandbox Container
+    \begin{scope}[on background layer]
+        \node[draw=blue!50!black, fill=blue!2, dashed, rounded corners=4pt, fit=(p2)(p3a)(p3b)(p4)(p5)(p6), inner sep=5pt] (sandbox) {};
+        \node[font=\tiny\bfseries\color{blue!85!black}, anchor=north east] at ([xshift=-3pt, yshift=-2pt]sandbox.north east) {\textsc{Client Browser WASM Sandbox (Zero PHI Cloud Egress)}};
+    \end{scope}
+
+    % Connecting Dataflows
     \draw[arrow] (p1) -- (p2);
-    \draw[arrow] (p2) -- (p3);
-    \draw[arrow] (p3) -- (p4);
+
+    % Parallel Split to 3A and 3B
+    \draw[tarrow] (p2.south) -- ++(0,-0.15) -| (p3a.north);
+    \draw[tarrow] (p2.south) -- ++(0,-0.15) -| (p3b.north);
+
+    % Merge from 3A and 3B to 4
+    \draw[tarrow] (p3a.south) |- ++(0,-0.15) -- (p4.north);
+    \draw[tarrow] (p3b.south) |- ++(0,-0.15) -- (p4.north);
+
+    % Downward Serial Flow to Display
     \draw[arrow] (p4) -- (p5);
-    \draw[arrow] (p5) -- (p6);
+    \draw[parrow] (p5) -- (p6);
 \end{tikzpicture}
-\caption{In-Browser Privacy-Preserving Radiographic Occlusion Saliency Pipeline via WebAssembly ONNX Runtime.}
+\caption{Client-Side Privacy-Preserving Radiographic Occlusion Saliency Pipeline: Raw Pixel Processing, Parallel WASM Occlusion Workers, Sensitivity Tensor Convergence, and In-Browser Heatmap Overlay with Zero Cloud Data Egress.}
 \label{fig:saliency_pipeline}
 \end{figure}
 
