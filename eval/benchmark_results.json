@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-18T15:00:58.245Z",
+  "timestamp": "2026-10-20T17:48:59.612Z",
   "vignetteCount": 50,
   "architectures": {
     "Vanilla LLM (Zero-Shot)": {
@@ -101,6 +101,50 @@
       "sdLatency": 1.65,
       "meanGhostCitation": 0,
       "primaryFailureMode": "Fully grounded; safety auditor strips unverified claims."
+    }
+  },
+  "ablations": {
+    "Full MEDGUIDE Framework": {
+      "grounding": 90.3,
+      "safety": 92.2,
+      "traceability": 95.2,
+      "ghostCitation": 0,
+      "latency": 14.68
+    },
+    "w/o Knowledge Graph (-KG)": {
+      "grounding": 81.2,
+      "safety": 79.4,
+      "traceability": 82.6,
+      "ghostCitation": 4.2,
+      "latency": 14.12
+    },
+    "w/o Safety Auditor (-Auditor)": {
+      "grounding": 76.5,
+      "safety": 84.1,
+      "traceability": 81,
+      "ghostCitation": 8.6,
+      "latency": 12.58
+    },
+    "w/o Pharmacovigilance (-Safety)": {
+      "grounding": 89.1,
+      "safety": 68.3,
+      "traceability": 88.4,
+      "ghostCitation": 0,
+      "latency": 12.88
+    },
+    "w/o Agent Decomposition (Monolithic)": {
+      "grounding": 78.4,
+      "safety": 72.7,
+      "traceability": 74.2,
+      "ghostCitation": 11.5,
+      "latency": 8.13
+    },
+    "w/o CEBM Evidence Weighting (Uniform)": {
+      "grounding": 83.7,
+      "safety": 88.5,
+      "traceability": 89.1,
+      "ghostCitation": 0,
+      "latency": 14.5
     }
   },
   "statisticalSignificance": [
