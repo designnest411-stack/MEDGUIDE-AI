@@ -20,18 +20,18 @@
 
 \title{Agentic Graph RAG for Explainable Multimodal Clinical Decision Support with Verifiable Evidence and Client-Side Radiographic Saliency}
 
-\author{Vikram~Kadam,
+\author{Madhuri~Pagale,
+        Vikram~Kadam,
         Keshav~Mittal,
         Sandesh~Phad,
-        Tejas~Shidam,
-        and~Madhuri~Pagale\\
-        \small\textit{Emails: \{vikramkadam23, keshavmittal23, sandeshphad23, tejasshidam23, madhuripagale\}@gmail.com}%
+        and~Tejas~Shidam\\
+        \small\textit{Emails: \{madhuripagale, vikramkadam23, keshavmittal23, sandeshphad23, tejasshidam23\}@gmail.com}%
+\thanks{M. Pagale is an Assistant Professor and Research Guide in the Department of Computer Science \& Engineering (AI \& ML), Pimpri Chinchwad College of Engineering, Pune 411044, India (e-mail: madhuripagale@gmail.com, madhuri.pagale@pccoepune.org).}%
 \thanks{V. Kadam, K. Mittal, S. Phad, and T. Shidam are undergraduate researchers in the Department of Computer Science \& Engineering (Artificial Intelligence \& Machine Learning), Pimpri Chinchwad College of Engineering (PCCOE), Pune 411044, India (e-mail: \{vikramkadam23, keshavmittal23, sandeshphad23, tejasshidam23\}@gmail.com; \{vikram.kadam23, keshav.mittal23, sandesh.phad23, tejas.shidam23\}@pccoepune.org).}%
-\thanks{M. Pagale is an Assistant Professor in the Department of Computer Science \& Engineering (AI \& ML), Pimpri Chinchwad College of Engineering, Pune 411044, India (e-mail: madhuripagale@gmail.com, madhuri.pagale@pccoepune.org).}%
 }
 
 \markboth{Manuscript Submitted for Academic and Clinical Research Evaluation,~August~2026}%
-{Kadam \MakeLowercase{\textit{et al.}}: Agentic Graph RAG for Explainable Multimodal Clinical Decision Support}
+{Pagale \MakeLowercase{\textit{et al.}}: Agentic Graph RAG for Explainable Multimodal Clinical Decision Support}
 
 \maketitle
 
@@ -126,34 +126,42 @@ Transmitting raw medical images and protected health information (PHI) to extern
 \begin{figure*}[!t]
 \centering
 \begin{tikzpicture}[
-    node distance=0.85cm and 1.2cm,
-    block/.style={rectangle, draw=blue!70!black, fill=blue!5, thick, rounded corners=4pt, text width=4.8cm, minimum height=1.1cm, align=center, font=\footnotesize},
-    agent/.style={rectangle, draw=purple!80!black, fill=purple!5, thick, rounded corners=4pt, text width=4.8cm, minimum height=1.1cm, align=center, font=\footnotesize},
-    ext/.style={rectangle, draw=teal!80!black, fill=teal!5, thick, rounded corners=4pt, text width=4.8cm, minimum height=1.1cm, align=center, font=\footnotesize},
-    arrow/.style={-{Stealth[scale=1.0]}, thick, draw=blue!80!black}
+    node distance=1.1cm and 3.6cm,
+    block/.style={rectangle, draw=blue!80!black, fill=blue!5, thick, rounded corners=4pt, text width=5.2cm, minimum height=1.15cm, align=center, font=\footnotesize},
+    agent/.style={rectangle, draw=purple!85!black, fill=purple!5, thick, rounded corners=4pt, text width=5.2cm, minimum height=1.15cm, align=center, font=\footnotesize},
+    ext/.style={rectangle, draw=teal!85!black, fill=teal!5, thick, rounded corners=4pt, text width=4.0cm, minimum height=1.15cm, align=center, font=\footnotesize},
+    arrow/.style={-{Stealth[scale=0.9]}, thick, draw=blue!85!black},
+    lbl/.style={font=\scriptsize, fill=white, inner sep=1.5pt, text=black!90}
 ]
-    % Top Layer (Presentation & Edge)
-    \node[block] (ui) {\textbf{Presentation Layer}\\React 19 / TanStack Router\\Responsive Clinical Workspace};
-    \node[block, right=2.0cm of ui] (onnx) {\textbf{Edge Neural Vision}\\ONNX Runtime Web (WASM)\\DenseNet-121 Occlusion Saliency};
+    % Top Layer (Presentation & Client-Side Edge)
+    \node[block] (ui) {\textbf{Presentation Layer (Browser Edge)}\\React 19 / TanStack Router / Radix UI\\Responsive Clinical Workspace};
+    \node[block, right=3.6cm of ui] (onnx) {\textbf{Client-Side Neural Vision Engine}\\ONNX Runtime Web (WASM Workers)\\DenseNet-121 Occlusion Saliency};
 
-    % Middle Layer (Multi-Agent Orchestrator)
-    \node[agent, below=1.3cm of ui] (orch) {\textbf{Multi-Agent Orchestrator}\\TanStack Start / Nitro Runtime\\12-Agent Deterministic Pipeline};
-    \node[block, below=1.3cm of onnx] (fb) {\textbf{Multi-Tenant Cloud Data \& CDN}\\Firebase Auth $\cdot$ Cloud Firestore\\Cloudinary Isolated Medical Edge};
+    % Middle Layer (Multi-Agent Orchestrator & Cloud Persistence)
+    \node[agent, below=1.4cm of ui] (orch) {\textbf{Multi-Agent Orchestrator (Backend)}\\TanStack Start / Nitro Runtime (Node.js)\\12-Agent Deterministic Pipeline};
+    \node[block, below=1.4cm of onnx] (fb) {\textbf{Multi-Tenant Cloud Data \& CDN}\\Firebase Auth $\cdot$ Cloud Firestore\\Cloudinary Isolated Medical Edge};
 
-    % Bottom Layer (Knowledge & Foundations)
-    \node[ext, below left=1.3cm and -0.8cm of orch] (apis) {\textbf{Biomedical Retrieval}\\PubMed $\cdot$ Europe PMC\\ClinicalTrials.gov $\cdot$ WHO};
-    \node[ext, below=1.3cm of orch] (kg) {\textbf{Clinical Knowledge Graph}\\Topology $G=(V,E)$\\8 Entities $\times$ 7 Relations};
-    \node[ext, below right=1.3cm and -0.8cm of orch] (safety) {\textbf{Pharmacovigilance}\\openFDA $\cdot$ RxNav (RxNorm)\\Allergy Cross-Reactivity Engine};
+    % Bottom Layer (Knowledge & Foundations) - Symmetrically Spaced
+    \node[ext, below=1.4cm of orch] (apis) {\textbf{Biomedical Retrieval}\\PubMed $\cdot$ Europe PMC\\ClinicalTrials.gov $\cdot$ WHO};
+    \node[ext, below=1.4cm of $(orch)!0.5!(fb)$] (kg) {\textbf{Clinical Knowledge Graph}\\Topology $G=(V,E)$\\8 Entities $\times$ 7 Relations};
+    \node[ext, below=1.4cm of fb] (safety) {\textbf{Pharmacovigilance Engine}\\openFDA $\cdot$ RxNav (RxNorm)\\Allergy Cross-Reactivity Engine};
 
-    % Connections
-    \draw[arrow] (ui) -- node[above, font=\scriptsize] {Image Tensor} (onnx);
-    \draw[arrow] (ui) -- node[left, font=\scriptsize] {Clinical Query} (orch);
-    \draw[arrow] (ui) -- node[above, font=\scriptsize] {OAuth / Sync} (fb);
-    \draw[arrow] (orch) -- node[right, font=\scriptsize] {NDJSON Stream} (ui);
-    \draw[arrow] (orch) -- (apis);
-    \draw[arrow] (kg) -- (orch);
-    \draw[arrow] (safety) -- (orch);
-    \draw[arrow] (apis) -- (orch);
+    % Clean Top Connections
+    \draw[arrow] (ui) -- node[lbl, above] {Local Image Tensor} (onnx);
+    
+    % Dual Vertical Arrows with Clean X-Shift
+    \draw[arrow] ([xshift=-6mm]ui.south) -- node[lbl, left=2pt] {Clinical Query} ([xshift=-6mm]orch.north);
+    \draw[arrow] ([xshift=6mm]orch.north) -- node[lbl, right=2pt] {NDJSON Stream} ([xshift=6mm]ui.south);
+
+    % Horizontal & Edge Storage Sync
+    \draw[arrow, <->] (orch) -- node[lbl, above] {Session / Audit Sync} (fb);
+    \draw[arrow] (onnx) -- node[lbl, right] {Tenant Asset Path} (fb);
+    \draw[arrow, dashed] (ui.east) to[out=0, in=120] node[lbl, above, sloped] {OAuth Token} (fb.north west);
+
+    % Bottom Layer Connections
+    \draw[arrow, <->] (orch.south) -- node[lbl, left=1pt] {REST API} (apis.north);
+    \draw[arrow, <->] (orch.south east) -- node[lbl, fill=white, inner sep=1.2pt] {Subgraphs} (kg.north);
+    \draw[arrow, <->] (fb.south) -- node[lbl, right=1pt] {Checks} (safety.north);
 \end{tikzpicture}
 \caption{System Architecture of the MEDGUIDE AI Clinical Insight Engine with Edge Neural Inference and Isolated Cloud Storage.}
 \label{fig:sys_arch}
@@ -193,8 +201,8 @@ The MEDGUIDE AI platform implements a four-tier cloud-edge reactive architecture
 \begin{enumerate}
     \item \textbf{Presentation \& Edge Vision Tier:} Developed with React 19, TypeScript 5.8, and TanStack Router. An external module-level singleton store (\texttt{consultRunStore}) subscribed via React's native \texttt{useSyncExternalStore} ensures streaming consultations persist across client route transitions without state loss. In-browser neural inference executes via \texttt{onnxruntime-web} WebAssembly workers.
     \item \textbf{Server-Side Multi-Agent Orchestrator:} Deployed on TanStack Start with the Nitro runtime, coordinating asynchronous biomedical API queries, knowledge graph traversal, and multi-tier Gemini LLM cascading over an NDJSON event stream (\texttt{/api/consult}).
-    \item \textbf{Cloudinary Medical Storage Tier:} Cloud-hosted, high-performance edge asset infrastructure configured with deterministic per-clinician and per-patient folder isolation (\texttt{medguide-clinical/\{clinicianId\}/\{patientId\}/*}) with zero-retention local data-URI fallback \cite{cloudinary2024}.
-    \item \textbf{Multi-Tenant Cloud Data Tier:} Cloud Firestore partitioned under per-clinician isolated sub-collections (\texttt{/users/\{userId\}/*}) secured via path-level security rules for patient profiles, longitudinal timelines, and consultation records.
+    \item \textbf{Cloudinary Medical Storage Tier:} Cloud-hosted, high-performance edge asset infrastructure configured with deterministic per-clinician and per-patient folder isolation (\texttt{medguide-clinical/}\allowbreak\texttt{\{clinicianId\}/}\allowbreak\texttt{\{patientId\}/*}) with zero-retention local data-URI fallback \cite{cloudinary2024}.
+    \item \textbf{Multi-Tenant Cloud Data Tier:} Cloud Firestore partitioned under per-clinician isolated sub-collections (\texttt{/users/}\allowbreak\texttt{\{userId\}/*}) secured via path-level security rules for patient profiles, longitudinal timelines, and consultation records.
 \end{enumerate}
 
 \subsection{The 12-Agent Orchestration Architecture}
@@ -217,34 +225,42 @@ The engine coordinates 12 specialized workflow agents organized across an 11-sta
 \begin{figure}[!b]
 \centering
 \begin{tikzpicture}[
-    node distance=0.34cm,
-    stepblock/.style={rectangle, draw=blue!80!black, fill=blue!5, thick, rounded corners=3pt, text width=\linewidth-0.6cm, minimum height=0.38cm, align=left, font=\scriptsize},
-    arrow/.style={-{Stealth[scale=0.8]}, thick, draw=blue!80!black}
+    node distance=0.22cm,
+    stepblock/.style={rectangle, draw=blue!80!black, fill=blue!5, thick, rounded corners=3pt, text width=3.75cm, minimum height=0.50cm, align=left, font=\tiny},
+    arrow/.style={-{Stealth[scale=0.75]}, thick, draw=blue!80!black}
 ]
-    \node[stepblock] (s1) {\textbf{1. Planner:} Parse Intake $\to$ Generate MeSH Queries \& Plan};
-    \node[stepblock, below=of s1] (s2) {\textbf{2. Retrieval:} Query PubMed/EPMC $\to$ Oxford Tier 1--5 Grading};
-    \node[stepblock, below=of s2] (s3) {\textbf{3. Knowledge Graph:} Match Entities $\to$ Traverse $G=(V,E)$ Subgraph};
-    \node[stepblock, below=of s3] (s4) {\textbf{4. Drug Intelligence:} Check RxNav Interactions \& openFDA Labels};
-    \node[stepblock, below=of s4] (s5) {\textbf{5. Medical Image:} Integrate DenseNet Saliency \& Vision AI};
-    \node[stepblock, below=of s5] (s6) {\textbf{6. Case Similarity:} Rank Lexically Similar Reference Teaching Cases};
-    \node[stepblock, below=of s6] (s7) {\textbf{7. Clinical Reasoning:} Formulate Differentials + Supporting/Against};
-    \node[stepblock, below=of s7] (s8) {\textbf{8. Safety Auditor:} Strip Ghost Citations $\to$ Flag Contraindications};
-    \node[stepblock, below=of s8] (s9) {\textbf{9. Explainability:} Build Audit Trail \& Guideline Alignment};
-    \node[stepblock, below=of s9] (s10) {\textbf{10. Confidence Agent:} Compute Evidence-Aware Confidence Metric};
-    \node[stepblock, below=of s10] (s12) {\textbf{11. Report Generator:} Compile Structured Markdown + QR Verification};
-    \node[stepblock, below=of s12, draw=purple!80!black, fill=purple!5] (s11) {\textbf{12. Research \& Benchmark Agent:} Multi-System Benchmark Suite ($n=50$)};
+    % Column 1: Intake & Diagnostic Intelligence (Agents 1 to 6)
+    \node[stepblock] (s1) {\textbf{1. Planner:} Parse Intake $\to$ Plan \& Queries};
+    \node[stepblock, below=of s1] (s2) {\textbf{2. Retrieval:} Query PubMed/EPMC $\to$ CEBM};
+    \node[stepblock, below=of s2] (s3) {\textbf{3. Knowledge Graph:} $G=(V,E)$ Subgraph};
+    \node[stepblock, below=of s3] (s4) {\textbf{4. Drug Intel:} RxNav \& openFDA Checks};
+    \node[stepblock, below=of s4] (s5) {\textbf{5. Medical Image:} DenseNet WASM Saliency};
+    \node[stepblock, below=of s5] (s6) {\textbf{6. Case Similarity:} Lexical Case Matcher};
 
+    % Column 2: Clinical Synthesis, Safety & Audit (Agents 7 to 12)
+    \node[stepblock, right=0.36cm of s1] (s7) {\textbf{7. Clinical Reasoning:} Differentials + Factors};
+    \node[stepblock, below=of s7] (s8) {\textbf{8. Safety Auditor:} Grounding \& Pruning};
+    \node[stepblock, below=of s8] (s9) {\textbf{9. Explainability:} Trace \& Guideline Audit};
+    \node[stepblock, below=of s9] (s10) {\textbf{10. Confidence Agent:} Composite Score};
+    \node[stepblock, below=of s10] (s11) {\textbf{11. Report Gen.:} Chart + QR Provenance};
+    \node[stepblock, below=of s11, draw=purple!80!black, fill=purple!5] (s12) {\textbf{12. Benchmark Agent:} 50-Vignette Suite};
+
+    % Column 1 Sequential Downward Flow
     \draw[arrow] (s1) -- (s2);
     \draw[arrow] (s2) -- (s3);
     \draw[arrow] (s3) -- (s4);
     \draw[arrow] (s4) -- (s5);
     \draw[arrow] (s5) -- (s6);
-    \draw[arrow] (s6) -- (s7);
+
+    % Bridge from Column 1 to Column 2 via Central Gutter
+    \draw[arrow] (s6.east) -- ++(0.18, 0) |- (s7.west);
+
+    % Column 2 Sequential Downward Flow
     \draw[arrow] (s7) -- (s8);
     \draw[arrow] (s8) -- (s9);
     \draw[arrow] (s9) -- (s10);
-    \draw[arrow] (s10) -- (s12);
-    \draw[arrow, dashed, purple!80!black] (s12) -- (s11);
+    \draw[arrow] (s10) -- (s11);
+    \draw[arrow, dashed, purple!80!black] (s11) -- (s12);
 \end{tikzpicture}
 \caption{Sequential Execution Lifecycle of the 11 Consultation Workflow Agents with Integrated Continuous Research Benchmarking.}
 \label{fig:agent_flow}
@@ -257,8 +273,10 @@ G = (V, E, \tau_V, \tau_E, \phi_V, \phi_E)
 \end{equation}
 where entity vertices $v \in V$ and relation edges $e \in E$ satisfy:
 \begin{align}
-\tau_V(v) &\in \{\text{disease}, \text{symptom}, \text{risk}, \text{lab}, \text{drug}, \text{contra}, \text{treat}, \text{comp}\} \\
-\tau_E(e) &\in \{\text{presents\_with}, \text{predisposed\_by}, \text{indicated\_lab}, \text{managed\_by}, \dots\}
+\tau_V(v) &\in \{\text{disease}, \text{symptom}, \text{risk}, \text{lab}, \nonumber \\
+          &\quad\ \ \text{drug}, \text{contra}, \text{treat}, \text{comp}\} \\
+\tau_E(e) &\in \{\text{presents\_with}, \text{predisposed\_by}, \nonumber \\
+          &\quad\ \ \text{indicated\_lab}, \text{managed\_by}, \dots\}
 \end{align}
 
 Figure \ref{fig:kg_schema} illustrates the topological property graph schema and subgraph extraction process. Entity matching is performed via n-gram token overlap against candidate diseases identified by the Planner Agent. To prevent cognitive clutter, subgraphs are pruned to a maximum branching factor of $k=3$ per relation type before rendering in the interactive React Flow interface.
@@ -266,27 +284,27 @@ Figure \ref{fig:kg_schema} illustrates the topological property graph schema and
 \begin{figure}[!t]
 \centering
 \begin{tikzpicture}[
-    node distance=0.8cm and 0.9cm,
-    disease/.style={rectangle, draw=red!80!black, fill=red!10, thick, rounded corners=4pt, text width=2.4cm, minimum height=0.7cm, align=center, font=\scriptsize\bfseries},
-    symp/.style={ellipse, draw=blue!80!black, fill=blue!10, thick, text width=2.0cm, minimum height=0.6cm, align=center, font=\scriptsize},
-    drug/.style={rectangle, draw=green!70!black, fill=green!10, thick, rounded corners=2pt, text width=2.0cm, minimum height=0.6cm, align=center, font=\scriptsize},
-    contra/.style={rectangle, draw=orange!90!black, fill=orange!10, thick, text width=2.0cm, minimum height=0.6cm, align=center, font=\scriptsize},
+    scale=0.92, every node/.style={transform shape},
+    disease/.style={rectangle, draw=red!80!black, fill=red!10, thick, rounded corners=4pt, text width=2.2cm, minimum height=0.65cm, align=center, font=\scriptsize\bfseries},
+    symp/.style={ellipse, draw=blue!80!black, fill=blue!10, thick, text width=2.0cm, minimum height=0.55cm, align=center, font=\scriptsize},
+    drug/.style={rectangle, draw=green!70!black, fill=green!10, thick, rounded corners=2pt, text width=2.1cm, minimum height=0.55cm, align=center, font=\scriptsize},
+    contra/.style={rectangle, draw=orange!90!black, fill=orange!10, thick, text width=2.1cm, minimum height=0.55cm, align=center, font=\scriptsize},
     lab/.style={diamond, aspect=1.8, draw=purple!80!black, fill=purple!10, thick, align=center, font=\scriptsize},
-    edge_lbl/.style={font=\tiny\itshape, text=black!80}
+    edge_lbl/.style={font=\tiny\bfseries, fill=white, inner sep=1.2pt, text=black!85}
 ]
-    \node[disease] (d) {Pneumonia\\(CAP)};
-    \node[symp, above left=0.7cm and 0.2cm of d] (s1) {Fever, Productive Cough};
-    \node[symp, above right=0.7cm and 0.2cm of d] (s2) {Dyspnea, Crackles};
-    \node[lab, below left=0.8cm and 0.1cm of d] (l) {CXR Infiltrate\\CRP, WBC};
-    \node[drug, below=0.9cm of d] (rx) {Amoxicillin /\\Azithromycin};
-    \node[contra, below right=0.8cm and 0.1cm of d] (c) {Penicillin Allergy\\(Beta-Lactam)};
+    \node[disease] (d) at (0, 0) {Pneumonia\\(CAP)};
+    \node[symp] (s1) at (-2.0, 1.3) {Fever, Productive\\Cough};
+    \node[symp] (s2) at (2.0, 1.3) {Dyspnea, Crackles};
+    \node[lab] (l) at (-2.1, -1.1) {CXR Infiltrate\\CRP, WBC};
+    \node[drug] (rx) at (-0.6, -2.1) {Amoxicillin /\\Azithromycin};
+    \node[contra] (c) at (2.0, -1.1) {Penicillin Allergy\\(Beta-Lactam)};
 
-    \draw[-{Stealth}, thick, blue!80!black] (d) -- node[edge_lbl, left] {presents\_with} (s1);
-    \draw[-{Stealth}, thick, blue!80!black] (d) -- node[edge_lbl, right] {presents\_with} (s2);
-    \draw[-{Stealth}, thick, purple!80!black] (d) -- node[edge_lbl, left] {indicated\_lab} (l);
-    \draw[-{Stealth}, thick, green!70!black] (d) -- node[edge_lbl, left] {managed\_by} (rx);
-    \draw[-{Stealth}, thick, red!80!black] (rx) -- node[edge_lbl, below] {clashes\_with} (c);
-    \draw[-{Stealth}, thick, orange!90!black] (d) -- node[edge_lbl, right] {contraindicated} (c);
+    \draw[-{Stealth}, thick, blue!80!black] (d) -- node[edge_lbl] {presents\_with} (s1);
+    \draw[-{Stealth}, thick, blue!80!black] (d) -- node[edge_lbl] {presents\_with} (s2);
+    \draw[-{Stealth}, thick, purple!80!black] (d) -- node[edge_lbl] {indicated\_lab} (l);
+    \draw[-{Stealth}, thick, green!70!black] (d) -- node[edge_lbl] {managed\_by} (rx);
+    \draw[-{Stealth}, thick, red!80!black] (rx) -- node[edge_lbl] {clashes\_with} (c);
+    \draw[-{Stealth}, thick, orange!90!black] (d) -- node[edge_lbl] {contraindicated} (c);
 \end{tikzpicture}
 \caption{Clinical Knowledge Graph Relational Ontology Schema and Triplet Path ($G=(V,E)$) for Community-Acquired Pneumonia.}
 \label{fig:kg_schema}
@@ -409,13 +427,13 @@ Figure \ref{fig:saliency_pipeline} illustrates the client-side WebAssembly execu
 \begin{figure}[!t]
 \centering
 \begin{tikzpicture}[
-    node distance=0.6cm,
-    stepb/.style={rectangle, draw=blue!70!black, fill=blue!5, thick, rounded corners=3pt, text width=\linewidth-0.8cm, minimum height=0.55cm, align=center, font=\scriptsize},
-    arrow/.style={-{Stealth[scale=0.9]}, thick, draw=blue!80!black}
+    node distance=0.28cm,
+    stepb/.style={rectangle, draw=blue!70!black, fill=blue!5, thick, rounded corners=3pt, text width=\linewidth-0.6cm, minimum height=0.42cm, align=center, font=\scriptsize},
+    arrow/.style={-{Stealth[scale=0.85]}, thick, draw=blue!80!black}
 ]
     \node[stepb] (p1) {\textbf{1. Local Image Input:} Radiograph loaded into HTML5 Canvas (No Cloud Upload)};
-    \node[stepb, below=of p1] (p2) {\textbf{2. Tensor Normalization:} Downscale to $224\times 224$, ImageNet Mean/Std Normalization};
-    \node[stepb, below=of p2] (p3) {\textbf{3. Baseline Forward Pass:} ONNX WASM computes $\mu_0 = \frac{1}{K}\sum |\mathcal{M}(\mathbf{I})_k|$};
+    \node[stepb, below=of p1] (p2) {\textbf{2. Tensor Normalization:} Downscale to $224\times 224$, ImageNet Normalization};
+    \node[stepb, below=of p2] (p3) {\textbf{3. Baseline Forward Pass:} ONNX WASM computes baseline $\mu_0$};
     \node[stepb, below=of p3] (p4) {\textbf{4. $7\times 7$ Occlusion Grid:} Systematically zero-out 49 patches ($32\times 32$ px)};
     \node[stepb, below=of p4] (p5) {\textbf{5. Perturbation Sensitivity:} $S(g_x, g_y) = |\mu_0 - \mu_{g_x, g_y}| \to \text{Min-Max Normalize}$};
     \node[stepb, below=of p5] (p6) {\textbf{6. Heatmap Rendering:} Render $hsla(\text{hue}, 90\%, 55\%, \alpha)$ alpha-blend overlay};
@@ -446,8 +464,8 @@ The MEDGUIDE AI system is engineered using a modular, type-safe stack:
     \item \textbf{Server Function Runtime:} TanStack Start with the Nitro server engine, providing type-safe RPC server functions (\texttt{createServerFn}) with automated CSRF protection.
     \item \textbf{Module State Persistence:} A singleton store (\texttt{consultRunStore}) maintaining active consultation stream state during route transitions via React's \texttt{useSyncExternalStore}.
     \item \textbf{Patient Workspace \& Longitudinal Timeline:} Dedicated modules for structured patient intake (vitals, labs, medications, allergies) and chronological event logging (symptoms, diagnostic tests, treatments, outcomes) securely persisted in Cloud Firestore.
-    \item \textbf{Cloudinary Medical Storage Engine:} Integrated edge storage with deterministic tenant folder partitioning (\texttt{medguide-clinical/\{userId\}/\{patientId\}/*}), MIME verification, and graceful base64 data-URI fallback for zero-loss image handling \cite{cloudinary2024}.
-    \item \textbf{Hospital-Grade Report Center \& EHR Export:} Vector A4 PDF generation with embedded cryptographic verification QR codes (\texttt{medguide-clinical://verify/\{id\}}), interactive citation badges, and 1-click standardized SOAP clinical note export compatible with Epic and Cerner EHRs \cite{weed1968medical, smarthealth2021}.
+    \item \textbf{Cloudinary Medical Storage Engine:} Integrated edge storage with deterministic tenant folder partitioning (\texttt{medguide-clinical/}\allowbreak\texttt{\{userId\}/}\allowbreak\texttt{\{patientId\}/*}), MIME verification, and graceful base64 data-URI fallback for zero-loss image handling \cite{cloudinary2024}.
+    \item \textbf{Hospital-Grade Report Center \& EHR Export:} Vector A4 PDF generation with embedded cryptographic verification QR codes (\texttt{medguide-clinical:}\allowbreak\texttt{//verify/}\allowbreak\texttt{\{id\}}), interactive citation badges, and 1-click standardized SOAP clinical note export compatible with Epic and Cerner EHRs \cite{weed1968medical, smarthealth2021}.
     \item \textbf{Operational Pipeline Telemetry:} Real-time Firestore synchronization tracking per-agent execution status, step durations, and intermediate hypothesis graphs without client-side polling.
     \item \textbf{In-App Clinical Literacy Assistant:} An embedded conversational copilot (\texttt{/api/assistant}) providing clinicians and trainees with real-time operational guidance and evidence literacy support.
 \end{itemize}
@@ -490,8 +508,9 @@ To evaluate the framework, we established a benchmark suite of \textbf{50 multi-
 \centering
 \caption{Benchmark Dataset Distribution across 50 Clinical Vignettes}
 \label{tab:vignettes}
-\small
-\begin{tabularx}{\columnwidth}{p{2.6cm}cp{3.8cm}}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\columnwidth}{>{\raggedright\arraybackslash}p{2.4cm}c>{\raggedright\arraybackslash}X}
 \toprule
 \textbf{Specialty Domain} & \textbf{Cases ($n$)} & \textbf{Representative Conditions} \\
 \midrule
@@ -545,8 +564,9 @@ Table \ref{tab:comparative_results} presents the comparative evaluation across t
 \centering
 \caption{Empirical Benchmark Comparison across 50 Multi-System Clinical Vignettes (Mean $\pm$ Std. Dev., [95\% Confidence Interval])}
 \label{tab:comparative_results}
-\small
-\begin{tabularx}{\textwidth}{p{2.7cm}p{2.3cm}p{2.3cm}p{2.3cm}p{1.8cm}p{1.3cm}X}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.6cm}>{\centering\arraybackslash}p{2.2cm}>{\centering\arraybackslash}p{2.2cm}>{\centering\arraybackslash}p{2.2cm}>{\centering\arraybackslash}p{1.7cm}>{\centering\arraybackslash}p{1.3cm}>{\raggedright\arraybackslash}X}
 \toprule
 \textbf{Architecture} & \textbf{Grounding ($GR$)} & \textbf{Safety ($SC$)} & \textbf{Explainability ($EF$)} & \textbf{Latency ($L$)} & \textbf{Ghost Cit.} & \textbf{Primary Failure Mode} \\
 \midrule
@@ -569,8 +589,9 @@ Table \ref{tab:domain_results} reports the domain-wise performance breakdown for
 \centering
 \caption{Domain-Wise Performance Breakdown of Agentic Graph RAG ($n=50$)}
 \label{tab:domain_results}
-\small
-\begin{tabularx}{\columnwidth}{p{2.6cm}cccc}
+\footnotesize
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabularx}{\columnwidth}{>{\raggedright\arraybackslash}X c c c c}
 \toprule
 \textbf{Specialty Domain} & \textbf{$n$} & \textbf{Grounding} & \textbf{Safety} & \textbf{Explain.} \\
 \midrule
@@ -592,8 +613,9 @@ Table \ref{tab:latency_breakdown} details the latency profile across individual 
 \centering
 \caption{Sub-Component Latency Breakdown in Agentic Graph RAG}
 \label{tab:latency_breakdown}
-\small
-\begin{tabularx}{\columnwidth}{p{4.8cm}cc}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\columnwidth}{>{\raggedright\arraybackslash}Xcc}
 \toprule
 \textbf{Pipeline Stage / Component} & \textbf{Latency (s)} & \textbf{\% Total} \\
 \midrule
@@ -624,8 +646,9 @@ Table \ref{tab:case_studies_table} summarizes the multi-agent execution traces a
 \centering
 \caption{End-to-End Multi-Agent Clinical Vignette Case Studies and System Execution Traces}
 \label{tab:case_studies_table}
-\small
-\begin{tabularx}{\textwidth}{p{2.3cm}p{3.4cm}p{3.2cm}p{3.1cm}X}
+\footnotesize
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.2cm}>{\raggedright\arraybackslash}p{3.2cm}>{\raggedright\arraybackslash}p{3.1cm}>{\raggedright\arraybackslash}p{3.0cm}>{\raggedright\arraybackslash}X}
 \toprule
 \textbf{Clinical Scenario} & \textbf{Patient Presentation} & \textbf{Prioritized Differentials} & \textbf{Grounded Citations} & \textbf{Safety Audit \& Pharmacovigilance Flags} \\
 \midrule
@@ -658,8 +681,9 @@ The 14.68-second latency of the full multi-agent pipeline reflects an engineerin
 \centering
 \caption{MEDGUIDE AI Model Facts Label Specification}
 \label{tab:model_facts}
-\small
-\begin{tabularx}{\columnwidth}{p{2.6cm}X}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\columnwidth}{>{\raggedright\arraybackslash}p{2.4cm}>{\raggedright\arraybackslash}X}
 \toprule
 \textbf{Dimension} & \textbf{Specification / Operational Boundary} \\
 \midrule
@@ -667,7 +691,7 @@ The 14.68-second latency of the full multi-agent pipeline reflects an engineerin
 \textbf{Autonomous Diagnosis} & \textbf{Strictly Prohibited.} The system operates as a decision aid and does not issue binding diagnoses. \\
 \textbf{Target Users} & Licensed physicians, resident physicians, and supervised medical students. \\
 \textbf{Evidence Sources} & PubMed (NCBI), Europe PMC, ClinicalTrials.gov, WHO Guidelines, openFDA, RxNorm. \\
-\textbf{Imaging \& Storage} & In-browser DenseNet-121 WASM saliency; tenant-isolated Cloudinary media edge (\texttt{medguide-clinical/*}) with local data-URI fallback. \\
+\textbf{Imaging \& Storage} & In-browser DenseNet-121 WASM saliency; tenant-isolated Cloudinary media edge (\texttt{medguide-clinical/}\allowbreak\texttt{*}) with local data-URI fallback. \\
 \textbf{Chart \& Provenance} & 7-section clinical consultation report with scannable QR verification code and 1-click standardized EHR SOAP export \cite{weed1968medical, smarthealth2021}. \\
 \textbf{Human Oversight} & \textbf{Mandatory.} Clinicians must confirm all recommendations and dosages. \\
 \textbf{Major Limitations} & External biomedical API network dependencies; 50-case benchmark size; 2D single-view imaging. \\
@@ -721,26 +745,5 @@ The authors express their gratitude to the Department of Computer Science \& Eng
 \balance
 \bibliographystyle{IEEEtran}
 \bibliography{references}
-
-\newpage
-\begin{IEEEbiographynophoto}{Vikram Kadam}
-is an undergraduate researcher in the Department of Computer Science \& Engineering (AI \& ML) at Pimpri Chinchwad College of Engineering (PCCOE), Pune, India. His research interests include Retrieval-Augmented Generation, medical knowledge graphs, multi-agent LLM systems, and biomedical informatics.
-\end{IEEEbiographynophoto}
-
-\begin{IEEEbiographynophoto}{Keshav Mittal}
-is an undergraduate researcher in the Department of Computer Science \& Engineering (AI \& ML) at PCCOE, Pune, India. His research interests include full-stack medical systems, biomedical ontology extraction, and distributed clinical data engineering.
-\end{IEEEbiographynophoto}
-
-\begin{IEEEbiographynophoto}{Sandesh Phad}
-is an undergraduate researcher in the Department of Computer Science \& Engineering (AI \& ML) at PCCOE, Pune, India. His research interests include clinical NLP, pharmacovigilance safety systems, and evidence-based clinical reasoning.
-\end{IEEEbiographynophoto}
-
-\begin{IEEEbiographynophoto}{Tejas Shidam}
-is an undergraduate researcher in the Department of Computer Science \& Engineering (AI \& ML) at PCCOE, Pune, India. His research interests include computer vision in healthcare, client-side WebAssembly neural execution, and radiographic saliency interpretability.
-\end{IEEEbiographynophoto}
-
-\begin{IEEEbiographynophoto}{Madhuri Pagale}
-is an Assistant Professor in the Department of Computer Science \& Engineering (AI \& ML) at Pimpri Chinchwad College of Engineering, Pune, India. Her academic and research focus spans artificial intelligence, machine learning, medical image processing, and intelligent healthcare architectures.
-\end{IEEEbiographynophoto}
 
 \end{document}
