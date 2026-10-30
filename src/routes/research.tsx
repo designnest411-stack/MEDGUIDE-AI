@@ -104,10 +104,10 @@ export function ResearchPage() {
   const domainChartData = useMemo(() => {
     return Object.entries(BENCHMARK_RESULTS.domainBreakdown).map(([domain, stats]) => ({
       domain,
-      grounding: stats.grounding,
-      safety: stats.safety,
-      explainability: stats.explainability,
-      cases: stats.count,
+      grounding: stats.grounding ?? stats.meanGrounding ?? 0,
+      safety: stats.safety ?? stats.meanSafety ?? 0,
+      explainability: stats.explainability ?? stats.meanExplainability ?? 0,
+      cases: stats.count ?? 0,
     }));
   }, []);
 
@@ -338,27 +338,27 @@ export function ResearchPage() {
                           </TableCell>
                           <TableCell>
                             <div>
-                              <span className="font-mono text-sm">{a.meanGrounding.toFixed(1)}%</span>
+                              <span className="font-mono text-sm">{(a.meanGrounding ?? 0).toFixed(1)}%</span>
                               <span className="text-xs text-muted-foreground ml-1">± {a.sdGrounding}</span>
                               <div className="text-[0.68rem] text-muted-foreground">[{a.ci95Grounding.join(", ")}]</div>
                             </div>
                           </TableCell>
                           <TableCell>
                             <div>
-                              <span className="font-mono text-sm">{a.meanSafety.toFixed(1)}%</span>
+                              <span className="font-mono text-sm">{(a.meanSafety ?? 0).toFixed(1)}%</span>
                               <span className="text-xs text-muted-foreground ml-1">± {a.sdSafety}</span>
                               <div className="text-[0.68rem] text-muted-foreground">[{a.ci95Safety.join(", ")}]</div>
                             </div>
                           </TableCell>
                           <TableCell>
                             <div>
-                              <span className="font-mono text-sm">{a.meanExplainability.toFixed(1)}%</span>
+                              <span className="font-mono text-sm">{(a.meanExplainability ?? 0).toFixed(1)}%</span>
                               <span className="text-xs text-muted-foreground ml-1">± {a.sdExplainability}</span>
                               <div className="text-[0.68rem] text-muted-foreground">[{a.ci95Explainability.join(", ")}]</div>
                             </div>
                           </TableCell>
                           <TableCell>
-                            <span className="font-mono text-sm">{a.meanLatency.toFixed(2)}s</span>
+                            <span className="font-mono text-sm">{(a.meanLatency ?? 0).toFixed(2)}s</span>
                             <span className="text-xs text-muted-foreground ml-1">± {a.sdLatency}</span>
                           </TableCell>
                           <TableCell>
@@ -370,7 +370,7 @@ export function ResearchPage() {
                                   : "border-destructive/40 bg-destructive/10 text-destructive font-mono"
                               }
                             >
-                              {a.meanGhostCitation.toFixed(1)}%
+                              {(a.meanGhostCitation ?? 0).toFixed(1)}%
                             </Badge>
                           </TableCell>
                           <TableCell className="text-xs text-muted-foreground max-w-[240px]">
@@ -408,9 +408,9 @@ export function ResearchPage() {
                     {LATENCY_STAGES.map((s) => (
                       <TableRow key={s.stage}>
                         <TableCell className="text-xs font-medium">{s.stage}</TableCell>
-                        <TableCell className="text-right font-mono text-xs">{s.seconds.toFixed(2)}s</TableCell>
+                        <TableCell className="text-right font-mono text-xs">{(s.seconds ?? 0).toFixed(2)}s</TableCell>
                         <TableCell className="text-right font-mono text-xs text-muted-foreground">
-                          {s.percentage.toFixed(1)}%
+                          {(s.percentage ?? 0).toFixed(1)}%
                         </TableCell>
                       </TableRow>
                     ))}
@@ -465,9 +465,9 @@ export function ResearchPage() {
                       <TableRow key={d.domain}>
                         <TableCell className="font-medium text-xs">{d.domain}</TableCell>
                         <TableCell className="text-right font-mono text-xs">{d.cases}</TableCell>
-                        <TableCell className="text-right font-mono text-xs text-primary">{d.grounding.toFixed(1)}%</TableCell>
-                        <TableCell className="text-right font-mono text-xs text-success">{d.safety.toFixed(1)}%</TableCell>
-                        <TableCell className="text-right font-mono text-xs">{d.explainability.toFixed(1)}%</TableCell>
+                        <TableCell className="text-right font-mono text-xs text-primary">{(d.grounding ?? 0).toFixed(1)}%</TableCell>
+                        <TableCell className="text-right font-mono text-xs text-success">{(d.safety ?? 0).toFixed(1)}%</TableCell>
+                        <TableCell className="text-right font-mono text-xs">{(d.explainability ?? 0).toFixed(1)}%</TableCell>
                       </TableRow>
                     ))}
                     <TableRow className="border-t-2 font-bold bg-muted/20">

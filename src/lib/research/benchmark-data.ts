@@ -19,9 +19,15 @@ export interface BenchmarkArchitecture {
 }
 
 export interface DomainPerformance {
-  grounding: number;
-  safety: number;
-  explainability: number;
+  grounding?: number;
+  safety?: number;
+  explainability?: number;
+  meanGrounding?: number;
+  meanSafety?: number;
+  meanExplainability?: number;
+  sdGrounding?: number;
+  sdSafety?: number;
+  sdExplainability?: number;
   count: number;
 }
 
