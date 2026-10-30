@@ -23,7 +23,7 @@ export function GlassCard({ className, children }: { className?: string; childre
   return (
     <Card
       className={cn(
-        "relative overflow-hidden rounded-2xl border border-border/70 dark:border-white/[0.12] bg-card/90 shadow-sm shadow-slate-950/5 dark:shadow-black/50 backdrop-blur-xl transition-all duration-300 hover:-translate-y-[1px] hover:shadow-md hover:shadow-slate-950/8 dark:hover:shadow-cyan-950/35 before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/30 dark:before:via-white/20 before:to-transparent",
+        "relative overflow-hidden rounded-2xl border border-border/80 dark:border-white/[0.12] bg-card/90 dark:bg-card/85 shadow-sm shadow-slate-950/4 dark:shadow-black/50 backdrop-blur-xl transition-all duration-200 ease-out hover:-translate-y-[1.5px] hover:shadow-md hover:shadow-slate-950/8 dark:hover:shadow-cyan-950/35 hover:border-primary/40 dark:hover:border-white/[0.22] before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/60 dark:before:via-white/20 before:to-transparent",
         className,
       )}
     >
@@ -83,10 +83,10 @@ export function Rule({ label }: { label?: string }) {
 }
 
 const BAND_STYLES: Record<ConfidenceBand, string> = {
-  High: "border-success/30 bg-success/10 text-success shadow-xs shadow-success/10",
-  Medium: "border-warning/30 bg-warning/10 text-warning shadow-xs shadow-warning/10",
-  Low: "border-destructive/30 bg-destructive/10 text-destructive shadow-xs shadow-destructive/10",
-  "Insufficient evidence": "border-muted-foreground/30 bg-muted/50 text-muted-foreground",
+  High: "border-emerald-500/35 bg-emerald-500/12 text-emerald-700 dark:text-emerald-300 shadow-xs shadow-emerald-500/10",
+  Medium: "border-sky-500/35 bg-sky-500/12 text-sky-700 dark:text-sky-300 shadow-xs shadow-sky-500/10",
+  Low: "border-amber-500/35 bg-amber-500/12 text-amber-700 dark:text-amber-300 shadow-xs shadow-amber-500/10",
+  "Insufficient evidence": "border-muted-foreground/30 bg-muted/60 text-muted-foreground",
 };
 
 export function ConfidenceBadge({ band }: { band: ConfidenceBand }) {
@@ -146,21 +146,21 @@ export function AgentPill({
   const icons: Record<AgentStatus, ReactNode> = {
     idle: <CircleDashed className="h-3.5 w-3.5 text-muted-foreground" />,
     running: <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />,
-    done: <CheckCircle2 className="h-3.5 w-3.5 text-success" />,
+    done: <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />,
     skipped: <MinusCircle className="h-3.5 w-3.5 text-muted-foreground/70" />,
     error: <AlertTriangle className="h-3.5 w-3.5 text-destructive" />,
   };
   return (
     <div
       className={cn(
-        "group relative flex items-start gap-2.5 rounded-xl border p-2.5 text-xs transition-all duration-200",
+        "group relative flex items-start gap-2.5 rounded-xl border p-2.5 text-xs transition-all duration-200 ease-out hover:-translate-y-[1px]",
         status === "running"
-          ? "border-primary/40 bg-primary/[0.08] shadow-xs"
+          ? "border-primary/50 bg-primary/[0.10] shadow-sm shadow-primary/10"
           : status === "done"
-            ? "border-success/30 bg-success/[0.04] hover:bg-success/[0.07]"
+            ? "border-emerald-500/35 bg-emerald-500/[0.06] hover:bg-emerald-500/[0.10] dark:border-emerald-500/25"
             : status === "error"
               ? "border-destructive/40 bg-destructive/[0.08]"
-              : "border-border/60 bg-card/40 hover:bg-card/80",
+              : "border-border/70 dark:border-white/[0.08] bg-card/60 hover:bg-card hover:border-primary/30",
       )}
     >
       <span className="mt-0.5 shrink-0">{icons[status]}</span>

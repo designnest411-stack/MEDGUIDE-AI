@@ -126,7 +126,7 @@ function Dashboard() {
       <div className="mb-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
         <Link
           to="/consultation"
-          className="group relative overflow-hidden flex items-center gap-3 rounded-2xl border border-primary/30 bg-primary/[0.08] p-3.5 shadow-xs backdrop-blur-md transition-all duration-200 hover:-translate-y-[1px] hover:bg-primary/[0.14] hover:border-primary/50 hover:shadow-sm active:scale-[0.98] before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-primary/30 before:to-transparent"
+          className="group relative overflow-hidden flex items-center gap-3 rounded-2xl border border-primary/35 bg-primary/[0.08] p-3.5 shadow-xs backdrop-blur-md transition-all duration-200 ease-out hover:-translate-y-[1.5px] hover:bg-primary/[0.14] hover:border-primary/50 hover:shadow-md active:scale-[0.97] before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/50 dark:before:via-primary/40 before:to-transparent"
         >
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm transition-transform duration-200 group-hover:scale-105">
             <Stethoscope className="h-5 w-5" />
@@ -143,7 +143,7 @@ function Dashboard() {
 
         <Link
           to="/patient"
-          className="group relative overflow-hidden flex items-center gap-3 rounded-2xl border border-border/70 dark:border-white/[0.07] bg-card/70 p-3.5 shadow-xs backdrop-blur-md transition-all duration-200 hover:-translate-y-[1px] hover:bg-card hover:border-emerald-500/40 hover:shadow-sm active:scale-[0.98] before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/20 dark:before:via-white/10 before:to-transparent"
+          className="group relative overflow-hidden flex items-center gap-3 rounded-2xl border border-border/80 dark:border-white/[0.12] bg-card/85 dark:bg-card/75 p-3.5 shadow-xs backdrop-blur-md transition-all duration-200 ease-out hover:-translate-y-[1.5px] hover:bg-card hover:border-emerald-500/50 hover:shadow-md active:scale-[0.97] before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/50 dark:before:via-white/20 before:to-transparent"
         >
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25 shadow-xs transition-transform duration-200 group-hover:scale-105">
             <UserRound className="h-5 w-5" />
@@ -160,7 +160,7 @@ function Dashboard() {
 
         <Link
           to="/imaging"
-          className="group relative overflow-hidden flex items-center gap-3 rounded-2xl border border-border/70 dark:border-white/[0.07] bg-card/70 p-3.5 shadow-xs backdrop-blur-md transition-all duration-200 hover:-translate-y-[1px] hover:bg-card hover:border-teal-500/40 hover:shadow-sm active:scale-[0.98] before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/20 dark:before:via-white/10 before:to-transparent"
+          className="group relative overflow-hidden flex items-center gap-3 rounded-2xl border border-border/80 dark:border-white/[0.12] bg-card/85 dark:bg-card/75 p-3.5 shadow-xs backdrop-blur-md transition-all duration-200 ease-out hover:-translate-y-[1.5px] hover:bg-card hover:border-teal-500/50 hover:shadow-md active:scale-[0.97] before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/50 dark:before:via-white/20 before:to-transparent"
         >
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-teal-500/15 text-teal-600 dark:text-teal-400 border border-teal-500/25 shadow-xs transition-transform duration-200 group-hover:scale-105">
             <ImageIcon className="h-5 w-5" />
@@ -177,7 +177,7 @@ function Dashboard() {
 
         <Link
           to="/drugs"
-          className="group relative overflow-hidden flex items-center gap-3 rounded-2xl border border-border/70 dark:border-white/[0.07] bg-card/70 p-3.5 shadow-xs backdrop-blur-md transition-all duration-200 hover:-translate-y-[1px] hover:bg-card hover:border-amber-500/40 hover:shadow-sm active:scale-[0.98] before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/20 dark:before:via-white/10 before:to-transparent"
+          className="group relative overflow-hidden flex items-center gap-3 rounded-2xl border border-border/80 dark:border-white/[0.12] bg-card/85 dark:bg-card/75 p-3.5 shadow-xs backdrop-blur-md transition-all duration-200 ease-out hover:-translate-y-[1.5px] hover:bg-card hover:border-amber-500/50 hover:shadow-md active:scale-[0.97] before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/50 dark:before:via-white/20 before:to-transparent"
         >
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/25 shadow-xs transition-transform duration-200 group-hover:scale-105">
             <Pill className="h-5 w-5" />
