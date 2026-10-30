@@ -263,7 +263,7 @@ Return JSON: {"agents":[...],"missingData":["clinical data still needed"],"follo
     start("medical-image");
     const top = input.imaging.findings
       .slice(0, 4)
-      .map((f) => `${f.label} ${(f.probability * 100).toFixed(0)}%`);
+      .map((f) => `${f.label} ${((f.probability ?? 0) * 100).toFixed(0)}%`);
     finish("medical-image", `Chest X-ray analysed (${input.imaging.modelName})`, top.join(", "));
   } else {
     skip("medical-image", "No image supplied");
@@ -301,7 +301,7 @@ RETRIEVED EVIDENCE:
 ${evidenceBlock(result.evidence)}
 
 KNOWLEDGE GRAPH CANDIDATES: ${matched.map((m) => m.label).join(", ")}
-${input.imaging ? `IMAGING: ${input.imaging.findings.map((f) => `${f.label} ${(f.probability * 100).toFixed(0)}%`).join(", ")}` : ""}
+${input.imaging ? `IMAGING: ${input.imaging.findings.map((f) => `${f.label} ${((f.probability ?? 0) * 100).toFixed(0)}%`).join(", ")}` : ""}
 ${result.drugs.length ? `DRUG FINDINGS: ${result.drugs.map((d) => `${d.kind}: ${d.detail.slice(0, 160)}`).join(" | ")}` : ""}
 
 Return JSON: {"summary":"clinician-facing paragraph","differentials":[{"condition":"","likelihood":"high|moderate|low","supporting":[""],"against":[""],"nextSteps":[""],"citations":["evidence ids you actually used"]}],"redFlags":[""],"investigations":[""]}

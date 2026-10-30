@@ -20,7 +20,7 @@ import { getCollections, useTypedCollection, type ImagingRecord } from "@/lib/db
 import { auth } from "@/lib/firebase";
 import { SALIENCY_GRID, computeSaliency, heatColor } from "@/lib/imaging/xray";
 import { analyzeXray } from "@/lib/imaging/imaging.functions";
-import { uploadToCloudinary, getCloudinaryThumbnail, isCloudinaryUrl } from "@/lib/cloudinary";
+import { uploadToCloudinary, getCloudinaryThumbnail, isCloudinaryUrl, normalizeCloudinaryUrl } from "@/lib/cloudinary";
 import type { ImagingResult } from "@/lib/agents/types";
 
 export const Route = createFileRoute("/imaging")({
@@ -487,7 +487,8 @@ function ImagingPage() {
               ) : (
                 studies.map((s) => {
                   const isCloud = s.storageProvider === "cloudinary" || isCloudinaryUrl(s.imageDataUrl);
-                  const displayImage = s.thumbnailUrl || s.imageDataUrl;
+                  const rawImage = s.thumbnailUrl || s.imageDataUrl;
+                  const displayImage = isCloud ? normalizeCloudinaryUrl(rawImage) : rawImage;
                   return (
                     <div
                       key={s.id}
@@ -496,7 +497,17 @@ function ImagingPage() {
                       <img
                         src={displayImage}
                         alt={s.name}
-                        className="h-10 w-10 rounded object-cover ring-1 ring-border/50"
+                        onError={(e) => {
+                          const target = e.currentTarget;
+                          if (s.imageDataUrl && target.src !== s.imageDataUrl) {
+                            target.src = s.imageDataUrl;
+                          } else {
+                            target.onerror = null;
+                            target.src =
+                              "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='18' x='3' y='3' rx='2' ry='2'/%3E%3Ccircle cx='9' cy='9' r='2'/%3E%3Cpath d='m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21'/%3E%3C/svg%3E";
+                          }
+                        }}
+                        className="h-10 w-10 rounded object-cover ring-1 ring-border/50 bg-muted/40"
                       />
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-1.5">

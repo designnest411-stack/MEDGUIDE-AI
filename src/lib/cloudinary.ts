@@ -146,13 +146,32 @@ export async function uploadToCloudinary(
 }
 
 /**
+ * Normalizes and fixes any inverted or malformed Cloudinary URLs.
+ * In Cloudinary, transformations must precede the version identifier (/v12345/).
+ */
+export function normalizeCloudinaryUrl(url: string): string {
+  if (!url || !url.includes("cloudinary.com")) return url;
+  // Fix inverted transformation path: /upload/v12345/c_thumb,... -> /upload/c_thumb,.../v12345/
+  const invertedMatch = url.match(/\/upload\/(v\d+)\/((?:[a-z]_[^/]+,?)+\/)/);
+  if (invertedMatch && invertedMatch[1] && invertedMatch[2]) {
+    const version = invertedMatch[1];
+    const transforms = invertedMatch[2];
+    return url.replace(`/upload/${version}/${transforms}`, `/upload/${transforms}${version}/`);
+  }
+  return url;
+}
+
+/**
  * Generates an optimized Cloudinary thumbnail URL with auto format and smart face/center cropping.
+ * Cloudinary transformations must be placed immediately following /upload/ (before /v<digits>/).
  */
 export function getCloudinaryThumbnail(url: string, width = 200, height = 200): string {
   if (!url || !url.includes("cloudinary.com")) return url;
-  return url.replace(
-    /\/upload\/(?:v\d+\/)?/,
-    (match) => `${match}c_thumb,w_${width},h_${height},g_auto,f_auto,q_auto/`,
+  const normalized = normalizeCloudinaryUrl(url);
+  if (normalized.includes("/c_thumb") || normalized.includes(`/w_${width}`)) return normalized;
+  return normalized.replace(
+    /\/upload\//,
+    `/upload/c_thumb,w_${width},h_${height},g_auto,f_auto,q_auto/`,
   );
 }
 
@@ -161,10 +180,12 @@ export function getCloudinaryThumbnail(url: string, width = 200, height = 200): 
  */
 export function getCloudinaryOptimized(url: string, width?: number): string {
   if (!url || !url.includes("cloudinary.com")) return url;
+  const normalized = normalizeCloudinaryUrl(url);
+  if (normalized.includes("/f_auto") || (width && normalized.includes(`/w_${width}`))) return normalized;
   const transform = width
-    ? `w_${width},c_limit,f_auto,q_auto/`
-    : `f_auto,q_auto/`;
-  return url.replace(/\/upload\/(?:v\d+\/)?/, (match) => `${match}${transform}`);
+    ? `w_${width},c_limit,f_auto,q_auto`
+    : `f_auto,q_auto`;
+  return normalized.replace(/\/upload\//, `/upload/${transform}/`);
 }
 
 /**

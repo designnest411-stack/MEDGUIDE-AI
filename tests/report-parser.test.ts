@@ -118,4 +118,24 @@ References
     expect(parsed.drugSafety.length).toBe(2);
     expect(parsed.references.length).toBe(2);
   });
+
+  it("sanitizes medical text to prevent jsPDF font corruption", async () => {
+    const { sanitizeMedicalText } = await import("../src/lib/reports/report-pdf-generator");
+    expect(sanitizeMedicalText("SpO₂: 93% on room air, leukocytosis 15,200/μL, fever 38.2°C")).toBe(
+      "SpO2: 93% on room air, leukocytosis 15,200/mcL, fever 38.2 deg C",
+    );
+  });
+
+  it("generates a clinical PDF document without throwing", async () => {
+    const { generateClinicalReportPdf } = await import("../src/lib/reports/report-pdf-generator");
+    await expect(
+      generateClinicalReportPdf({
+        title: "64yo Male with Fever and Dyspnea",
+        patientName: "John Doe",
+        markdown: sampleMarkdown,
+        createdAt: Date.now(),
+        reportId: "TEST-REP-12345",
+      }),
+    ).resolves.not.toThrow();
+  });
 });
