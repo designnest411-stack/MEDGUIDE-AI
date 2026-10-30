@@ -166,11 +166,12 @@ function PipelinePage() {
   );
 
   const { running, statuses, result: liveResult } = run$;
-  const [selectedConsultationId, setSelectedConsultationId] = useState<string>("standby");
+  const [selectedConsultationId, setSelectedConsultationId] = useState<string>("latest");
   const [inspectedAgent, setInspectedAgent] = useState<AgentMeta | null>(null);
 
-  // Determine active consultation data to display (null by default in clean standby mode)
+  // Determine active consultation data to display
   const activeConsultation = useMemo(() => {
+    // 1. Live active consultation run
     if (running && liveResult) {
       return {
         id: "live-running",
@@ -180,9 +181,26 @@ function PipelinePage() {
         isLive: true,
       };
     }
-    if (selectedConsultationId && selectedConsultationId !== "standby" && consultations && consultations.length > 0) {
+    // 2. Freshly completed in-memory run (persists even right after completion)
+    if (liveResult && Object.keys(liveResult).length > 0 && liveResult.reasoning) {
+      return {
+        id: "live-recent",
+        question: liveResult.question || "Latest Real-Time Consultation",
+        result: liveResult as ConsultationResult,
+        createdAt: Date.now(),
+        isLive: true,
+      };
+    }
+    // 3. User workspace stored consultations
+    if (consultations && consultations.length > 0) {
+      if (selectedConsultationId === "standby") {
+        return null;
+      }
+      if (selectedConsultationId === "latest" || !selectedConsultationId) {
+        return { ...consultations[0]!, isLive: false };
+      }
       const match = consultations.find((c) => c.id === selectedConsultationId);
-      return match ? { ...match, isLive: false } : null;
+      return match ? { ...match, isLive: false } : { ...consultations[0]!, isLive: false };
     }
     return null;
   }, [consultations, selectedConsultationId, running, liveResult]);
@@ -412,34 +430,35 @@ function PipelinePage() {
             {/* Case Selector Dropdown if saved consultations exist */}
             {consultations && consultations.length > 0 && !running && (
               <div className="flex items-center gap-2 shrink-0">
-                <div className="w-full sm:w-[260px]">
+                <div className="w-full sm:w-[280px]">
                   <Select
                     value={selectedConsultationId}
                     onValueChange={(val) => setSelectedConsultationId(val)}
                   >
                     <SelectTrigger className="h-8 text-xs bg-card/60">
-                      <SelectValue placeholder="Inspect past case (optional)" />
+                      <SelectValue placeholder="Telemetry Case..." />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="standby">Live Standby (Clean / Ready)</SelectItem>
-                      {consultations.map((c) => (
+                      <SelectItem value="latest">Latest Clinical Run (Active)</SelectItem>
+                      <SelectItem value="standby">All 11 Agents Standby (Clean)</SelectItem>
+                      {consultations.map((c, i) => (
                         <SelectItem key={c.id} value={c.id!}>
-                          {c.question.replace(/^["“”']+|["“”']+$/g, "").slice(0, 36)}...
+                          #{i + 1} {c.question.replace(/^["“”']+|["“”']+$/g, "").slice(0, 32)}...
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
 
-                {selectedConsultationId !== "standby" && (
+                {selectedConsultationId !== "latest" && (
                   <Button
                     size="sm"
                     variant="ghost"
-                    onClick={() => setSelectedConsultationId("standby")}
+                    onClick={() => setSelectedConsultationId("latest")}
                     className="h-8 text-xs text-muted-foreground hover:text-foreground"
-                    title="Reset view to clean standby"
+                    title="Reset to latest case"
                   >
-                    Clear
+                    Latest
                   </Button>
                 )}
               </div>

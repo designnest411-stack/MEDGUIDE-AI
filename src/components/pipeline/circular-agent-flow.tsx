@@ -10,7 +10,9 @@ import {
   Image as ImageIcon,
   Library,
   Microscope,
+  Pause,
   Pill,
+  Play,
   ScanEye,
   ShieldAlert,
   Target,
@@ -93,18 +95,33 @@ export function CircularAgentFlow({
 }: CircularAgentFlowProps) {
   const [hoveredAgentId, setHoveredAgentId] = useState<AgentId | null>(null);
   const [activeStep, setActiveStep] = useState<number>(0);
+  const [isAutoCycle, setIsAutoCycle] = useState<boolean>(true);
 
-  // When a consultation pipeline is running, advance active node pulse
+  // Sync with live running agent if one is actively executing
   useEffect(() => {
     if (!isRunning) return;
+    const runningAgentIndex = AGENT_ORDER.findIndex(
+      (id) => getAgentSummary(id).status === "running",
+    );
+    if (runningAgentIndex !== -1) {
+      setActiveStep(runningAgentIndex);
+    }
+  }, [isRunning, getAgentSummary]);
+
+  // Ambient consensus loop or live execution progression
+  useEffect(() => {
+    if (!isAutoCycle || hoveredAgentId !== null) return;
+
+    const intervalMs = isRunning ? 900 : 2600;
     const interval = setInterval(() => {
       setActiveStep((prev) => (prev + 1) % AGENT_ORDER.length);
-    }, 1100);
-    return () => clearInterval(interval);
-  }, [isRunning]);
+    }, intervalMs);
 
-  // Center hovered or currently active agent
-  const currentAgentId = hoveredAgentId || (isRunning ? AGENT_ORDER[activeStep]! : null);
+    return () => clearInterval(interval);
+  }, [isRunning, isAutoCycle, hoveredAgentId]);
+
+  // Center hovered or currently active agent in orbital cycle
+  const currentAgentId = hoveredAgentId || AGENT_ORDER[activeStep] || "planner";
   const currentMeta = useMemo(() => {
     return AGENTS.find((a) => a.id === currentAgentId) || null;
   }, [currentAgentId]);
@@ -150,9 +167,31 @@ export function CircularAgentFlow({
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Ambient Cycle Control Toggle */}
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => setIsAutoCycle((prev) => !prev)}
+            className="h-7 px-2.5 text-[0.68rem] gap-1.5 font-mono border-border/70 hover:border-emerald-500/50 bg-card/60"
+            title={isAutoCycle ? "Pause automatic orbit scanner" : "Resume automatic orbit scanner"}
+          >
+            {isAutoCycle ? (
+              <>
+                <span className="flex h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping" />
+                <Pause className="h-3 w-3 text-muted-foreground" />
+                <span>Live Orbit</span>
+              </>
+            ) : (
+              <>
+                <Play className="h-3 w-3 text-emerald-500" />
+                <span>Orbit Paused</span>
+              </>
+            )}
+          </Button>
+
           {/* Phase Legend Pills */}
-          <div className="flex items-center gap-1.5 text-[0.65rem] font-mono">
+          <div className="hidden sm:flex items-center gap-1.5 text-[0.65rem] font-mono">
             <span className="inline-flex items-center gap-1 rounded-md bg-emerald-500/10 px-2 py-0.5 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Intake
             </span>
@@ -328,17 +367,17 @@ export function CircularAgentFlow({
               <div className="flex h-full w-full flex-col items-center justify-center p-2 text-center select-none">
                 {currentMeta ? (
                   <>
-                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-500/20 text-emerald-500 mb-1">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-500 mb-1 border border-emerald-500/30 shadow-xs">
                       {(() => {
                         const Icon = AGENT_ICONS[currentMeta.id] || Brain;
-                        return <Icon className="h-3.5 w-3.5" />;
+                        return <Icon className="h-4 w-4" />;
                       })()}
                     </div>
-                    <p className="font-display text-[0.68rem] font-bold text-foreground line-clamp-1 leading-tight">
-                      {currentMeta.name}
+                    <p className="font-display text-[0.72rem] font-bold text-foreground line-clamp-1 leading-tight">
+                      {currentMeta.name.replace(/ Agent$/i, "")}
                     </p>
-                    <span className="font-mono text-[0.55rem] uppercase text-emerald-600 dark:text-emerald-400 mt-0.5">
-                      #{String(AGENT_ORDER.indexOf(currentMeta.id) + 1).padStart(2, "0")} · Active
+                    <span className="font-mono text-[0.58rem] uppercase text-emerald-600 dark:text-emerald-400 font-semibold mt-0.5">
+                      #{String(AGENT_ORDER.indexOf(currentMeta.id) + 1).padStart(2, "0")} · {getPhase(currentMeta.id).toUpperCase()}
                     </span>
                   </>
                 ) : (
