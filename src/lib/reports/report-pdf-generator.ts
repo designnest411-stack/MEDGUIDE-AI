@@ -124,8 +124,9 @@ export async function generateClinicalReportPdf(options: PdfExportOptions): Prom
   estimatedHeight += 38; // Clinician attestation sign-off block
 
   // Net printable height per page is 841.89 - 44 (top) - 34 (bottom) = ~763 pt
-  // Conservative budget: if <= 690 pt, guarantees fit on 1 executive page
-  const isSinglePage = structured.isStructured && estimatedHeight <= 690;
+  // Conservative budget: if <= 620 pt, guarantees fit on 1 executive page;
+  // otherwise, cleanly splits into a balanced 2-Page Diagnostic + Evidence Dossier.
+  const isSinglePage = structured.isStructured && estimatedHeight <= 620;
 
   let y = 0;
 
@@ -193,14 +194,17 @@ export async function generateClinicalReportPdf(options: PdfExportOptions): Prom
     doc.setTextColor(15, 23, 42);
     doc.setFont("helvetica", "bold");
     doc.setFontSize(9.5);
-    const cleanTitle = sanitizeMedicalText(title).slice(0, 80);
+    const rawTitle = sanitizeMedicalText(title);
+    const cleanTitle = rawTitle.length > 76 ? `${rawTitle.slice(0, 73)}...` : rawTitle;
     doc.text(cleanTitle, margin + 9, y + 15);
 
     doc.setFont("helvetica", "normal");
     doc.setFontSize(7.5);
     doc.setTextColor(71, 85, 105);
     const patientText = `Patient Context: ${patientName || "Clinical Vignette"} · Generated: ${consultDate}`;
-    doc.text(sanitizeMedicalText(patientText), margin + 9, y + 27);
+    const cleanPatient = sanitizeMedicalText(patientText);
+    const displayPatient = cleanPatient.length > 85 ? `${cleanPatient.slice(0, 82)}...` : cleanPatient;
+    doc.text(displayPatient, margin + 9, y + 27);
 
     // Status Badges (Confidence & Evidence)
     const band = structured.confidenceBand;
