@@ -76,7 +76,8 @@ export function getCitationUrl(citation: string): { url: string; type: "pubmed" 
 }
 
 /**
- * Parses markdown into structured hospital clinical consultation blocks
+ * Parses markdown into structured hospital clinical consultation blocks.
+ * Robust against variations in LLM formatting (## Header, ### Header, **Header**, Header:, 1. Header).
  */
 export function parseClinicalReport(markdown: string, fallbackTitle = "Clinical Support Report"): StructuredClinicalReport {
   const result: StructuredClinicalReport = {
@@ -99,192 +100,259 @@ export function parseClinicalReport(markdown: string, fallbackTitle = "Clinical 
     return result;
   }
 
-  // Extract primary document title if present
-  const titleMatch = markdown.match(/^#\s+(.+)$/m);
+  const normalized = markdown.replace(/\r\n/g, "\n");
+
+  // Extract primary document title if present (# Title)
+  const titleMatch = normalized.match(/^#\s+([^\n]+)/m);
   if (titleMatch && titleMatch[1]) {
-    result.title = titleMatch[1].trim();
+    result.title = titleMatch[1].replace(/[*`_]/g, "").trim();
   }
 
-  // Split markdown into sections by standard H2 headings
-  const sections = markdown.split(/^##\s+/m);
+  // Regex matching all canonical clinical section headers in various markdown/text syntaxes:
+  // e.g. "## Patient Summary", "### Clinical Findings", "**Differential Assessment**", "Drug Safety:"
+  const SECTION_HEADER_REGEX = /(?:^|\n)(?:#{1,4}\s+|\*\*)?(?:\d+[\.\)]\s*)?(Patient Summary|Patient Presentation|Case Summary|Clinical Presentation|Clinical Findings|Objective Findings|Physical Examination|Differential Assessment|Differential Diagnos(?:is|es)|Differentials|Diagnostic Impressions?|Evidence Base|Biomedical Evidence|Clinical Guidelines|Literature Base|Drug Safety|Pharmacovigilance|Medication Safety|Imaging Findings|Imaging|Radiology|Chest X-Ray|Confidence and Limitations|Confidence & Limitations|Confidence Calibration|Confidence|Limitations|References|Audited References|Citations|Bibliography)(?:\*\*|:)?(?:\s*(?:\n|$))/gi;
 
-  for (const rawSec of sections) {
-    if (!rawSec.trim()) continue;
-    const newlineIdx = rawSec.indexOf("\n");
-    const header = (newlineIdx > -1 ? rawSec.slice(0, newlineIdx) : rawSec).trim().toLowerCase();
-    const body = (newlineIdx > -1 ? rawSec.slice(newlineIdx) : "").trim();
+  const matches: Array<{ name: string; startIndex: number; bodyStart: number }> = [];
+  let match: RegExpExecArray | null;
 
-    // 1. Patient Summary
-    if (header.includes("patient summary") || header.includes("patient presentation") || header.includes("case summary")) {
-      result.patientSummary = body.replace(/^[*\s]+/, "").trim();
-      result.isStructured = true;
+  while ((match = SECTION_HEADER_REGEX.exec(normalized)) !== null) {
+    const rawName = match[1];
+    if (rawName) {
+      matches.push({
+        name: rawName.trim().toLowerCase(),
+        startIndex: match.index,
+        bodyStart: match.index + match[0].length,
+      });
     }
-    // 2. Clinical Findings / Objective Data
-    else if (header.includes("clinical finding") || header.includes("objective findings") || header.includes("examination")) {
-      result.isStructured = true;
-      const lines = body.split("\n");
-      for (const line of lines) {
-        const cleaned = line.replace(/^[-*•]\s*/, "").trim();
-        if (!cleaned) continue;
-        const colonIdx = cleaned.indexOf(":");
-        if (colonIdx > -1) {
-          result.findings.push({
-            label: cleaned.slice(0, colonIdx).trim(),
-            value: cleaned.slice(colonIdx + 1).trim(),
-          });
-        } else {
-          result.findings.push({
-            label: "Finding",
-            value: cleaned,
-          });
-        }
+  }
+
+  // If no canonical section headers found, check legacy H2 split
+  if (matches.length === 0) {
+    const legacySections = normalized.split(/^##\s+/m);
+    if (legacySections.length > 1) {
+      for (const rawSec of legacySections) {
+        if (!rawSec.trim()) continue;
+        const newlineIdx = rawSec.indexOf("\n");
+        const header = (newlineIdx > -1 ? rawSec.slice(0, newlineIdx) : rawSec).trim().toLowerCase();
+        const body = (newlineIdx > -1 ? rawSec.slice(newlineIdx) : "").trim();
+        parseSectionBody(header, body, result);
       }
     }
-    // 3. Differential Assessment
-    else if (header.includes("differential assessment") || header.includes("differential diagnosis") || header.includes("differentials")) {
-      result.isStructured = true;
-      const lines = body.split("\n");
-      for (const line of lines) {
-        const cleaned = line.replace(/^[-*•\d.]\s*/, "").trim();
-        if (!cleaned) continue;
+    return result;
+  }
 
-        // Pattern: "Condition: Likelihood. Rationale [pmid:...]"
-        let condition = "";
-        let likelihood: "High" | "Moderate" | "Low" | "Unknown" = "Unknown";
-        let likelihoodText = "";
-        let rationale = cleaned;
-
-        const colonIdx = cleaned.indexOf(":");
-        if (colonIdx > -1) {
-          condition = cleaned.slice(0, colonIdx).replace(/\*\*/g, "").trim();
-          const remainder = cleaned.slice(colonIdx + 1).trim();
-
-          if (/high likelihood/i.test(remainder)) {
-            likelihood = "High";
-            likelihoodText = "High Likelihood";
-          } else if (/moderate likelihood|possible/i.test(remainder)) {
-            likelihood = "Moderate";
-            likelihoodText = "Moderate Likelihood";
-          } else if (/low likelihood|unlikely/i.test(remainder)) {
-            likelihood = "Low";
-            likelihoodText = "Low Likelihood";
-          }
-
-          rationale = remainder.replace(/^(high|moderate|low)\s+likelihood\.?\s*/i, "");
-        } else {
-          condition = cleaned.slice(0, 50);
-        }
-
-        const citations = extractCitations(cleaned);
-        result.differentials.push({
-          condition,
-          likelihood,
-          likelihoodText: likelihoodText || `${likelihood} Likelihood`,
-          rationale,
-          citations,
-        });
-      }
-    }
-    // 4. Evidence Base
-    else if (header.includes("evidence base") || header.includes("literature") || header.includes("clinical guidelines")) {
-      result.isStructured = true;
-      const lines = body.split("\n");
-      for (const line of lines) {
-        const cleaned = line.replace(/^[-*•]\s*/, "").trim();
-        if (!cleaned) continue;
-        const colonIdx = cleaned.indexOf(":");
-        if (colonIdx > -1) {
-          result.evidenceBase.push({
-            topic: cleaned.slice(0, colonIdx).replace(/\*\*/g, "").trim(),
-            content: cleaned.slice(colonIdx + 1).trim(),
-          });
-        } else {
-          result.evidenceBase.push({
-            topic: "Guideline",
-            content: cleaned,
-          });
-        }
-      }
-    }
-    // 5. Drug Safety & Pharmacovigilance
-    else if (header.includes("drug safety") || header.includes("pharmacovigilance") || header.includes("medication safety")) {
-      result.isStructured = true;
-      const lines = body.split("\n");
-      for (const line of lines) {
-        const cleaned = line.replace(/^[-*•]\s*/, "").trim();
-        if (!cleaned) continue;
-        const colonIdx = cleaned.indexOf(":");
-        let drug = "Medication";
-        let warning = cleaned;
-        if (colonIdx > -1) {
-          drug = cleaned.slice(0, colonIdx).replace(/\*\*/g, "").trim();
-          warning = cleaned.slice(colonIdx + 1).trim();
-        }
-        const isContraindicated = /contraindicated|black box|severe|fatal|avoid/i.test(warning);
-        const citations = extractCitations(cleaned);
-        result.drugSafety.push({
-          drug,
-          warning,
-          isContraindicated,
-          citations,
-        });
-      }
-    }
-    // 6. Imaging / Radiology Findings
-    else if (header.includes("imaging") || header.includes("radiology") || header.includes("x-ray")) {
-      result.isStructured = true;
-      result.imagingFindings = body;
-    }
-    // 7. Confidence and Limitations
-    else if (header.includes("confidence") || header.includes("limitations")) {
-      result.isStructured = true;
-      if (/confidence:\s*high/i.test(body)) result.confidenceBand = "High";
-      else if (/confidence:\s*medium|moderate/i.test(body)) result.confidenceBand = "Medium";
-      else if (/confidence:\s*low/i.test(body)) result.confidenceBand = "Low";
-      else if (/insufficient/i.test(body)) result.confidenceBand = "Insufficient";
-
-      result.confidenceExplanation = body;
-
-      // Extract bulleted limitations if available
-      const lines = body.split("\n");
-      for (const line of lines) {
-        const cleaned = line.replace(/^[-*•]\s*/, "").trim();
-        if (cleaned && !cleaned.toLowerCase().startsWith("confidence:")) {
-          result.limitations.push(cleaned);
-        }
-      }
-    }
-    // 8. References
-    else if (header.includes("reference") || header.includes("citation") || header.includes("bibliography")) {
-      result.isStructured = true;
-      const lines = body.split("\n");
-      for (const line of lines) {
-        const cleaned = line.replace(/^[-*•\d.]\s*/, "").trim();
-        if (!cleaned) continue;
-        const match = cleaned.match(/^(\[[^\]]+\])\s*(.+)$/);
-        if (match && match[1] && match[2]) {
-          const key = match[1];
-          const citation = match[2];
-          const { url, type } = getCitationUrl(key);
-          result.references.push({
-            key,
-            citation,
-            url,
-            sourceType: type,
-          });
-        } else {
-          result.references.push({
-            key: `[ref:${result.references.length + 1}]`,
-            citation: cleaned,
-            url: `https://pubmed.ncbi.nlm.nih.gov/?term=${encodeURIComponent(cleaned.slice(0, 40))}`,
-            sourceType: "other",
-          });
-        }
-      }
-    }
+  // Extract sections by slicing between match boundaries
+  for (let i = 0; i < matches.length; i++) {
+    const current = matches[i]!;
+    const nextStart = i + 1 < matches.length ? matches[i + 1]!.startIndex : normalized.length;
+    const body = normalized.slice(current.bodyStart, nextStart).trim();
+    parseSectionBody(current.name, body, result);
   }
 
   return result;
+}
+
+function parseSectionBody(header: string, body: string, result: StructuredClinicalReport): void {
+  // 1. Patient Summary
+  if (
+    header.includes("patient summary") ||
+    header.includes("patient presentation") ||
+    header.includes("case summary") ||
+    header.includes("clinical presentation")
+  ) {
+    result.patientSummary = body.replace(/^[*\s]+/, "").trim();
+    result.isStructured = true;
+  }
+  // 2. Clinical Findings / Objective Data
+  else if (
+    header.includes("clinical finding") ||
+    header.includes("objective finding") ||
+    header.includes("examination")
+  ) {
+    result.isStructured = true;
+    const lines = body.split("\n");
+    for (const line of lines) {
+      const cleaned = line.replace(/^(?:\d+[\.\)]\s*|[-*•]\s*)/, "").trim();
+      if (!cleaned) continue;
+      const colonIdx = cleaned.indexOf(":");
+      if (colonIdx > -1) {
+        result.findings.push({
+          label: cleaned.slice(0, colonIdx).replace(/\*\*/g, "").trim(),
+          value: cleaned.slice(colonIdx + 1).trim(),
+        });
+      } else {
+        result.findings.push({
+          label: "Finding",
+          value: cleaned,
+        });
+      }
+    }
+  }
+  // 3. Differential Assessment
+  else if (
+    header.includes("differential assessment") ||
+    header.includes("differential diagnosis") ||
+    header.includes("differentials") ||
+    header.includes("diagnostic impression")
+  ) {
+    result.isStructured = true;
+    const lines = body.split("\n");
+    for (const line of lines) {
+      const cleaned = line.replace(/^(?:\d+[\.\)]\s*|[-*•]\s*)/, "").trim();
+      if (!cleaned) continue;
+
+      let condition = "";
+      let likelihood: "High" | "Moderate" | "Low" | "Unknown" = "Unknown";
+      let likelihoodText = "";
+      let rationale = cleaned;
+
+      const colonIdx = cleaned.indexOf(":");
+      if (colonIdx > -1) {
+        condition = cleaned.slice(0, colonIdx).replace(/\*\*/g, "").trim();
+        const remainder = cleaned.slice(colonIdx + 1).trim();
+
+        if (/high likelihood|high/i.test(remainder)) {
+          likelihood = "High";
+          likelihoodText = "High Likelihood";
+        } else if (/moderate likelihood|possible|moderate/i.test(remainder)) {
+          likelihood = "Moderate";
+          likelihoodText = "Moderate Likelihood";
+        } else if (/low likelihood|unlikely|low/i.test(remainder)) {
+          likelihood = "Low";
+          likelihoodText = "Low Likelihood";
+        }
+
+        rationale = remainder.replace(/^(?:high|moderate|low)\s+likelihood\.?\s*/i, "");
+      } else {
+        condition = cleaned.slice(0, 50);
+      }
+
+      const citations = extractCitations(cleaned);
+      result.differentials.push({
+        condition,
+        likelihood,
+        likelihoodText: likelihoodText || `${likelihood} Likelihood`,
+        rationale,
+        citations,
+      });
+    }
+  }
+  // 4. Evidence Base
+  else if (
+    header.includes("evidence base") ||
+    header.includes("biomedical evidence") ||
+    header.includes("clinical guidelines") ||
+    header.includes("literature")
+  ) {
+    result.isStructured = true;
+    const lines = body.split("\n");
+    for (const line of lines) {
+      const cleaned = line.replace(/^(?:\d+[\.\)]\s*|[-*•]\s*)/, "").trim();
+      if (!cleaned) continue;
+      const colonIdx = cleaned.indexOf(":");
+      if (colonIdx > -1) {
+        result.evidenceBase.push({
+          topic: cleaned.slice(0, colonIdx).replace(/\*\*/g, "").trim(),
+          content: cleaned.slice(colonIdx + 1).trim(),
+        });
+      } else {
+        result.evidenceBase.push({
+          topic: "Guideline",
+          content: cleaned,
+        });
+      }
+    }
+  }
+  // 5. Drug Safety & Pharmacovigilance
+  else if (
+    header.includes("drug safety") ||
+    header.includes("pharmacovigilance") ||
+    header.includes("medication safety")
+  ) {
+    result.isStructured = true;
+    const lines = body.split("\n");
+    for (const line of lines) {
+      const cleaned = line.replace(/^(?:\d+[\.\)]\s*|[-*•]\s*)/, "").trim();
+      if (!cleaned) continue;
+      const colonIdx = cleaned.indexOf(":");
+      let drug = "Medication";
+      let warning = cleaned;
+      if (colonIdx > -1) {
+        drug = cleaned.slice(0, colonIdx).replace(/\*\*/g, "").trim();
+        warning = cleaned.slice(colonIdx + 1).trim();
+      }
+      const isContraindicated = /contraindicated|black box|severe|fatal|avoid|toxicity|renal failure|impairment/i.test(warning);
+      const citations = extractCitations(cleaned);
+      result.drugSafety.push({
+        drug,
+        warning,
+        isContraindicated,
+        citations,
+      });
+    }
+  }
+  // 6. Imaging / Radiology Findings
+  else if (
+    header.includes("imaging") ||
+    header.includes("radiology") ||
+    header.includes("x-ray")
+  ) {
+    result.isStructured = true;
+    result.imagingFindings = body;
+  }
+  // 7. Confidence and Limitations
+  else if (
+    header.includes("confidence") ||
+    header.includes("limitations")
+  ) {
+    result.isStructured = true;
+    if (/confidence:\s*high/i.test(body)) result.confidenceBand = "High";
+    else if (/confidence:\s*medium|moderate/i.test(body)) result.confidenceBand = "Medium";
+    else if (/confidence:\s*low/i.test(body)) result.confidenceBand = "Low";
+    else if (/insufficient/i.test(body)) result.confidenceBand = "Insufficient";
+
+    result.confidenceExplanation = body;
+
+    const lines = body.split("\n");
+    for (const line of lines) {
+      const cleaned = line.replace(/^[-*•]\s*/, "").trim();
+      if (cleaned && !cleaned.toLowerCase().startsWith("confidence:")) {
+        result.limitations.push(cleaned);
+      }
+    }
+  }
+  // 8. References
+  else if (
+    header.includes("reference") ||
+    header.includes("citation") ||
+    header.includes("bibliography")
+  ) {
+    result.isStructured = true;
+    const lines = body.split("\n");
+    for (const line of lines) {
+      const cleaned = line.replace(/^(?:\d+[\.\)]\s*|[-*•]\s*)/, "").trim();
+      if (!cleaned) continue;
+      const match = cleaned.match(/^(\[[^\]]+\])\s*(.+)$/);
+      if (match && match[1] && match[2]) {
+        const key = match[1];
+        const citation = match[2];
+        const { url, type } = getCitationUrl(key);
+        result.references.push({
+          key,
+          citation,
+          url,
+          sourceType: type,
+        });
+      } else {
+        result.references.push({
+          key: `[ref:${result.references.length + 1}]`,
+          citation: cleaned,
+          url: `https://pubmed.ncbi.nlm.nih.gov/?term=${encodeURIComponent(cleaned.slice(0, 40))}`,
+          sourceType: "other",
+        });
+      }
+    }
+  }
 }
 
 /**

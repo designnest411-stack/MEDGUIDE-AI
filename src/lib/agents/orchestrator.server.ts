@@ -529,9 +529,16 @@ Return JSON: {"why":"why this conclusion, 3-5 sentences","supporting":["evidence
     messages: [
       {
         role: "user",
-        content: `Write a professional clinical support report in Markdown.
-
-Sections: Patient Summary, Clinical Findings, Differential Assessment, Evidence Base (with links), Drug Safety, Imaging (omit if none), Confidence and Limitations, References.
+        content: `Write a professional clinical decision support consultation report in Markdown.
+You MUST format each section with exact Markdown headers:
+## Patient Summary
+## Clinical Findings
+## Differential Assessment
+## Evidence Base
+## Drug Safety
+## Imaging (omit if none)
+## Confidence and Limitations
+## References
 
 QUESTION: ${input.question}
 PATIENT: ${patient}

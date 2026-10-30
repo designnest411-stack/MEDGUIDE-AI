@@ -82,4 +82,40 @@ Confidence: Medium. Needs chest radiography confirmation.
     expect(ehr).toContain("Community-Acquired Pneumonia (CAP) [High Likelihood]");
     expect(ehr).toContain("ATTESTATION: Decision support only");
   });
+
+  it("parses raw text headings without hashes cleanly", () => {
+    const rawMarkdown = `
+Patient Summary
+A 64-year-old male with hypertension and diabetes presents with acute fever and productive cough.
+
+Clinical Findings
+Respiratory: Tachypnea (22/min), SpO2 93%, right lower-zone crackles.
+Systemic: Fever (38.2C), tachycardia (104 bpm).
+
+Differential Assessment
+1. Community-Acquired Pneumonia (CAP): High Likelihood. Supported by fever and focal auscultatory findings [pmid:31573350].
+2. Pulmonary Embolism (PE): Moderate Likelihood. Must be considered [pmid:31573350].
+
+Drug Safety
+Amlodipine: Monitor for hypotension [fda:Amlodipine].
+Metformin: Contraindicated in severe renal failure [fda:Metformin].
+
+Confidence and Limitations
+Confidence: Medium. Needs radiographic confirmation.
+
+References
+[pmid:31573350] Metlay JP, et al. Am J Respir Crit Care Med, 2019.
+[fda:Amlodipine] OpenFDA drug label: Amlodipine Besylate.
+`;
+    const parsed = parseClinicalReport(rawMarkdown, "Raw Report");
+    expect(parsed.isStructured).toBe(true);
+    expect(parsed.patientSummary).toContain("64-year-old male");
+    expect(parsed.findings.length).toBe(2);
+    expect(parsed.findings[0]?.label).toBe("Respiratory");
+    expect(parsed.differentials.length).toBe(2);
+    expect(parsed.differentials[0]?.condition).toBe("Community-Acquired Pneumonia (CAP)");
+    expect(parsed.differentials[0]?.likelihood).toBe("High");
+    expect(parsed.drugSafety.length).toBe(2);
+    expect(parsed.references.length).toBe(2);
+  });
 });
