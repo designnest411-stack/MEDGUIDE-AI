@@ -11,11 +11,8 @@ import {
   Library,
   Microscope,
   Pill,
-  Play,
-  RotateCw,
   ScanEye,
   ShieldAlert,
-  Sparkles,
   Target,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -95,20 +92,19 @@ export function CircularAgentFlow({
   selectedCaseQuestion,
 }: CircularAgentFlowProps) {
   const [hoveredAgentId, setHoveredAgentId] = useState<AgentId | null>(null);
-  const [pulseStep, setPulseStep] = useState<number>(0);
-  const [isSimulating, setIsSimulating] = useState(false);
+  const [activeStep, setActiveStep] = useState<number>(0);
 
-  // Simulation timer stepping through the 11 agents
+  // When a consultation pipeline is running, advance active node pulse
   useEffect(() => {
-    if (!isSimulating && !isRunning) return;
+    if (!isRunning) return;
     const interval = setInterval(() => {
-      setPulseStep((prev) => (prev + 1) % AGENT_ORDER.length);
+      setActiveStep((prev) => (prev + 1) % AGENT_ORDER.length);
     }, 1100);
     return () => clearInterval(interval);
-  }, [isSimulating, isRunning]);
+  }, [isRunning]);
 
   // Center hovered or currently active agent
-  const currentAgentId = hoveredAgentId || (isSimulating || isRunning ? AGENT_ORDER[pulseStep]! : null);
+  const currentAgentId = hoveredAgentId || (isRunning ? AGENT_ORDER[activeStep]! : null);
   const currentMeta = useMemo(() => {
     return AGENTS.find((a) => a.id === currentAgentId) || null;
   }, [currentAgentId]);
@@ -156,7 +152,7 @@ export function CircularAgentFlow({
 
         <div className="flex items-center gap-2">
           {/* Phase Legend Pills */}
-          <div className="hidden md:flex items-center gap-1.5 text-[0.65rem] font-mono">
+          <div className="flex items-center gap-1.5 text-[0.65rem] font-mono">
             <span className="inline-flex items-center gap-1 rounded-md bg-emerald-500/10 px-2 py-0.5 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Intake
             </span>
@@ -167,24 +163,6 @@ export function CircularAgentFlow({
               <span className="h-1.5 w-1.5 rounded-full bg-amber-500" /> Verification
             </span>
           </div>
-
-          <Button
-            size="sm"
-            variant={isSimulating ? "default" : "outline"}
-            onClick={() => setIsSimulating(!isSimulating)}
-            className="text-xs h-7 gap-1.5"
-            title="Step through the 11 agents in real-time sequence"
-          >
-            {isSimulating ? (
-              <>
-                <RotateCw className="h-3 w-3 animate-spin" /> Pulsing...
-              </>
-            ) : (
-              <>
-                <Play className="h-3 w-3" /> Simulate Cycle
-              </>
-            )}
-          </Button>
         </div>
       </div>
 
@@ -309,7 +287,7 @@ export function CircularAgentFlow({
           })}
 
           {/* 3. Central Consensus Core Hub */}
-          <g className="cursor-pointer" onClick={() => setIsSimulating(!isSimulating)}>
+          <g className="cursor-default">
             {/* Core Backdrop Radial Aura */}
             <circle cx={center} cy={center} r={95} fill="url(#core-radial)" />
 
@@ -366,7 +344,7 @@ export function CircularAgentFlow({
                 ) : (
                   <>
                     <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 mb-1 shadow-sm shadow-emerald-500/20">
-                      <Sparkles className="h-4 w-4 animate-pulse" />
+                      <Activity className="h-4 w-4 animate-pulse" />
                     </div>
                     <p className="font-display text-[0.72rem] font-bold text-foreground leading-tight">
                       CONSENSUS CORE
@@ -389,7 +367,7 @@ export function CircularAgentFlow({
             const Icon = AGENT_ICONS[pos.id] || Brain;
             const summary = getAgentSummary(pos.id);
             const isDone = summary.status === "done";
-            const isRunningNode = summary.status === "running" || (isSimulating && AGENT_ORDER[pulseStep] === pos.id);
+            const isRunningNode = summary.status === "running" || (isRunning && AGENT_ORDER[activeStep] === pos.id);
 
             return (
               <g

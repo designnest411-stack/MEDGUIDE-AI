@@ -154,8 +154,17 @@ export async function generateClinicalReportPdf(options: PdfExportOptions): Prom
     doc.text(`ID: ${reportDocId}`, pageWidth - margin - 150, isPageOne ? 33 : 26);
   }
 
+  function ensureSpace(neededHeight: number, continuationTitle = "CLINICAL CONSULTATION REPORT (CONTINUED)") {
+    if (y + neededHeight > pageHeight - 34) {
+      doc.addPage();
+      drawHeaderBanner(continuationTitle, false);
+      y = 42;
+    }
+  }
+
   // Draw Section Header with Left Accent Bar
   function drawSectionHeader(titleText: string) {
+    ensureSpace(24);
     doc.setFillColor(2, 132, 199); // #0284C7
     doc.rect(margin, y, 3, 10, "F");
 
@@ -163,7 +172,7 @@ export async function generateClinicalReportPdf(options: PdfExportOptions): Prom
     doc.setFontSize(8.5);
     doc.setTextColor(15, 23, 42);
     doc.text(titleText.toUpperCase(), margin + 7, y + 8.5);
-    y += 14;
+    y += 16;
   }
 
   // Draw Metadata Patient Card
@@ -225,6 +234,7 @@ export async function generateClinicalReportPdf(options: PdfExportOptions): Prom
 
     const summaryLines = doc.splitTextToSize(cleanSummary, contentWidth - 14) as string[];
     const cardHeight = summaryLines.length * 9.5 + 8;
+    ensureSpace(cardHeight + 6);
 
     doc.setFillColor(248, 250, 252);
     doc.setDrawColor(226, 232, 240);
@@ -243,6 +253,7 @@ export async function generateClinicalReportPdf(options: PdfExportOptions): Prom
     const rowHeight = 14;
 
     for (let i = 0; i < structured.findings.length; i += 2) {
+      ensureSpace(rowHeight + 4);
       const f1 = structured.findings[i]!;
       const f2 = structured.findings[i + 1];
 
@@ -307,6 +318,7 @@ export async function generateClinicalReportPdf(options: PdfExportOptions): Prom
       const ratLines = doc.splitTextToSize(cleanRationale, contentWidth - 16) as string[];
       const hasCitations = d.citations && d.citations.length > 0;
       const cardHeight = 14 + ratLines.length * 8.5 + (hasCitations ? 9 : 0) + 4;
+      ensureSpace(cardHeight + 4);
 
       // Card Background & Border by Likelihood
       if (d.likelihood === "High") {
@@ -379,6 +391,7 @@ export async function generateClinicalReportPdf(options: PdfExportOptions): Prom
       doc.setFontSize(7);
       const warnLines = doc.splitTextToSize(cleanWarn, contentWidth - 16) as string[];
       const cardHeight = 12 + warnLines.length * 8 + 3;
+      ensureSpace(cardHeight + 4);
 
       if (ds.isContraindicated) {
         doc.setFillColor(254, 242, 242); // #FEF2F2
@@ -423,6 +436,7 @@ export async function generateClinicalReportPdf(options: PdfExportOptions): Prom
       doc.setFontSize(7);
       const contentLines = doc.splitTextToSize(cleanContent, contentWidth - 14) as string[];
       const itemHeight = 10 + contentLines.length * 8 + 2;
+      ensureSpace(itemHeight + 4);
 
       doc.setFont("helvetica", "bold");
       doc.setFontSize(7);
@@ -450,6 +464,7 @@ export async function generateClinicalReportPdf(options: PdfExportOptions): Prom
 
     const confLines = doc.splitTextToSize(cleanConf, contentWidth - 14) as string[];
     const cardHeight = confLines.length * 8 + 7;
+    ensureSpace(cardHeight + 6);
 
     doc.setFillColor(248, 250, 252);
     doc.setDrawColor(226, 232, 240);
@@ -468,6 +483,7 @@ export async function generateClinicalReportPdf(options: PdfExportOptions): Prom
     doc.setFontSize(6.5);
 
     for (let i = 0; i < structured.references.length; i += 2) {
+      ensureSpace(12);
       const r1 = structured.references[i]!;
       const r2 = structured.references[i + 1];
 
@@ -507,6 +523,7 @@ export async function generateClinicalReportPdf(options: PdfExportOptions): Prom
 
   // Draw Formal Clinician Review & Attestation Box
   function renderClinicianAttestation() {
+    ensureSpace(42);
     doc.setFillColor(248, 250, 252);
     doc.setDrawColor(203, 213, 225);
     doc.roundedRect(margin, y, contentWidth, 34, 3, 3, "FD");
@@ -549,55 +566,19 @@ export async function generateClinicalReportPdf(options: PdfExportOptions): Prom
     renderReferencesGrid();
     renderClinicianAttestation();
 
-    // Single page footer
-    doc.setDrawColor(226, 232, 240);
-    doc.line(margin, pageHeight - 22, pageWidth - margin, pageHeight - 22);
-
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(6);
-    doc.setTextColor(148, 163, 184);
-    doc.text(
-      "Decision support only: not an autonomous diagnosis. Confirm all clinical decisions with a licensed healthcare provider.",
-      margin,
-      pageHeight - 12,
-    );
-
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(6.5);
-    doc.setTextColor(100, 116, 139);
-    doc.text("Page 1 of 1 · Executive Clinical Summary", pageWidth - margin - 150, pageHeight - 12);
-
   } else if (structured.isStructured) {
-    // --- INTENTIONAL 2-PAGE LAYOUT ---
+    // --- INTENTIONAL 2-PAGE DOSSIER LAYOUT ---
     // PAGE 1: Clinical Diagnostic Assessment
-    drawHeaderBanner("CLINICAL DIAGNOSTIC ASSESSMENT · PAGE 1 OF 2", true);
+    drawHeaderBanner("CLINICAL DIAGNOSTIC ASSESSMENT · CDSS ADVISORY", true);
     y = 52;
     drawPatientMetadataCard();
     renderPatientSummary();
     renderFindingsGrid();
     renderDifferentials();
 
-    // Page 1 Footer
-    doc.setDrawColor(226, 232, 240);
-    doc.line(margin, pageHeight - 22, pageWidth - margin, pageHeight - 22);
-
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(6);
-    doc.setTextColor(148, 163, 184);
-    doc.text(
-      "Decision support only: not an autonomous diagnosis. Continued on Page 2 for Pharmacovigilance & Literature Dossier.",
-      margin,
-      pageHeight - 12,
-    );
-
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(6.5);
-    doc.setTextColor(100, 116, 139);
-    doc.text("Page 1 of 2 · Diagnostic Assessment", pageWidth - margin - 145, pageHeight - 12);
-
     // PAGE 2: Evidence, Safety & Bibliography Dossier
     doc.addPage();
-    drawHeaderBanner("EVIDENCE, PHARMACOVIGILANCE & AUDIT DOSSIER · PAGE 2 OF 2", false);
+    drawHeaderBanner("EVIDENCE, PHARMACOVIGILANCE & AUDIT DOSSIER", false);
     y = 40;
 
     renderDrugSafety();
@@ -605,24 +586,6 @@ export async function generateClinicalReportPdf(options: PdfExportOptions): Prom
     renderConfidenceLimitations();
     renderReferencesGrid();
     renderClinicianAttestation();
-
-    // Page 2 Footer
-    doc.setDrawColor(226, 232, 240);
-    doc.line(margin, pageHeight - 22, pageWidth - margin, pageHeight - 22);
-
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(6);
-    doc.setTextColor(148, 163, 184);
-    doc.text(
-      "Decision support only: not an autonomous diagnosis. Confirm all clinical decisions with a licensed healthcare provider.",
-      margin,
-      pageHeight - 12,
-    );
-
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(6.5);
-    doc.setTextColor(100, 116, 139);
-    doc.text("Page 2 of 2 · Grounded Consultation", pageWidth - margin - 145, pageHeight - 12);
 
   } else {
     // Fallback for unstructured text reports
@@ -635,7 +598,13 @@ export async function generateClinicalReportPdf(options: PdfExportOptions): Prom
     doc.setFontSize(7.5);
     doc.setTextColor(30, 41, 59);
 
-    const strippedText = sanitizeMedicalText(markdown.replace(/^#\s+[^\n]+/m, "").replace(/[#*`]/g, ""));
+    const strippedText = sanitizeMedicalText(
+      markdown
+        .replace(/^#+\s+[^\n]+/m, "")
+        .replace(/^(?:clinical support report|clinical consultation report|clinical report contents)[^\n]*/im, "")
+        .replace(/[#*`]/g, "")
+        .trim(),
+    );
     const rawLines = doc.splitTextToSize(strippedText, contentWidth - 10) as string[];
 
     for (const line of rawLines) {
@@ -649,27 +618,28 @@ export async function generateClinicalReportPdf(options: PdfExportOptions): Prom
     }
 
     renderClinicianAttestation();
+  }
 
-    const totalPages = doc.getNumberOfPages();
-    for (let i = 1; i <= totalPages; i++) {
-      doc.setPage(i);
-      doc.setDrawColor(226, 232, 240);
-      doc.line(margin, pageHeight - 22, pageWidth - margin, pageHeight - 22);
+  // Unified official footer across all generated pages
+  const totalPages = doc.getNumberOfPages();
+  for (let i = 1; i <= totalPages; i++) {
+    doc.setPage(i);
+    doc.setDrawColor(226, 232, 240);
+    doc.line(margin, pageHeight - 22, pageWidth - margin, pageHeight - 22);
 
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(6);
-      doc.setTextColor(148, 163, 184);
-      doc.text(
-        "Decision support only: not an autonomous diagnosis. Confirm all clinical decisions with a licensed medical provider.",
-        margin,
-        pageHeight - 12,
-      );
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(6);
+    doc.setTextColor(148, 163, 184);
+    doc.text(
+      "Decision support only: not an autonomous diagnosis. Confirm all clinical decisions with a licensed healthcare provider.",
+      margin,
+      pageHeight - 12,
+    );
 
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(6.5);
-      doc.setTextColor(100, 116, 139);
-      doc.text(`Page ${i} of ${totalPages}`, pageWidth - margin - 50, pageHeight - 12);
-    }
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(6.5);
+    doc.setTextColor(100, 116, 139);
+    doc.text(`Page ${i} of ${totalPages}`, pageWidth - margin - 50, pageHeight - 12);
   }
 
   const safeFilename = `${title.slice(0, 35).replace(/\W+/g, "-") || "clinical-report"}.pdf`;
