@@ -119,6 +119,69 @@ References
     expect(parsed.references.length).toBe(2);
   });
 
+  it("parses the exact clinical consultation text from the user report image with full structure", async () => {
+    const liveReportText = `Clinical Support Report
+
+Patient Summary
+A 64-year-old male with a history of hypertension, type 2 diabetes, and hyperlipidemia presents with acute onset of fever (38.2°C), productive cough, dyspnea, and tachycardia (104 bpm). Physical examination reveals right lower-zone crackles and mild hypoxemia (SpO₂ 93% on room air). Laboratory findings show leukocytosis (15,200/μL) and elevated CRP (126 mg/L), highly suggestive of Community-Acquired Pneumonia (CAP) in a patient with significant comorbidities [pmid:31573350].
+
+Clinical Findings
+Respiratory: Tachypnea (22/min), SpO₂ 93%, right lower-zone crackles.
+Systemic: Fever (38.2°C), tachycardia (104 bpm).
+Laboratory: Leukocytosis (15,200/μL), elevated CRP (126 mg/L), creatinine 1.3 mg/dL, glucose 186 mg/dL.
+
+Differential Assessment
+1. Community-Acquired Pneumonia (CAP): High Likelihood. Supported by fever, productive cough, focal auscultatory findings, and inflammatory markers [pmid:31573350, pmid:40679934].
+2. Pulmonary Embolism (PE): Moderate Likelihood. Must be considered given the tachycardia, tachypnea, and hypoxia [pmid:31573350].
+3. Heart Failure Exacerbation: Low Likelihood. While the patient has cardiovascular risk factors, the unilateral crackles make heart failure less consistent.
+
+Evidence Base
+Diagnosis: Diagnosis is confirmed via chest radiography demonstrating an infiltrate [pmid:31573350, pmid:40679934].
+Severity Assessment: Severity should be stratified using the CURB-65 score [epmc:MED42109413, pmid:31573350].
+Management: Initial management involves empiric antibiotic therapy tailored to local resistance patterns [pmid:31573350].
+
+Drug Safety
+Amlodipine: Monitor for hypotension and peripheral edema [fda:Amlodipine].
+Metformin: Contraindicated in patients with severe renal impairment (eGFR <30 mL/min/1.73 m²). Given the patient's creatinine of 1.3 mg/dL, renal function should be monitored [fda:Metformin].
+Atorvastatin: Contraindicated in patients with active liver disease [fda:Atorvastatin].
+
+Confidence and Limitations
+Confidence: Medium. The clinical presentation is classic for CAP, but the patient's comorbidities necessitate a cautious approach to rule out complications.
+
+References
+[pmid:31573350] Metlay JP, et al. Diagnosis and Treatment of Adults with Community-acquired Pneumonia. Am J Respir Crit Care Med, 2019.
+[pmid:40679934] Diagnosis and Management of Community-acquired Pneumonia: An Official American Thoracic Society Clinical Practice Guideline.
+[epmc:MED42109413] CURB-65 for community-acquired pneumonia severity index.
+[fda:Amlodipine] OpenFDA drug label: Amlodipine Besylate.
+[fda:Metformin] OpenFDA drug label: Sitagliptin and Metformin Hydrochloride.
+[fda:Atorvastatin] OpenFDA drug label: Atorvastatin Calcium.
+`;
+
+    const parsed = parseClinicalReport(liveReportText, "Clinical Support Report");
+    expect(parsed.isStructured).toBe(true);
+    expect(parsed.patientSummary).toContain("64-year-old male");
+    expect(parsed.findings.length).toBe(3);
+    expect(parsed.differentials.length).toBe(3);
+    expect(parsed.differentials[0]?.likelihood).toBe("High");
+    expect(parsed.differentials[1]?.likelihood).toBe("Moderate");
+    expect(parsed.differentials[2]?.likelihood).toBe("Low");
+    expect(parsed.evidenceBase.length).toBe(3);
+    expect(parsed.drugSafety.length).toBe(3);
+    expect(parsed.drugSafety[1]?.isContraindicated).toBe(true);
+    expect(parsed.confidenceBand).toBe("Medium");
+    expect(parsed.references.length).toBe(6);
+
+    const { generateClinicalReportPdf } = await import("../src/lib/reports/report-pdf-generator");
+    const doc = (await generateClinicalReportPdf({
+      title: "64-year-old male with fever and cough",
+      patientName: "64 Male",
+      markdown: liveReportText,
+      createdAt: 1724323479000,
+      reportId: "EQSytLmCxyDjll",
+    })) as any;
+    expect(doc.getNumberOfPages()).toBe(2);
+  });
+
   it("sanitizes medical text to prevent jsPDF font corruption", async () => {
     const { sanitizeMedicalText } = await import("../src/lib/reports/report-pdf-generator");
     expect(sanitizeMedicalText("SpO₂: 93% on room air, leukocytosis 15,200/μL, fever 38.2°C")).toBe(

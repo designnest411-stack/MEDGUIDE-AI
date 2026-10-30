@@ -124,7 +124,8 @@ export async function generateClinicalReportPdf(options: PdfExportOptions): Prom
   estimatedHeight += 38; // Clinician attestation sign-off block
 
   // Net printable height per page is 841.89 - 44 (top) - 34 (bottom) = ~763 pt
-  const isSinglePage = structured.isStructured && estimatedHeight <= 755;
+  // Conservative budget: if <= 690 pt, guarantees fit on 1 executive page
+  const isSinglePage = structured.isStructured && estimatedHeight <= 690;
 
   let y = 0;
 
@@ -155,7 +156,7 @@ export async function generateClinicalReportPdf(options: PdfExportOptions): Prom
   }
 
   function ensureSpace(neededHeight: number, continuationTitle = "CLINICAL CONSULTATION REPORT (CONTINUED)") {
-    if (y + neededHeight > pageHeight - 34) {
+    if (!isSinglePage && y + neededHeight > pageHeight - 34) {
       doc.addPage();
       drawHeaderBanner(continuationTitle, false);
       y = 42;
@@ -576,10 +577,20 @@ export async function generateClinicalReportPdf(options: PdfExportOptions): Prom
     renderFindingsGrid();
     renderDifferentials();
 
+    // Bottom advisory note indicating dossier continuation
+    doc.setFont("helvetica", "italic");
+    doc.setFontSize(6.5);
+    doc.setTextColor(100, 116, 139);
+    doc.text(
+      "-> Diagnostic Assessment Complete. Continued on Page 2 for Pharmacovigilance, Evidence Guidelines, References & Sign-Off.",
+      margin + 6,
+      Math.min(y + 14, pageHeight - 30),
+    );
+
     // PAGE 2: Evidence, Safety & Bibliography Dossier
     doc.addPage();
     drawHeaderBanner("EVIDENCE, PHARMACOVIGILANCE & AUDIT DOSSIER", false);
-    y = 40;
+    y = 44;
 
     renderDrugSafety();
     renderEvidenceBase();

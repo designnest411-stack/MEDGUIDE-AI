@@ -21,9 +21,6 @@ import {
   Sparkles,
   Stethoscope,
   Target,
-  Orbit,
-  LayoutGrid,
-  Layers,
 } from "lucide-react";
 
 import { AppShell } from "@/components/app-shell";
@@ -31,7 +28,6 @@ import { GlassCard, SectionTitle } from "@/components/medical-ui";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CardContent, CardHeader } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CircularAgentFlow } from "@/components/pipeline/circular-agent-flow";
 import {
   Select,
@@ -91,12 +87,6 @@ const AGENT_ICONS: Record<AgentId, React.ComponentType<{ className?: string }>> 
   confidence: CheckCircle2,
   research: Cpu,
   report: FileText,
-};
-
-const AGENT_PHASES = {
-  intake: ["planner", "retrieval", "knowledge-graph"] as AgentId[],
-  reasoning: ["clinical-reasoning", "drug-intelligence", "medical-image"] as AgentId[],
-  verification: ["case-similarity", "safety", "explainability", "confidence", "report"] as AgentId[],
 };
 
 const AGENT_ENGINE_SPECS: Record<AgentId, { engine: string; source: string; moduleRoute?: string }> = {
@@ -178,7 +168,6 @@ function PipelinePage() {
   const { running, statuses, result: liveResult } = run$;
   const [selectedConsultationId, setSelectedConsultationId] = useState<string>("standby");
   const [inspectedAgent, setInspectedAgent] = useState<AgentMeta | null>(null);
-  const [viewMode, setViewMode] = useState<"both" | "orbit" | "matrix">("both");
 
   // Determine active consultation data to display (null by default in clean standby mode)
   const activeConsultation = useMemo(() => {
@@ -458,141 +447,15 @@ function PipelinePage() {
           </div>
         </GlassCard>
 
-        {/* View Mode Toolbar */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <Badge variant="outline" className="text-xs font-mono border-primary/30 text-primary bg-primary/10">
-              Pipeline Visualizer
-            </Badge>
-            <span className="text-xs text-muted-foreground">
-              {viewMode === "both"
-                ? "Orbital consensus loop & phase telemetry matrix"
-                : viewMode === "orbit"
-                ? "Consensus circular orbit loop"
-                : "Phase column grid"}
-            </span>
-          </div>
+        {/* Consensus Orbit Architecture (Dedicated Hero Visualization) */}
+        <CircularAgentFlow
+          onSelectAgent={setInspectedAgent}
+          getAgentSummary={getRealAgentSummary}
+          isRunning={running}
+          selectedCaseQuestion={activeConsultation?.question}
+        />
 
-          <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as typeof viewMode)}>
-            <TabsList className="h-8">
-              <TabsTrigger value="both" className="text-xs px-2.5 gap-1.5">
-                <Layers className="h-3.5 w-3.5" /> Both
-              </TabsTrigger>
-              <TabsTrigger value="orbit" className="text-xs px-2.5 gap-1.5">
-                <Orbit className="h-3.5 w-3.5" /> Orbit Flow
-              </TabsTrigger>
-              <TabsTrigger value="matrix" className="text-xs px-2.5 gap-1.5">
-                <LayoutGrid className="h-3.5 w-3.5" /> Phase Grid
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-        </div>
 
-        {/* 1. Circular Consensus Flow (when viewMode is "both" or "orbit") */}
-        {(viewMode === "both" || viewMode === "orbit") && (
-          <CircularAgentFlow
-            onSelectAgent={setInspectedAgent}
-            getAgentSummary={getRealAgentSummary}
-            isRunning={running}
-            selectedCaseQuestion={activeConsultation?.question}
-          />
-        )}
-
-        {/* 2. Linear / Phase Matrix Execution Grid (when viewMode is "both" or "matrix") */}
-        {(viewMode === "both" || viewMode === "matrix") && (
-          <GlassCard>
-            <CardHeader className="pb-3 border-b border-border/60">
-              <SectionTitle
-                icon={Activity}
-                title="Autonomous Clinical Pipeline Workflow"
-                hint="Click any agent to inspect its biomedical engine, inputs, and real execution telemetry"
-              />
-            </CardHeader>
-
-            <CardContent className="p-4 sm:p-6 space-y-5">
-              {/* Phase 1: Intake & Retrieval */}
-              <div className="space-y-2.5">
-                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/20 text-[0.65rem] text-primary font-bold">
-                    1
-                  </span>
-                  Intake & Evidence Retrieval
-                </div>
-                <div className="grid gap-3 sm:grid-cols-3">
-                  {AGENT_PHASES.intake.map((id, idx) => {
-                    const meta = AGENTS.find((a) => a.id === id);
-                    const Icon = AGENT_ICONS[id] || Brain;
-                    const st = getRealAgentSummary(id);
-                    return (
-                      <RealAgentCard
-                        key={id}
-                        index={idx + 1}
-                        meta={meta!}
-                        Icon={Icon}
-                        state={st}
-                        onClick={() => setInspectedAgent(meta!)}
-                      />
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Phase 2: Reasoning & Multimodal Synthesis */}
-              <div className="space-y-2.5 pt-2">
-                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/20 text-[0.65rem] text-primary font-bold">
-                    2
-                  </span>
-                  Multimodal Reasoning & Differential Diagnosis
-                </div>
-                <div className="grid gap-3 sm:grid-cols-3">
-                  {AGENT_PHASES.reasoning.map((id, idx) => {
-                    const meta = AGENTS.find((a) => a.id === id);
-                    const Icon = AGENT_ICONS[id] || Brain;
-                    const st = getRealAgentSummary(id);
-                    return (
-                      <RealAgentCard
-                        key={id}
-                        index={idx + 4}
-                        meta={meta!}
-                        Icon={Icon}
-                        state={st}
-                        onClick={() => setInspectedAgent(meta!)}
-                      />
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Phase 3: Safety, Verification & Report */}
-              <div className="space-y-2.5 pt-2">
-                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/20 text-[0.65rem] text-primary font-bold">
-                    3
-                  </span>
-                  Safety Verification & Report Generation
-                </div>
-                <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
-                  {AGENT_PHASES.verification.map((id, idx) => {
-                    const meta = AGENTS.find((a) => a.id === id);
-                    const Icon = AGENT_ICONS[id] || Brain;
-                    const st = getRealAgentSummary(id);
-                    return (
-                      <RealAgentCard
-                        key={id}
-                        index={idx + 7}
-                        meta={meta!}
-                        Icon={Icon}
-                        state={st}
-                        onClick={() => setInspectedAgent(meta!)}
-                      />
-                    );
-                  })}
-                </div>
-              </div>
-            </CardContent>
-          </GlassCard>
-        )}
 
         {/* Empty state prompt if zero consultations exist yet */}
         {(!consultations || consultations.length === 0) && !running && (
@@ -674,82 +537,5 @@ function PipelinePage() {
         )}
       </div>
     </AppShell>
-  );
-}
-
-function RealAgentCard({
-  index,
-  meta,
-  Icon,
-  state,
-  onClick,
-}: {
-  index: number;
-  meta: AgentMeta;
-  Icon: React.ComponentType<{ className?: string }>;
-  state: { status: AgentStatus; summary: string };
-  onClick: () => void;
-}) {
-  const isRunning = state.status === "running";
-  const isDone = state.status === "done";
-
-  return (
-    <div
-      onClick={onClick}
-      className={`group relative overflow-hidden flex flex-col justify-between rounded-2xl border p-4 transition-all duration-200 cursor-pointer backdrop-blur-md active:scale-[0.98] before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/20 dark:before:via-white/10 before:to-transparent ${
-        isRunning
-          ? "border-primary bg-primary/[0.08] shadow-md shadow-primary/20 scale-[1.01]"
-          : isDone
-          ? "border-border/70 dark:border-white/[0.08] bg-card/70 hover:border-primary/50 hover:bg-card/95 hover:shadow-sm hover:-translate-y-[1px]"
-          : "border-border/50 bg-card/30 opacity-75 hover:opacity-100"
-      }`}
-    >
-      <div>
-        <div className="flex items-center justify-between mb-2.5">
-          <div className="flex items-center gap-2">
-            <div
-              className={`flex h-8 w-8 items-center justify-center rounded-xl transition-colors ${
-                isRunning
-                  ? "bg-primary text-white animate-pulse"
-                  : isDone
-                  ? "bg-primary/10 text-primary border border-primary/20"
-                  : "bg-muted text-muted-foreground"
-              }`}
-            >
-              <Icon className="h-4 w-4" />
-            </div>
-            <span className="font-mono text-[0.68rem] text-muted-foreground">
-              #{String(index).padStart(2, "0")}
-            </span>
-          </div>
-
-          <Badge
-            variant="outline"
-            className={`text-[0.62rem] font-mono capitalize ${
-              isRunning
-                ? "border-primary text-primary bg-primary/10 animate-pulse"
-                : isDone
-                ? "border-emerald-500/30 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10"
-                : "border-border/70 text-muted-foreground"
-            }`}
-          >
-            {isDone && <CheckCircle2 className="h-2.5 w-2.5 mr-1 text-emerald-500 inline-block" />}
-            {state.status}
-          </Badge>
-        </div>
-
-        <h4 className="text-xs font-bold text-foreground group-hover:text-primary transition-colors">
-          {meta.name}
-        </h4>
-        <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed line-clamp-2">
-          {state.summary}
-        </p>
-      </div>
-
-      <div className="mt-3 flex items-center justify-between text-[0.65rem] text-muted-foreground group-hover:text-primary transition-colors border-t border-border/40 pt-2">
-        <span className="font-mono text-[0.6rem] uppercase tracking-wider">Inspect Payload</span>
-        <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-      </div>
-    </div>
   );
 }

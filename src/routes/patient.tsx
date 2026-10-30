@@ -12,6 +12,8 @@ import {
   Loader2,
   Pencil,
   Play,
+  Search,
+  Stethoscope,
   Trash2,
   UserPlus,
   UserRound,
@@ -22,8 +24,10 @@ import { toast } from "sonner";
 import { AppShell } from "@/components/app-shell";
 import { EmptyState, GlassCard, SectionTitle } from "@/components/medical-ui";
 import { FormArea, FormField } from "@/components/form-fields";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
@@ -86,6 +90,8 @@ function PatientPage() {
 
   const [form, setForm] = useState({ ...blank });
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [uploadingDoc, setUploadingDoc] = useState(false);
   const photoInputRef = useRef<HTMLInputElement>(null);
   const docInputRef = useRef<HTMLInputElement>(null);
@@ -105,6 +111,7 @@ function PatientPage() {
     }
     setForm({ ...blank });
     setEditingId(null);
+    setIsFormOpen(false);
   };
 
   const getPatientFolder = (subfolder: "photos" | "documents") => {
@@ -178,6 +185,7 @@ function PatientPage() {
 
   const edit = (p: (typeof patients)[number]) => {
     setEditingId(p.id ?? null);
+    setIsFormOpen(true);
     setForm({
       name: p.name ?? "",
       question: p.question ?? "",
@@ -220,36 +228,53 @@ function PatientPage() {
 
   const set = (k: keyof typeof blank) => (v: string) => setForm({ ...form, [k]: v });
 
+  const isFormActive = isFormOpen || editingId !== null;
+
   return (
     <AppShell
       title="Patient Workspace"
       subtitle="Structured patient intake synced securely to your clinical cloud"
+      actions={
+        !isFormActive ? (
+          <Button
+            size="sm"
+            onClick={() => {
+              setEditingId(null);
+              setForm({ ...blank });
+              setIsFormOpen(true);
+            }}
+            className="h-8 gap-1.5 text-xs shadow-xs"
+          >
+            <UserPlus className="h-3.5 w-3.5" /> Add Patient Record
+          </Button>
+        ) : undefined
+      }
     >
-      <div className="grid gap-4 lg:grid-cols-[1fr_360px]">
-        <GlassCard>
-          <CardHeader className="pb-2">
-            <SectionTitle
-              icon={UserPlus}
-              title={editingId !== null ? "Edit patient record" : "New patient record"}
-              hint="All fields optional except identifier"
-              {...(editingId !== null
-                ? {
-                    right: (
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => {
-                          setEditingId(null);
-                          setForm({ ...blank });
-                        }}
-                      >
-                        <X className="mr-1 h-3.5 w-3.5" /> Cancel
-                      </Button>
-                    ),
-                  }
-                : {})}
-            />
-          </CardHeader>
+      <div className="space-y-6">
+        {/* Expandable New / Edit Patient Intake Form */}
+        {isFormActive && (
+          <GlassCard className="border-emerald-500/30 shadow-lg shadow-emerald-500/5 animate-in fade-in slide-in-from-top-2 duration-300">
+            <CardHeader className="pb-3 border-b border-border/50">
+              <SectionTitle
+                icon={UserPlus}
+                title={editingId !== null ? `Edit: ${form.name || "Patient Record"}` : "New Clinical Patient Intake"}
+                hint="All fields optional except identifier"
+                right={
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-8 gap-1 text-xs"
+                    onClick={() => {
+                      setEditingId(null);
+                      setIsFormOpen(false);
+                      setForm({ ...blank });
+                    }}
+                  >
+                    <X className="h-3.5 w-3.5" /> Close Form
+                  </Button>
+                }
+              />
+            </CardHeader>
           <CardContent className="space-y-3">
             <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
               <div className="flex items-start justify-between gap-2">
@@ -419,105 +444,225 @@ function PatientPage() {
               <FormArea label="Vitals" value={form.vitals} onChange={set("vitals")} rows={2} />
             </div>
             <FormArea label="Labs" value={form.labs} onChange={set("labs")} rows={3} />
-            <Button onClick={save}>{editingId !== null ? "Update patient" : "Save patient"}</Button>
-          </CardContent>
-        </GlassCard>
+              <div className="flex items-center gap-2 pt-2 border-t border-border/50">
+                <Button onClick={save} className="h-9 gap-1.5 text-xs">
+                  {editingId !== null ? "Update Patient Record" : "Save Patient to Roster"}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setEditingId(null);
+                    setIsFormOpen(false);
+                    setForm({ ...blank });
+                  }}
+                  className="h-9 text-xs"
+                >
+                  Cancel
+                </Button>
+              </div>
+            </CardContent>
+          </GlassCard>
+        )}
 
-        <GlassCard>
-          <CardHeader className="pb-2">
-            <SectionTitle
-              title="Saved patients"
-              hint={patientsLoading ? "Loading..." : `${patients.length} records`}
-            />
-          </CardHeader>
-          <CardContent className="space-y-2">
-            {patientsLoading ? (
-              <div className="space-y-3">
-                <div className="rounded-lg border border-border/60 p-3 space-y-2">
-                  <Skeleton className="h-4 w-32" />
-                  <Skeleton className="h-3 w-20" />
-                  <Skeleton className="h-8 w-full" />
+        {/* Saved Patients Directory (Full-Width Responsive Cards Grid) */}
+        {(() => {
+          const filteredPatients = (patients || []).filter((p) => {
+            if (!searchQuery.trim()) return true;
+            const q = searchQuery.toLowerCase();
+            return (
+              p.name?.toLowerCase().includes(q) ||
+              p.history?.toLowerCase().includes(q) ||
+              p.medications?.toLowerCase().includes(q) ||
+              p.question?.toLowerCase().includes(q)
+            );
+          });
+
+          return (
+            <div className="space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <h3 className="font-display text-base font-bold text-foreground">
+                    Clinical Patient Directory
+                  </h3>
+                  <Badge variant="outline" className="text-xs font-mono border-primary/30 text-primary bg-primary/10">
+                    {patientsLoading ? "Loading..." : `${patients.length} Records`}
+                  </Badge>
                 </div>
-                <div className="rounded-lg border border-border/60 p-3 space-y-2">
-                  <Skeleton className="h-4 w-28" />
-                  <Skeleton className="h-3 w-24" />
-                  <Skeleton className="h-8 w-full" />
-                </div>
-              </div>
-            ) : patients.length === 0 ? (
-              <div className="rounded-xl border border-dashed border-border/80 p-6 text-center space-y-3">
-                <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                  <UserRound className="h-5 w-5" />
-                </div>
-                <div>
-                  <h4 className="font-display text-xs font-bold text-foreground">No patients saved yet</h4>
-                  <p className="mt-1 text-[0.7rem] text-muted-foreground leading-relaxed max-w-xs mx-auto">
-                    Create a clinical record using the form on the left to add a patient to your workspace roster.
-                  </p>
-                </div>
-              </div>
-            ) : (
-              patients.map((p) => (
-                <div key={p.id} className="rounded-lg border border-border/60 bg-card/40 p-3">
-                  <div className="flex items-center gap-2">
-                    {p.photoUrl ? (
-                      <img
-                        src={getCloudinaryThumbnail(p.photoUrl, 48, 48)}
-                        alt={p.name}
-                        className="h-8 w-8 rounded-full object-cover ring-1 ring-border"
-                      />
-                    ) : (
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
-                        {(p.name?.[0] || "P").toUpperCase()}
-                      </div>
-                    )}
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium">{p.name}</p>
-                      <p className="text-[0.65rem] text-muted-foreground">
-                        {[p.age, p.sex].filter(Boolean).join(" · ") || "No demographics"}
-                      </p>
-                    </div>
-                    <button
-                      type="button"
-                      aria-label="Edit patient"
-                      onClick={() => edit(p)}
-                      className="text-muted-foreground transition-colors hover:text-primary"
-                    >
-                      <Pencil className="h-3.5 w-3.5" />
-                    </button>
-                    <button
-                      type="button"
-                      aria-label="Delete patient"
-                      onClick={() => cols && p.id && deleteDoc(doc(cols.patients, p.id))}
-                      className="text-muted-foreground transition-colors hover:text-destructive"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
+
+                <div className="flex items-center gap-2">
+                  <div className="relative w-full sm:w-64">
+                    <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
+                    <Input
+                      placeholder="Search patients, meds, history..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="h-8 pl-8 text-xs bg-card/60"
+                    />
                   </div>
-                  {p.documents && p.documents.length > 0 && (
-                    <div className="mt-2 flex items-center gap-1 text-[0.65rem] text-primary/80">
-                      <FileText className="h-3 w-3" />
-                      <span>{p.documents.length} document{p.documents.length > 1 ? "s" : ""} attached</span>
-                    </div>
+                  {!isFormActive && (
+                    <Button
+                      size="sm"
+                      onClick={() => {
+                        setEditingId(null);
+                        setForm({ ...blank });
+                        setIsFormOpen(true);
+                      }}
+                      className="h-8 gap-1.5 text-xs shrink-0"
+                    >
+                      <UserPlus className="h-3.5 w-3.5" /> Add Patient
+                    </Button>
                   )}
-                  {p.question && (
-                    <p className="mt-1 line-clamp-2 text-xs text-primary/80">Q: {p.question}</p>
-                  )}
-                  {p.medications && (
-                    <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
-                      Meds: {p.medications}
-                    </p>
-                  )}
-                  <Button asChild size="sm" variant="outline" className="mt-2 h-7 w-full text-xs">
-                    <Link to="/consultation" search={{ patient: String(p.id ?? "") }}>
-                      <Play className="mr-1 h-3 w-3" /> Run agents on this patient
-                    </Link>
-                  </Button>
                 </div>
-              ))
-            )}
-          </CardContent>
-        </GlassCard>
+              </div>
+
+              {patientsLoading ? (
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {[1, 2, 3, 4, 5, 6].map((i) => (
+                    <div key={i} className="rounded-xl border border-border/60 bg-card/40 p-4 space-y-3">
+                      <div className="flex items-center gap-3">
+                        <Skeleton className="h-10 w-10 rounded-full" />
+                        <div className="space-y-1.5 flex-1">
+                          <Skeleton className="h-4 w-32" />
+                          <Skeleton className="h-3 w-20" />
+                        </div>
+                      </div>
+                      <Skeleton className="h-16 w-full rounded-lg" />
+                      <Skeleton className="h-8 w-full" />
+                    </div>
+                  ))}
+                </div>
+              ) : filteredPatients.length === 0 ? (
+                <div className="rounded-2xl border border-dashed border-border/80 p-8 text-center space-y-3 bg-card/30">
+                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                    <UserRound className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <h4 className="font-display text-sm font-bold text-foreground">
+                      {searchQuery ? "No matching patients found" : "No patients in roster"}
+                    </h4>
+                    <p className="mt-1 text-xs text-muted-foreground leading-relaxed max-w-sm mx-auto">
+                      {searchQuery
+                        ? `No patient records matched "${searchQuery}". Try a different keyword.`
+                        : "Add your first patient record to begin clinical consultations and tracking."}
+                    </p>
+                  </div>
+                  {!searchQuery && !isFormActive && (
+                    <Button
+                      size="sm"
+                      onClick={() => {
+                        setEditingId(null);
+                        setForm({ ...blank });
+                        setIsFormOpen(true);
+                      }}
+                      className="gap-1.5 text-xs h-8 shadow-xs"
+                    >
+                      <UserPlus className="h-3.5 w-3.5" /> Add Patient Record
+                    </Button>
+                  )}
+                </div>
+              ) : (
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {filteredPatients.map((p) => (
+                    <GlassCard
+                      key={p.id}
+                      className="p-4 flex flex-col justify-between hover:border-emerald-500/40 transition-all duration-200 shadow-xs group"
+                    >
+                      <div className="space-y-3">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            {p.photoUrl ? (
+                              <img
+                                src={getCloudinaryThumbnail(p.photoUrl, 48, 48)}
+                                alt={p.name}
+                                className="h-10 w-10 rounded-full object-cover ring-2 ring-emerald-500/20 shrink-0"
+                              />
+                            ) : (
+                              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/15 text-sm font-bold text-emerald-600 dark:text-emerald-400 ring-2 ring-emerald-500/20 shrink-0">
+                                {(p.name?.[0] || "P").toUpperCase()}
+                              </div>
+                            )}
+                            <div className="min-w-0">
+                              <h4 className="font-display text-sm font-bold text-foreground truncate">
+                                {p.name}
+                              </h4>
+                              <p className="font-mono text-[0.68rem] text-muted-foreground">
+                                {[p.age ? `${p.age}y` : "", p.sex].filter(Boolean).join(" · ") ||
+                                  "Demographics pending"}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-1 shrink-0">
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              className="h-7 w-7 text-muted-foreground hover:text-primary"
+                              onClick={() => edit(p)}
+                              title="Edit patient record"
+                            >
+                              <Pencil className="h-3.5 w-3.5" />
+                            </Button>
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              className="h-7 w-7 text-muted-foreground hover:text-destructive"
+                              onClick={() => cols && p.id && deleteDoc(doc(cols.patients, p.id))}
+                              title="Delete patient record"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </Button>
+                          </div>
+                        </div>
+
+                        {p.question && (
+                          <div className="rounded-lg border border-border/50 bg-background/50 p-2.5 text-xs text-foreground/90 space-y-1">
+                            <div className="flex items-center gap-1 text-[0.65rem] font-semibold text-primary">
+                              <Stethoscope className="h-3 w-3" />
+                              <span>Clinical Question:</span>
+                            </div>
+                            <p className="line-clamp-2 text-[0.72rem] leading-relaxed text-muted-foreground">
+                              {p.question}
+                            </p>
+                          </div>
+                        )}
+
+                        <div className="flex flex-wrap gap-1 text-[0.65rem]">
+                          {p.medications && (
+                            <span className="inline-flex items-center rounded-md bg-card px-2 py-0.5 border border-border/60 text-muted-foreground">
+                              💊 <strong className="ml-1 text-foreground">Meds:</strong>&nbsp;
+                              {p.medications.length > 28
+                                ? `${p.medications.slice(0, 28)}...`
+                                : p.medications}
+                            </span>
+                          )}
+                          {p.allergies && (
+                            <span className="inline-flex items-center rounded-md bg-red-500/10 px-2 py-0.5 border border-red-500/25 text-red-600 dark:text-red-400 font-medium">
+                              ⚠️ {p.allergies}
+                            </span>
+                          )}
+                          {p.documents && p.documents.length > 0 && (
+                            <span className="inline-flex items-center gap-1 rounded-md bg-primary/10 px-2 py-0.5 border border-primary/20 text-primary">
+                              <FileText className="h-3 w-3" /> {p.documents.length} doc
+                              {p.documents.length > 1 ? "s" : ""}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="pt-3 mt-3 border-t border-border/50">
+                        <Button asChild size="sm" className="w-full h-8 text-xs gap-1.5 shadow-xs">
+                          <Link to="/consultation" search={{ patient: String(p.id ?? "") }}>
+                            <Play className="h-3 w-3" /> Run Agents on this Patient
+                          </Link>
+                        </Button>
+                      </div>
+                    </GlassCard>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })()}
       </div>
     </AppShell>
   );

@@ -1,15 +1,19 @@
-import { useCallback, useEffect, useRef, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { query, orderBy, limit } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
 import {
   AlertTriangle,
+  ArrowRight,
+  ChevronDown,
+  ChevronUp,
   Loader2,
   Save,
   Send,
+  SlidersHorizontal,
   Stethoscope,
   StopCircle,
-  ArrowRight,
+  User,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -97,6 +101,7 @@ function Consultation() {
 
   const [user] = useAuthState(auth);
   const cols = user ? getCollections(user.uid) : null;
+  const [showManualOverride, setShowManualOverride] = useState(false);
 
   const [imagingDocs] = useTypedCollection<ImagingRecord>(
     cols ? query(cols.imaging, orderBy("createdAt", "desc"), limit(1)) : null,
@@ -244,78 +249,149 @@ function Consultation() {
                 rows={5}
               />
 
-              <div className="rounded-md border border-border/60 bg-card/40 p-2.5">
-                <p className="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground">
-                  Patient context for this run
-                </p>
-                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                  Load a saved record from the Patient Workspace, or type a one-off case below.
-                  These fields are what the agents actually reason on.
-                </p>
-                <div className="mt-2 flex items-center gap-2">
-                  <Select value={selectedPatient} onValueChange={loadPatient}>
-                    <SelectTrigger className="h-8 flex-1 text-xs">
-                      <SelectValue
-                        placeholder={patients.length ? "Load saved patient" : "No saved patients"}
-                      />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {patients.map((p) => (
-                        <SelectItem key={p.id} value={String(p.id)}>
-                          {p.name}
-                          {p.age ? ` · ${p.age}` : ""}
-                          {p.sex ? ` · ${p.sex}` : ""}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <Button size="sm" variant="outline" className="h-8" onClick={clearPatient}>
-                    Clear
-                  </Button>
-                </div>
-              </div>
+              {/* Patient Selection & Context Card */}
+              {(() => {
+                const activePatient = patients?.find((p) => String(p.id) === selectedPatient);
+                return (
+                  <div className="rounded-xl border border-border/70 bg-card/60 p-3 space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                        <User className="h-3.5 w-3.5 text-primary" />
+                        Patient Context
+                      </Label>
+                      {selectedPatient && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-6 px-2 text-[0.65rem] text-muted-foreground hover:text-foreground"
+                          onClick={clearPatient}
+                        >
+                          Clear
+                        </Button>
+                      )}
+                    </div>
 
-              <div className="grid grid-cols-2 gap-2">
-                <FormField
-                  label="Age"
-                  value={patient.age}
-                  onChange={(v) => setPatient({ ...patient, age: v })}
-                />
-                <FormField
-                  label="Sex"
-                  value={patient.sex}
-                  onChange={(v) => setPatient({ ...patient, sex: v })}
-                />
-              </div>
-              <FormArea
-                label="History"
-                value={patient.history}
-                onChange={(v) => setPatient({ ...patient, history: v })}
-              />
-              <FormArea
-                label="Current medications"
-                value={patient.medications}
-                onChange={(v) => setPatient({ ...patient, medications: v })}
-                placeholder="Comma separated: triggers drug safety checks"
-              />
-              <FormArea
-                label="Allergies"
-                value={patient.allergies}
-                onChange={(v) => setPatient({ ...patient, allergies: v })}
-                rows={2}
-              />
-              <FormArea
-                label="Vitals"
-                value={patient.vitals}
-                onChange={(v) => setPatient({ ...patient, vitals: v })}
-                rows={2}
-              />
-              <FormArea
-                label="Labs"
-                value={patient.labs}
-                onChange={(v) => setPatient({ ...patient, labs: v })}
-                rows={2}
-              />
+                    <Select value={selectedPatient} onValueChange={loadPatient}>
+                      <SelectTrigger className="h-8 w-full text-xs bg-background/60">
+                        <SelectValue
+                          placeholder={patients.length ? "Select saved patient..." : "No saved patients"}
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {patients.map((p) => (
+                          <SelectItem key={p.id} value={String(p.id)}>
+                            {p.name}
+                            {p.age ? ` · ${p.age}` : ""}
+                            {p.sex ? ` · ${p.sex}` : ""}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    {/* Active Patient Summary Pill/Card */}
+                    {activePatient ? (
+                      <div className="rounded-lg border border-emerald-500/25 bg-emerald-500/5 p-2.5 space-y-2 text-xs">
+                        <div className="flex items-center justify-between">
+                          <span className="font-display font-bold text-foreground">
+                            {activePatient.name}
+                          </span>
+                          <span className="font-mono text-[0.65rem] text-emerald-600 dark:text-emerald-400 font-medium">
+                            {[activePatient.age ? `${activePatient.age}y` : "", activePatient.sex]
+                              .filter(Boolean)
+                              .join(" · ")}
+                          </span>
+                        </div>
+
+                        {activePatient.history && (
+                          <p className="text-[0.7rem] text-muted-foreground line-clamp-2">
+                            <span className="font-semibold text-foreground">Hx:</span> {activePatient.history}
+                          </p>
+                        )}
+
+                        <div className="flex flex-wrap gap-1 pt-0.5">
+                          {activePatient.medications && (
+                            <span className="inline-flex items-center rounded bg-background/80 px-1.5 py-0.5 text-[0.62rem] border border-border/60 text-muted-foreground">
+                              💊 <strong className="ml-1 text-foreground">Meds:</strong>&nbsp;
+                              {activePatient.medications.length > 30
+                                ? `${activePatient.medications.slice(0, 30)}...`
+                                : activePatient.medications}
+                            </span>
+                          )}
+                          {activePatient.allergies && (
+                            <span className="inline-flex items-center rounded bg-red-500/10 px-1.5 py-0.5 text-[0.62rem] border border-red-500/25 text-red-600 dark:text-red-400 font-medium">
+                              ⚠️ Allergies: {activePatient.allergies}
+                            </span>
+                          )}
+                          {activePatient.vitals && (
+                            <span className="inline-flex items-center rounded bg-background/80 px-1.5 py-0.5 text-[0.62rem] border border-border/60 text-muted-foreground">
+                              🫀 {activePatient.vitals.slice(0, 26)}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    ) : null}
+
+                    {/* Manual override collapsible toggle */}
+                    <div className="pt-0.5">
+                      <button
+                        type="button"
+                        onClick={() => setShowManualOverride(!showManualOverride)}
+                        className="flex items-center gap-1.5 text-[0.68rem] font-medium text-muted-foreground hover:text-primary transition-colors"
+                      >
+                        <SlidersHorizontal className="h-3 w-3" />
+                        <span>{showManualOverride ? "Hide manual fields" : "Manual parameter override"}</span>
+                        {showManualOverride ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                      </button>
+                    </div>
+
+                    {showManualOverride && (
+                      <div className="space-y-2 pt-2 border-t border-border/40 animate-in fade-in duration-200">
+                        <div className="grid grid-cols-2 gap-2">
+                          <FormField
+                            label="Age"
+                            value={patient.age}
+                            onChange={(v) => setPatient({ ...patient, age: v })}
+                          />
+                          <FormField
+                            label="Sex"
+                            value={patient.sex}
+                            onChange={(v) => setPatient({ ...patient, sex: v })}
+                          />
+                        </div>
+                        <FormArea
+                          label="History"
+                          value={patient.history}
+                          onChange={(v) => setPatient({ ...patient, history: v })}
+                        />
+                        <FormArea
+                          label="Current medications"
+                          value={patient.medications}
+                          onChange={(v) => setPatient({ ...patient, medications: v })}
+                          placeholder="Comma separated: triggers drug safety checks"
+                        />
+                        <FormArea
+                          label="Allergies"
+                          value={patient.allergies}
+                          onChange={(v) => setPatient({ ...patient, allergies: v })}
+                          rows={2}
+                        />
+                        <FormArea
+                          label="Vitals"
+                          value={patient.vitals}
+                          onChange={(v) => setPatient({ ...patient, vitals: v })}
+                          rows={2}
+                        />
+                        <FormArea
+                          label="Labs"
+                          value={patient.labs}
+                          onChange={(v) => setPatient({ ...patient, labs: v })}
+                          rows={2}
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
               {latestImaging && (
                 <p className="rounded-md border border-primary/30 bg-primary/10 px-3 py-2 text-xs text-primary">
                   Attaching latest chest X-ray analysis ({latestImaging.name}).
