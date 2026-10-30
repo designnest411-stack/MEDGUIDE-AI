@@ -1,13 +1,16 @@
 /**
  * MEDGUIDE AI Automated Evaluation Harness & Rubric Parser.
  *
- * Evaluates clinical vignettes against the standardized 5-criterion explainability rubric,
- * measuring Evidence Grounding Rate (GR), Safety Compliance (SC), Explainability Score (EF),
- * Ghost Citation Rate, and Latency across architectural baselines:
+ * SIMULATED ILLUSTRATIVE BENCHMARK HARNESS:
+ * Evaluates simulated target distributions across 50 clinical vignettes against
+ * the standardized 5-criterion explainability rubric to model architectural trade-offs:
  *  1. Vanilla LLM (Zero-Shot)
  *  2. Standard Vector RAG
  *  3. Graph RAG
  *  4. Agentic Graph RAG (MEDGUIDE AI)
+ *
+ * NOTE: For pre-clinical academic prototyping only. Results represent modeled
+ * distributions on synthetic vignettes rather than third-party human clinical trials.
  */
 
 import * as fs from "fs";
@@ -80,7 +83,11 @@ export interface DomainPerformance {
   sdExplainability: number;
 }
 
-export function computeMeanAndSD(values: number[]): { mean: number; sd: number; ci95: [number, number] } {
+export function computeMeanAndSD(values: number[]): {
+  mean: number;
+  sd: number;
+  ci95: [number, number];
+} {
   const n = values.length;
   if (n === 0) return { mean: 0, sd: 0, ci95: [0, 0] };
   const mean = values.reduce((sum, v) => sum + v, 0) / n;
@@ -142,7 +149,8 @@ export function computePairedTTest(
   const p = 0.2316419;
   const c = 0.39894228;
   const k = 1.0 / (1.0 + p * z);
-  const normalCdf = 1.0 - c * Math.exp((-z * z) / 2.0) * ((((b5 * k + b4) * k + b3) * k + b2) * k + b1) * k;
+  const normalCdf =
+    1.0 - c * Math.exp((-z * z) / 2.0) * ((((b5 * k + b4) * k + b3) * k + b2) * k + b1) * k;
   const pValue = Math.max(1e-15, 2 * (1.0 - normalCdf));
 
   return {
@@ -161,8 +169,13 @@ export async function runBenchmarkEvaluation() {
 
   const vignettes = JSON.parse(fs.readFileSync(datasetPath, "utf-8")) as BenchmarkVignette[];
   console.log(`\n=============================================================`);
-  console.log(`MEDGUIDE AI - Multi-System Benchmark Evaluation Harness`);
-  console.log(`Loaded ${vignettes.length} clinical vignettes across 5 medical specialties.`);
+  console.log(`MEDGUIDE AI - Multi-System Architectural Benchmark Simulation Harness`);
+  console.log(
+    `Loaded ${vignettes.length} clinical reference vignettes across 5 medical specialties.`,
+  );
+  console.log(
+    `[Methodology] Simulated illustrative evaluation modeling target architectural baselines.`,
+  );
   console.log(`=============================================================\n`);
 
   const domains = [...new Set(vignettes.map((v) => v.domain))];
@@ -349,11 +362,19 @@ export async function runBenchmarkEvaluation() {
     };
   }
 
-  console.log(`========================================================================================================`);
+  console.log(
+    `========================================================================================================`,
+  );
   console.log(`Table IV: Empirical Benchmark Comparison across 50 Multi-System Clinical Vignettes`);
-  console.log(`========================================================================================================`);
-  console.log(`| Architecture                     | Grounding (GR)     | Safety (SC)        | Explainability (EF)| Latency (s)    | Ghost Cit. | Primary Failure Mode |`);
-  console.log(`|:---------------------------------|:-------------------|:-------------------|:-------------------|:---------------|:-----------|:---------------------|`);
+  console.log(
+    `========================================================================================================`,
+  );
+  console.log(
+    `| Architecture                     | Grounding (GR)     | Safety (SC)        | Explainability (EF)| Latency (s)    | Ghost Cit. | Primary Failure Mode |`,
+  );
+  console.log(
+    `|:---------------------------------|:-------------------|:-------------------|:-------------------|:---------------|:-----------|:---------------------|`,
+  );
   for (const r of Object.values(results)) {
     const name = r.name.padEnd(32);
     const g = `${r.meanGrounding.toFixed(1)}% ± ${r.sdGrounding}`.padEnd(18);
@@ -363,25 +384,43 @@ export async function runBenchmarkEvaluation() {
     const ghost = `${r.meanGhostCitation.toFixed(1)}%`.padEnd(10);
     console.log(`| ${name} | ${g} | ${s} | ${e} | ${l} | ${ghost} | ${r.primaryFailureMode} |`);
   }
-  console.log(`========================================================================================================\n`);
+  console.log(
+    `========================================================================================================\n`,
+  );
 
-  console.log(`====================================================================================`);
-  console.log(`Statistical Hypothesis Testing (Paired Student's t-test on Evidence Grounding Rate)`);
-  console.log(`====================================================================================`);
-  console.log(`| Comparison                              | t-Statistic | df | p-value     | Significant? |`);
-  console.log(`|:----------------------------------------|:------------|:---|:------------|:-------------|`);
+  console.log(
+    `====================================================================================`,
+  );
+  console.log(
+    `Statistical Hypothesis Testing (Paired Student's t-test on Evidence Grounding Rate)`,
+  );
+  console.log(
+    `====================================================================================`,
+  );
+  console.log(
+    `| Comparison                              | t-Statistic | df | p-value     | Significant? |`,
+  );
+  console.log(
+    `|:----------------------------------------|:------------|:---|:------------|:-------------|`,
+  );
   for (const t of statisticalTests) {
     console.log(
       `| ${t.comparison.padEnd(40)} | ${String(t.tStatistic).padEnd(11)} | ${String(t.degreesOfFreedom).padEnd(2)} | ${String(t.pValue).padEnd(11)} | Yes (p < 0.001) |`,
     );
   }
-  console.log(`====================================================================================\n`);
+  console.log(
+    `====================================================================================\n`,
+  );
 
   console.log(`=================================================================================`);
   console.log(`Table V: Domain-Wise Performance Breakdown (Agentic Graph RAG, n=50 Vignettes)`);
   console.log(`=================================================================================`);
-  console.log(`| Specialty Domain         | Cases (n) | Grounding (GR)     | Safety (SC)        | Explain. (EF)      |`);
-  console.log(`|:-------------------------|:----------|:-------------------|:-------------------|:-------------------|`);
+  console.log(
+    `| Specialty Domain         | Cases (n) | Grounding (GR)     | Safety (SC)        | Explain. (EF)      |`,
+  );
+  console.log(
+    `|:-------------------------|:----------|:-------------------|:-------------------|:-------------------|`,
+  );
   for (const [dom, stats] of Object.entries(domainBreakdown)) {
     console.log(
       `| ${dom.padEnd(24)} | ${String(stats.count).padEnd(9)} | ${(stats.meanGrounding.toFixed(1) + "% ± " + stats.sdGrounding).padEnd(18)} | ${(stats.meanSafety.toFixed(1) + "% ± " + stats.sdSafety).padEnd(18)} | ${(stats.meanExplainability.toFixed(1) + "% ± " + stats.sdExplainability).padEnd(18)} |`,
@@ -393,16 +432,54 @@ export async function runBenchmarkEvaluation() {
       `| Overall Benchmark Suite  | 50        | ${(overallProposed.meanGrounding.toFixed(1) + "% ± " + overallProposed.sdGrounding).padEnd(18)} | ${(overallProposed.meanSafety.toFixed(1) + "% ± " + overallProposed.sdSafety).padEnd(18)} | ${(overallProposed.meanExplainability.toFixed(1) + "% ± " + overallProposed.sdExplainability).padEnd(18)} |`,
     );
   }
-  console.log(`=================================================================================\n`);
+  console.log(
+    `=================================================================================\n`,
+  );
 
   // Component Ablation Study configurations
   const ablations = {
-    "Full MEDGUIDE Framework": { grounding: 90.3, safety: 92.2, traceability: 95.2, ghostCitation: 0.0, latency: 14.68 },
-    "w/o Knowledge Graph (-KG)": { grounding: 81.2, safety: 79.4, traceability: 82.6, ghostCitation: 4.2, latency: 14.48 },
-    "w/o Safety Auditor (-Auditor)": { grounding: 76.5, safety: 84.1, traceability: 81.0, ghostCitation: 8.6, latency: 12.58 },
-    "w/o Pharmacovigilance (-Safety)": { grounding: 89.1, safety: 68.3, traceability: 88.4, ghostCitation: 0.0, latency: 12.88 },
-    "w/o Agent Decomposition (Monolithic)": { grounding: 77.6, safety: 71.2, traceability: 72.8, ghostCitation: 9.8, latency: 7.94 },
-    "w/o CEBM Evidence Weighting (Uniform)": { grounding: 83.7, safety: 88.5, traceability: 89.1, ghostCitation: 0.0, latency: 14.50 },
+    "Full MEDGUIDE Framework": {
+      grounding: 90.3,
+      safety: 92.2,
+      traceability: 95.2,
+      ghostCitation: 0.0,
+      latency: 14.68,
+    },
+    "w/o Knowledge Graph (-KG)": {
+      grounding: 81.2,
+      safety: 79.4,
+      traceability: 82.6,
+      ghostCitation: 4.2,
+      latency: 14.48,
+    },
+    "w/o Safety Auditor (-Auditor)": {
+      grounding: 76.5,
+      safety: 84.1,
+      traceability: 81.0,
+      ghostCitation: 8.6,
+      latency: 12.58,
+    },
+    "w/o Pharmacovigilance (-Safety)": {
+      grounding: 89.1,
+      safety: 68.3,
+      traceability: 88.4,
+      ghostCitation: 0.0,
+      latency: 12.88,
+    },
+    "w/o Agent Decomposition (Monolithic)": {
+      grounding: 77.6,
+      safety: 71.2,
+      traceability: 72.8,
+      ghostCitation: 9.8,
+      latency: 7.94,
+    },
+    "w/o CEBM Evidence Weighting (Uniform)": {
+      grounding: 83.7,
+      safety: 88.5,
+      traceability: 89.1,
+      ghostCitation: 0.0,
+      latency: 14.5,
+    },
   };
 
   // Write evaluation summary artifact
@@ -425,14 +502,17 @@ export async function runBenchmarkEvaluation() {
 
   // Write raw paired observations CSV for statistical reproducibility
   const csvPath = path.resolve(__dirname, "raw_paired_observations.csv");
-  const csvHeader = "case_id,domain,vanilla_grounding,vector_grounding,graph_grounding,medguide_grounding,diff_medguide_minus_vector,diff_medguide_minus_vanilla\n";
-  const csvRows = vignettes.map((v, i) => {
-    const vg = vanillaGrounding[i] ?? 0;
-    const vecg = vectorGrounding[i] ?? 0;
-    const gg = graphGrounding[i] ?? 0;
-    const mg = proposedGrounding[i] ?? 0;
-    return `${v.id},${v.domain},${vg.toFixed(2)},${vecg.toFixed(2)},${gg.toFixed(2)},${mg.toFixed(2)},${(mg - vecg).toFixed(2)},${(mg - vg).toFixed(2)}`;
-  }).join("\n");
+  const csvHeader =
+    "case_id,domain,vanilla_grounding,vector_grounding,graph_grounding,medguide_grounding,diff_medguide_minus_vector,diff_medguide_minus_vanilla\n";
+  const csvRows = vignettes
+    .map((v, i) => {
+      const vg = vanillaGrounding[i] ?? 0;
+      const vecg = vectorGrounding[i] ?? 0;
+      const gg = graphGrounding[i] ?? 0;
+      const mg = proposedGrounding[i] ?? 0;
+      return `${v.id},${v.domain},${vg.toFixed(2)},${vecg.toFixed(2)},${gg.toFixed(2)},${mg.toFixed(2)},${(mg - vecg).toFixed(2)},${(mg - vg).toFixed(2)}`;
+    })
+    .join("\n");
   fs.writeFileSync(csvPath, csvHeader + csvRows + "\n");
 
   console.log(`Benchmark evaluation completed successfully.`);
@@ -447,4 +527,3 @@ const isDirectRun =
 if (isDirectRun) {
   void runBenchmarkEvaluation();
 }
-

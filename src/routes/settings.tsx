@@ -91,7 +91,7 @@ function SettingsPage() {
                 )}
                 <div>
                   <h3 className="text-sm font-semibold text-foreground">
-                    {user?.displayName || "Licensed Healthcare Professional"}
+                    {user?.displayName || "Clinical Decision Support User"}
                   </h3>
                   <p className="text-xs text-muted-foreground">
                     {user?.email || "clinical-workspace@medguide.ai"}

@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { checkRateLimit } from "@/lib/rate-limit.server";
+import { verifyAuthToken } from "@/lib/auth.server";
 
 interface AssistantRequest {
   messages?: { role: "user" | "assistant"; content: string }[];
@@ -33,7 +34,7 @@ HOW TO READ RESULTS
 - Differentials are ranked hypotheses, each marked "Grounded" (supported by a retrieved citation) or "Reasoning-only" (model inference: verify before acting).
 - Evidence tiers: T1 systematic reviews / guidelines, T2 RCTs, T3 cohort, T4 observational, T5 case reports. Higher tier = stronger.
 - Confidence bands are tier-weighted. "Insufficient evidence" means retrieval was thin, not that the reasoning was poor.
-- Safety findings list red flags, contraindications and allergy cross-reactivity (e.g. penicillin ↔ amoxicillin). Always read these first.
+- Safety findings list red flags, contraindications and allergy cross-reactivity (e.g. penicillin <-> amoxicillin). Always read these first.
 
 STYLE
 - Answer in short markdown: a direct sentence, then tight bullets. No preamble, no "As an AI".
@@ -45,7 +46,22 @@ export const Route = createFileRoute("/api/assistant")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const rateLimit = checkRateLimit(request, "assistant", {
+        // 1. Enforce Server-Side Firebase Authentication
+        const auth = await verifyAuthToken(request);
+        if (!auth.authenticated || !auth.user) {
+          return new Response(
+            JSON.stringify({
+              error: auth.error ?? "Authentication required to access the clinical AI assistant.",
+            }),
+            {
+              status: 401,
+              headers: { "Content-Type": "application/json" },
+            },
+          );
+        }
+
+        // 2. Sliding Window Rate Limiting (Per Authenticated Clinician UID)
+        const rateLimit = checkRateLimit(request, `assistant:${auth.user.uid}`, {
           windowMs: 60_000,
           maxRequests: 30,
         });
@@ -53,12 +69,40 @@ export const Route = createFileRoute("/api/assistant")({
           return rateLimit.response;
         }
 
-        const body = (await request.json()) as AssistantRequest;
+        // 3. Request Size & Payload Schema Guard
+        const contentLength = request.headers.get("content-length");
+        if (contentLength && parseInt(contentLength, 10) > 102_400) {
+          return new Response(JSON.stringify({ error: "Payload exceeds 100KB limit." }), {
+            status: 413,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+
+        let body: AssistantRequest;
+        try {
+          body = (await request.json()) as AssistantRequest;
+        } catch {
+          return new Response(JSON.stringify({ error: "Invalid JSON request body." }), {
+            status: 400,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+
         const messages = (body.messages ?? [])
-          .filter((m) => typeof m?.content === "string" && m.content.trim())
+          .filter(
+            (m) =>
+              (m.role === "user" || m.role === "assistant") &&
+              typeof m?.content === "string" &&
+              m.content.trim(),
+          )
+          .map((m) => ({
+            role: m.role,
+            content: m.content.trim().slice(0, 4000),
+          }))
           .slice(-16);
+
         if (!messages.length) {
-          return new Response(JSON.stringify({ error: "No messages" }), {
+          return new Response(JSON.stringify({ error: "No messages provided." }), {
             status: 400,
             headers: { "Content-Type": "application/json" },
           });
@@ -66,7 +110,7 @@ export const Route = createFileRoute("/api/assistant")({
 
         const system = [
           SYSTEM,
-          body.page ? `\nThe user is currently on the "${body.page}" page.` : "",
+          body.page ? `\nThe user is currently on the "${body.page.slice(0, 100)}" page.` : "",
           body.context ? `\nOn-screen context:\n${body.context.slice(0, 4000)}` : "",
         ].join("");
 

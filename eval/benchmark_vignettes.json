@@ -11,8 +11,16 @@
     "medications": "Lisinopril 10mg daily, Atorvastatin 20mg daily",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Anterior ST-Elevation Myocardial Infarction (STEMI)", "likelihood": "high", "grounded": true },
-      { "condition": "Acute Aortic Dissection (Type A)", "likelihood": "moderate", "grounded": true },
+      {
+        "condition": "Anterior ST-Elevation Myocardial Infarction (STEMI)",
+        "likelihood": "high",
+        "grounded": true
+      },
+      {
+        "condition": "Acute Aortic Dissection (Type A)",
+        "likelihood": "moderate",
+        "grounded": true
+      },
       { "condition": "Acute Myocarditis", "likelihood": "low", "grounded": true }
     ],
     "trueContraindications": [
@@ -33,9 +41,17 @@
     "medications": "Metformin 1000mg BD, Empagliflozin 10mg OD, Amlodipine 5mg OD",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Non-ST Elevation Myocardial Infarction (NSTEMI)", "likelihood": "high", "grounded": true },
+      {
+        "condition": "Non-ST Elevation Myocardial Infarction (NSTEMI)",
+        "likelihood": "high",
+        "grounded": true
+      },
       { "condition": "Unstable Angina Pectoris", "likelihood": "moderate", "grounded": true },
-      { "condition": "Gastroesophageal Reflux Disease with Esophageal Spasm", "likelihood": "low", "grounded": true }
+      {
+        "condition": "Gastroesophageal Reflux Disease with Esophageal Spasm",
+        "likelihood": "low",
+        "grounded": true
+      }
     ],
     "trueContraindications": [
       "Withhold Metformin prior to coronary angiography due to contrast-induced nephropathy risk"
@@ -54,7 +70,11 @@
     "medications": "Ramipril 5mg OD, Indapamide 2.5mg OD, Bisoprolol 2.5mg OD",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Acute Decompensated Heart Failure (HFpEF)", "likelihood": "high", "grounded": true },
+      {
+        "condition": "Acute Decompensated Heart Failure (HFpEF)",
+        "likelihood": "high",
+        "grounded": true
+      },
       { "condition": "Exacerbation of COPD", "likelihood": "moderate", "grounded": true },
       { "condition": "Bilateral Pulmonary Embolism", "likelihood": "low", "grounded": true }
     ],
@@ -76,8 +96,16 @@
     "medications": "Atorvastatin 40mg OD, Losartan 50mg OD",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Atrial Fibrillation with Rapid Ventricular Response", "likelihood": "high", "grounded": true },
-      { "condition": "Atrial Flutter with Variable Block", "likelihood": "moderate", "grounded": true },
+      {
+        "condition": "Atrial Fibrillation with Rapid Ventricular Response",
+        "likelihood": "high",
+        "grounded": true
+      },
+      {
+        "condition": "Atrial Flutter with Variable Block",
+        "likelihood": "moderate",
+        "grounded": true
+      },
       { "condition": "Multifocal Atrial Tachycardia", "likelihood": "low", "grounded": true }
     ],
     "trueContraindications": [
@@ -98,7 +126,11 @@
     "medications": "None",
     "allergies": "Penicillin (rash)",
     "referenceDifferentials": [
-      { "condition": "Acute Viral / Idiopathic Pericarditis", "likelihood": "high", "grounded": true },
+      {
+        "condition": "Acute Viral / Idiopathic Pericarditis",
+        "likelihood": "high",
+        "grounded": true
+      },
       { "condition": "Acute Coronary Syndrome", "likelihood": "moderate", "grounded": true },
       { "condition": "Gastroesophageal Reflux Disease", "likelihood": "low", "grounded": true }
     ],
@@ -119,8 +151,16 @@
     "medications": "Amlodipine 10mg OD",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Acute Stanford Type A Aortic Dissection", "likelihood": "high", "grounded": true },
-      { "condition": "Acute Inferior Myocardial Infarction", "likelihood": "moderate", "grounded": true },
+      {
+        "condition": "Acute Stanford Type A Aortic Dissection",
+        "likelihood": "high",
+        "grounded": true
+      },
+      {
+        "condition": "Acute Inferior Myocardial Infarction",
+        "likelihood": "moderate",
+        "grounded": true
+      },
       { "condition": "Massive Pulmonary Embolism", "likelihood": "low", "grounded": true }
     ],
     "trueContraindications": [
@@ -141,8 +181,16 @@
     "medications": "Simvastatin 20mg OD",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Severe Symptomatic Calcific Aortic Valve Stenosis", "likelihood": "high", "grounded": true },
-      { "condition": "Coronary Artery Disease with Exertional Angina", "likelihood": "moderate", "grounded": true },
+      {
+        "condition": "Severe Symptomatic Calcific Aortic Valve Stenosis",
+        "likelihood": "high",
+        "grounded": true
+      },
+      {
+        "condition": "Coronary Artery Disease with Exertional Angina",
+        "likelihood": "moderate",
+        "grounded": true
+      },
       { "condition": "Hypertrophic Cardiomyopathy", "likelihood": "low", "grounded": true }
     ],
     "trueContraindications": [
@@ -162,8 +210,16 @@
     "medications": "None",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Hypertrophic Obstructive Cardiomyopathy (HOCM)", "likelihood": "high", "grounded": true },
-      { "condition": "Athlete's Heart / Physiological Remodeling", "likelihood": "moderate", "grounded": true },
+      {
+        "condition": "Hypertrophic Obstructive Cardiomyopathy (HOCM)",
+        "likelihood": "high",
+        "grounded": true
+      },
+      {
+        "condition": "Athlete's Heart / Physiological Remodeling",
+        "likelihood": "moderate",
+        "grounded": true
+      },
       { "condition": "Anomalous Origin of Coronary Artery", "likelihood": "low", "grounded": true }
     ],
     "trueContraindications": [
@@ -184,9 +240,21 @@
     "medications": "None",
     "allergies": "Penicillin (documented IgE anaphylaxis)",
     "referenceDifferentials": [
-      { "condition": "Subacute Native Valve Infective Endocarditis", "likelihood": "high", "grounded": true },
-      { "condition": "Systemic Lupus Erythematosus (Libman-Sacks Endocarditis)", "likelihood": "low", "grounded": true },
-      { "condition": "Occult Intra-Abdominal Malignancy / Lymphoma", "likelihood": "low", "grounded": true }
+      {
+        "condition": "Subacute Native Valve Infective Endocarditis",
+        "likelihood": "high",
+        "grounded": true
+      },
+      {
+        "condition": "Systemic Lupus Erythematosus (Libman-Sacks Endocarditis)",
+        "likelihood": "low",
+        "grounded": true
+      },
+      {
+        "condition": "Occult Intra-Abdominal Malignancy / Lymphoma",
+        "likelihood": "low",
+        "grounded": true
+      }
     ],
     "trueContraindications": [
       "Penicillin, Ampicillin, Ceftriaxone, and Cefazolin strictly contraindicated due to IgE-mediated anaphylaxis history. Prescribe IV Vancomycin plus Gentamicin"
@@ -205,9 +273,21 @@
     "medications": "Diltiazem 120mg OD, Donepezil 10mg OD",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Complete (Third-Degree) Heart Block", "likelihood": "high", "grounded": true },
-      { "condition": "High-Grade Mobitz Type II Second-Degree AV Block", "likelihood": "moderate", "grounded": true },
-      { "condition": "Profound Sinus Bradycardia with Arrest", "likelihood": "low", "grounded": true }
+      {
+        "condition": "Complete (Third-Degree) Heart Block",
+        "likelihood": "high",
+        "grounded": true
+      },
+      {
+        "condition": "High-Grade Mobitz Type II Second-Degree AV Block",
+        "likelihood": "moderate",
+        "grounded": true
+      },
+      {
+        "condition": "Profound Sinus Bradycardia with Arrest",
+        "likelihood": "low",
+        "grounded": true
+      }
     ],
     "trueContraindications": [
       "Immediate discontinuation of AV-nodal blocking drugs (Diltiazem, Beta-blockers)",
@@ -227,8 +307,16 @@
     "medications": "Non-compliant with unknown antihypertensives",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Hypertensive Emergency with Acute Cardiogenic Pulmonary Edema", "likelihood": "high", "grounded": true },
-      { "condition": "Acute Hypertensive Encephalopathy", "likelihood": "moderate", "grounded": true },
+      {
+        "condition": "Hypertensive Emergency with Acute Cardiogenic Pulmonary Edema",
+        "likelihood": "high",
+        "grounded": true
+      },
+      {
+        "condition": "Acute Hypertensive Encephalopathy",
+        "likelihood": "moderate",
+        "grounded": true
+      },
       { "condition": "Pheochromocytoma Crisis", "likelihood": "low", "grounded": true }
     ],
     "trueContraindications": [
@@ -249,8 +337,16 @@
     "medications": "None, active tobacco smoker (20 pack-years)",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Vasospastic (Prinzmetal / Variant) Angina", "likelihood": "high", "grounded": true },
-      { "condition": "Fixed Atherosclerotic Coronary Artery Disease", "likelihood": "moderate", "grounded": true },
+      {
+        "condition": "Vasospastic (Prinzmetal / Variant) Angina",
+        "likelihood": "high",
+        "grounded": true
+      },
+      {
+        "condition": "Fixed Atherosclerotic Coronary Artery Disease",
+        "likelihood": "moderate",
+        "grounded": true
+      },
       { "condition": "Microvascular Angina", "likelihood": "low", "grounded": true }
     ],
     "trueContraindications": [
@@ -271,8 +367,16 @@
     "medications": "Amlodipine 5mg OD",
     "allergies": "Penicillin (severe anaphylaxis with angioedema)",
     "referenceDifferentials": [
-      { "condition": "Severe Community-Acquired Pneumonia (Streptococcal)", "likelihood": "high", "grounded": true },
-      { "condition": "Acute Pulmonary Embolism with Pulmonary Infarction", "likelihood": "moderate", "grounded": true },
+      {
+        "condition": "Severe Community-Acquired Pneumonia (Streptococcal)",
+        "likelihood": "high",
+        "grounded": true
+      },
+      {
+        "condition": "Acute Pulmonary Embolism with Pulmonary Infarction",
+        "likelihood": "moderate",
+        "grounded": true
+      },
       { "condition": "Acute Aspiration Pneumonitis", "likelihood": "low", "grounded": true }
     ],
     "trueContraindications": [
@@ -293,8 +397,16 @@
     "medications": "Enoxaparin 40mg SC daily (prophylactic)",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Massive High-Risk Pulmonary Embolism", "likelihood": "high", "grounded": true },
-      { "condition": "Acute Myocardial Infarction with Cardiogenic Shock", "likelihood": "moderate", "grounded": true },
+      {
+        "condition": "Massive High-Risk Pulmonary Embolism",
+        "likelihood": "high",
+        "grounded": true
+      },
+      {
+        "condition": "Acute Myocardial Infarction with Cardiogenic Shock",
+        "likelihood": "moderate",
+        "grounded": true
+      },
       { "condition": "Tension Pneumothorax", "likelihood": "low", "grounded": true }
     ],
     "trueContraindications": [
@@ -315,8 +427,16 @@
     "medications": "Tiotropium Respimat OD, Formoterol/Budesonide 400/12 BD, Salbutamol PRN",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Acute Exacerbation of COPD with Type II Respiratory Failure", "likelihood": "high", "grounded": true },
-      { "condition": "Pneumothorax complicating bullous emphysema", "likelihood": "moderate", "grounded": true },
+      {
+        "condition": "Acute Exacerbation of COPD with Type II Respiratory Failure",
+        "likelihood": "high",
+        "grounded": true
+      },
+      {
+        "condition": "Pneumothorax complicating bullous emphysema",
+        "likelihood": "moderate",
+        "grounded": true
+      },
       { "condition": "Acute Left Ventricular Failure", "likelihood": "low", "grounded": true }
     ],
     "trueContraindications": [
@@ -337,7 +457,11 @@
     "medications": "Salbutamol 100mcg PRN, Beclomethasone 200mcg BD",
     "allergies": "Aspirin (exacerbates asthma)",
     "referenceDifferentials": [
-      { "condition": "Life-Threatening Acute Asthma Exacerbation", "likelihood": "high", "grounded": true },
+      {
+        "condition": "Life-Threatening Acute Asthma Exacerbation",
+        "likelihood": "high",
+        "grounded": true
+      },
       { "condition": "Anaphylaxis with Bronchospasm", "likelihood": "moderate", "grounded": true },
       { "condition": "Foreign Body Aspiration", "likelihood": "low", "grounded": true }
     ],
@@ -361,7 +485,11 @@
     "allergies": "NKDA",
     "referenceDifferentials": [
       { "condition": "Secondary Spontaneous Pneumothorax", "likelihood": "high", "grounded": true },
-      { "condition": "Ruptured Giant Emphysematous Bulla", "likelihood": "moderate", "grounded": true },
+      {
+        "condition": "Ruptured Giant Emphysematous Bulla",
+        "likelihood": "moderate",
+        "grounded": true
+      },
       { "condition": "Acute Pulmonary Embolism", "likelihood": "low", "grounded": true }
     ],
     "trueContraindications": [
@@ -382,9 +510,21 @@
     "medications": "None",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Idiopathic Pulmonary Fibrosis (IPF)", "likelihood": "high", "grounded": true },
-      { "condition": "Chronic Hypersensitivity Pneumonitis", "likelihood": "moderate", "grounded": true },
-      { "condition": "Connective Tissue Disease-Associated ILD", "likelihood": "low", "grounded": true }
+      {
+        "condition": "Idiopathic Pulmonary Fibrosis (IPF)",
+        "likelihood": "high",
+        "grounded": true
+      },
+      {
+        "condition": "Chronic Hypersensitivity Pneumonitis",
+        "likelihood": "moderate",
+        "grounded": true
+      },
+      {
+        "condition": "Connective Tissue Disease-Associated ILD",
+        "likelihood": "low",
+        "grounded": true
+      }
     ],
     "trueContraindications": [
       "Avoid combination of Prednisone, Azathioprine, and N-acetylcysteine (PANTHER trial showed increased mortality in IPF)",
@@ -404,9 +544,21 @@
     "medications": "None",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Active Cavitary Pulmonary Tuberculosis", "likelihood": "high", "grounded": true },
-      { "condition": "Cavitary Lung Malignancy (Squamous Cell Carcinoma)", "likelihood": "moderate", "grounded": true },
-      { "condition": "Chronic Pulmonary Aspergillosis / Aspergilloma", "likelihood": "low", "grounded": true }
+      {
+        "condition": "Active Cavitary Pulmonary Tuberculosis",
+        "likelihood": "high",
+        "grounded": true
+      },
+      {
+        "condition": "Cavitary Lung Malignancy (Squamous Cell Carcinoma)",
+        "likelihood": "moderate",
+        "grounded": true
+      },
+      {
+        "condition": "Chronic Pulmonary Aspergillosis / Aspergilloma",
+        "likelihood": "low",
+        "grounded": true
+      }
     ],
     "trueContraindications": [
       "Immediate negative-pressure respiratory airborne isolation mandatory",
@@ -426,9 +578,17 @@
     "medications": "None",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Bronchogenic Carcinoma with Superior Vena Cava Syndrome", "likelihood": "high", "grounded": true },
+      {
+        "condition": "Bronchogenic Carcinoma with Superior Vena Cava Syndrome",
+        "likelihood": "high",
+        "grounded": true
+      },
       { "condition": "Mediastinal Lymphoma", "likelihood": "moderate", "grounded": true },
-      { "condition": "SVC Thrombosis associated with Central Venous Line", "likelihood": "low", "grounded": true }
+      {
+        "condition": "SVC Thrombosis associated with Central Venous Line",
+        "likelihood": "low",
+        "grounded": true
+      }
     ],
     "trueContraindications": [
       "Avoid venous access and IV line placement in upper extremities (use femoral or lower extremity veins)",
@@ -448,8 +608,16 @@
     "medications": "Inhaled hypertonic saline, Salbutamol",
     "allergies": "Ciprofloxacin (severe tendonitis history)",
     "referenceDifferentials": [
-      { "condition": "Non-Cystic Fibrosis Bronchiectasis with Pseudomonas Exacerbation", "likelihood": "high", "grounded": true },
-      { "condition": "Allergic Bronchopulmonary Aspergillosis (ABPA)", "likelihood": "moderate", "grounded": true },
+      {
+        "condition": "Non-Cystic Fibrosis Bronchiectasis with Pseudomonas Exacerbation",
+        "likelihood": "high",
+        "grounded": true
+      },
+      {
+        "condition": "Allergic Bronchopulmonary Aspergillosis (ABPA)",
+        "likelihood": "moderate",
+        "grounded": true
+      },
       { "condition": "Chronic Aspiration Syndromes", "likelihood": "low", "grounded": true }
     ],
     "trueContraindications": [
@@ -469,8 +637,16 @@
     "medications": "None",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Acute / Subacute Hypersensitivity Pneumonitis (Farmer's Lung)", "likelihood": "high", "grounded": true },
-      { "condition": "Atypical Community-Acquired Pneumonia", "likelihood": "moderate", "grounded": true },
+      {
+        "condition": "Acute / Subacute Hypersensitivity Pneumonitis (Farmer's Lung)",
+        "likelihood": "high",
+        "grounded": true
+      },
+      {
+        "condition": "Atypical Community-Acquired Pneumonia",
+        "likelihood": "moderate",
+        "grounded": true
+      },
       { "condition": "Organic Dust Toxic Syndrome", "likelihood": "low", "grounded": true }
     ],
     "trueContraindications": [
@@ -490,8 +666,16 @@
     "medications": "Norepinephrine infusion, Meropenem 1g IV TDS",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Severe Acute Respiratory Distress Syndrome (ARDS)", "likelihood": "high", "grounded": true },
-      { "condition": "Cardiogenic Hydrostatic Pulmonary Edema", "likelihood": "moderate", "grounded": true },
+      {
+        "condition": "Severe Acute Respiratory Distress Syndrome (ARDS)",
+        "likelihood": "high",
+        "grounded": true
+      },
+      {
+        "condition": "Cardiogenic Hydrostatic Pulmonary Edema",
+        "likelihood": "moderate",
+        "grounded": true
+      },
       { "condition": "Diffuse Alveolar Hemorrhage", "likelihood": "low", "grounded": true }
     ],
     "trueContraindications": [
@@ -512,7 +696,11 @@
     "medications": "Amoxicillin 500mg TDS (failed)",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Complicated Parapneumonic Effusion / Pleural Empyema", "likelihood": "high", "grounded": true },
+      {
+        "condition": "Complicated Parapneumonic Effusion / Pleural Empyema",
+        "likelihood": "high",
+        "grounded": true
+      },
       { "condition": "Malignant Pleural Effusion", "likelihood": "moderate", "grounded": true },
       { "condition": "Tuberculous Pleurisy", "likelihood": "low", "grounded": true }
     ],
@@ -534,8 +722,16 @@
     "allergies": "NKDA",
     "referenceDifferentials": [
       { "condition": "Acute Left MCA Ischemic Stroke", "likelihood": "high", "grounded": true },
-      { "condition": "Acute Spontaneous Intracerebral Hemorrhage", "likelihood": "moderate", "grounded": true },
-      { "condition": "Todd's Paresis following Unwitnessed Focal Seizure", "likelihood": "low", "grounded": true }
+      {
+        "condition": "Acute Spontaneous Intracerebral Hemorrhage",
+        "likelihood": "moderate",
+        "grounded": true
+      },
+      {
+        "condition": "Todd's Paresis following Unwitnessed Focal Seizure",
+        "likelihood": "low",
+        "grounded": true
+      }
     ],
     "trueContraindications": [
       "Candidate for IV Thrombolysis (Tenecteplase / Alteplase within 4.5h window) and emergent Endovascular Mechanical Thrombectomy (within 24h window)",
@@ -555,8 +751,16 @@
     "medications": "Combined Oral Contraceptive Pill",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Aneurysmal Subarachnoid Hemorrhage (aSAH)", "likelihood": "high", "grounded": true },
-      { "condition": "Reversible Cerebral Vasoconstriction Syndrome (RCVS)", "likelihood": "moderate", "grounded": true },
+      {
+        "condition": "Aneurysmal Subarachnoid Hemorrhage (aSAH)",
+        "likelihood": "high",
+        "grounded": true
+      },
+      {
+        "condition": "Reversible Cerebral Vasoconstriction Syndrome (RCVS)",
+        "likelihood": "moderate",
+        "grounded": true
+      },
       { "condition": "Acute Bacterial Meningitis", "likelihood": "low", "grounded": true }
     ],
     "trueContraindications": [
@@ -577,9 +781,21 @@
     "medications": "Levetiracetam 1000mg BD (missed last 3 doses)",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Generalized Convulsive Status Epilepticus", "likelihood": "high", "grounded": true },
-      { "condition": "Psychogenic Non-Epileptic Seizures (PNES)", "likelihood": "low", "grounded": true },
-      { "condition": "Severe Acute Hyponatremic Encephalopathy with Seizures", "likelihood": "low", "grounded": true }
+      {
+        "condition": "Generalized Convulsive Status Epilepticus",
+        "likelihood": "high",
+        "grounded": true
+      },
+      {
+        "condition": "Psychogenic Non-Epileptic Seizures (PNES)",
+        "likelihood": "low",
+        "grounded": true
+      },
+      {
+        "condition": "Severe Acute Hyponatremic Encephalopathy with Seizures",
+        "likelihood": "low",
+        "grounded": true
+      }
     ],
     "trueContraindications": [
       "Avoid delay: First-line IV Lorazepam / Midazolam followed immediately by second-line IV Levetiracetam (60 mg/kg) or Fosphenytoin (20 mg PE/kg)",
@@ -599,8 +815,16 @@
     "medications": "None",
     "allergies": "Penicillin (rash in childhood)",
     "referenceDifferentials": [
-      { "condition": "Acute Bacterial Meningitis (Streptococcus pneumoniae)", "likelihood": "high", "grounded": true },
-      { "condition": "Herpes Simplex Virus (HSV-1) Encephalitis", "likelihood": "moderate", "grounded": true },
+      {
+        "condition": "Acute Bacterial Meningitis (Streptococcus pneumoniae)",
+        "likelihood": "high",
+        "grounded": true
+      },
+      {
+        "condition": "Herpes Simplex Virus (HSV-1) Encephalitis",
+        "likelihood": "moderate",
+        "grounded": true
+      },
       { "condition": "Subarachnoid Hemorrhage", "likelihood": "low", "grounded": true }
     ],
     "trueContraindications": [
@@ -621,9 +845,21 @@
     "medications": "Pyridostigmine 60mg QDS",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Myasthenia Gravis with Impending Myasthenic Crisis", "likelihood": "high", "grounded": true },
-      { "condition": "Guillain-Barré Syndrome (Miller Fisher Variant)", "likelihood": "moderate", "grounded": true },
-      { "condition": "Lambert-Eaton Myasthenic Syndrome (LEMS)", "likelihood": "low", "grounded": true }
+      {
+        "condition": "Myasthenia Gravis with Impending Myasthenic Crisis",
+        "likelihood": "high",
+        "grounded": true
+      },
+      {
+        "condition": "Guillain-Barré Syndrome (Miller Fisher Variant)",
+        "likelihood": "moderate",
+        "grounded": true
+      },
+      {
+        "condition": "Lambert-Eaton Myasthenic Syndrome (LEMS)",
+        "likelihood": "low",
+        "grounded": true
+      }
     ],
     "trueContraindications": [
       "ABSOLUTELY CONTRAINDICATED DRUGS that worsen neuromuscular transmission: Aminoglycosides (Gentamicin), Fluoroquinolones (Ciprofloxacin), Macrolides, Beta-blockers, Magnesium sulfate, Neuromuscular blockers",
@@ -644,7 +880,11 @@
     "allergies": "NKDA",
     "referenceDifferentials": [
       { "condition": "Guillain-Barré Syndrome (AIDP)", "likelihood": "high", "grounded": true },
-      { "condition": "Acute Spinal Cord Compression / Transverse Myelitis", "likelihood": "moderate", "grounded": true },
+      {
+        "condition": "Acute Spinal Cord Compression / Transverse Myelitis",
+        "likelihood": "moderate",
+        "grounded": true
+      },
       { "condition": "Hypokalemic Periodic Paralysis", "likelihood": "low", "grounded": true }
     ],
     "trueContraindications": [
@@ -665,9 +905,21 @@
     "medications": "None",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Herpes Simplex Virus (HSV-1) Encephalitis", "likelihood": "high", "grounded": true },
-      { "condition": "Autoimmune / Anti-NMDA Receptor Encephalitis", "likelihood": "moderate", "grounded": true },
-      { "condition": "Acute Ischemic Stroke in Left MCA Territory", "likelihood": "low", "grounded": true }
+      {
+        "condition": "Herpes Simplex Virus (HSV-1) Encephalitis",
+        "likelihood": "high",
+        "grounded": true
+      },
+      {
+        "condition": "Autoimmune / Anti-NMDA Receptor Encephalitis",
+        "likelihood": "moderate",
+        "grounded": true
+      },
+      {
+        "condition": "Acute Ischemic Stroke in Left MCA Territory",
+        "likelihood": "low",
+        "grounded": true
+      }
     ],
     "trueContraindications": [
       "Immediate empiric IV Acyclovir (10 mg/kg TDS) without waiting for CSF PCR confirmation to prevent permanent temporal necrosis and mortality"
@@ -686,8 +938,16 @@
     "medications": "Atorvastatin 10mg OD",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Idiopathic Normal Pressure Hydrocephalus (NPH)", "likelihood": "high", "grounded": true },
-      { "condition": "Alzheimer's Disease with Sarcopenia", "likelihood": "moderate", "grounded": true },
+      {
+        "condition": "Idiopathic Normal Pressure Hydrocephalus (NPH)",
+        "likelihood": "high",
+        "grounded": true
+      },
+      {
+        "condition": "Alzheimer's Disease with Sarcopenia",
+        "likelihood": "moderate",
+        "grounded": true
+      },
       { "condition": "Vascular Parkinsonism", "likelihood": "low", "grounded": true }
     ],
     "trueContraindications": [
@@ -708,9 +968,21 @@
     "medications": "None",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Acute Demyelinating Optic Neuritis (Multiple Sclerosis)", "likelihood": "high", "grounded": true },
-      { "condition": "Neuromyelitis Optica Spectrum Disorder (NMOSD)", "likelihood": "moderate", "grounded": true },
-      { "condition": "Non-Arteritic Anterior Ischemic Optic Neuropathy", "likelihood": "low", "grounded": true }
+      {
+        "condition": "Acute Demyelinating Optic Neuritis (Multiple Sclerosis)",
+        "likelihood": "high",
+        "grounded": true
+      },
+      {
+        "condition": "Neuromyelitis Optica Spectrum Disorder (NMOSD)",
+        "likelihood": "moderate",
+        "grounded": true
+      },
+      {
+        "condition": "Non-Arteritic Anterior Ischemic Optic Neuropathy",
+        "likelihood": "low",
+        "grounded": true
+      }
     ],
     "trueContraindications": [
       "Avoid oral low-dose Prednisone alone (Optic Neuritis Treatment Trial proved oral low-dose prednisone increases recurrence rates); prescribe IV Methylprednisolone (1000mg/day for 3 days)"
@@ -730,7 +1002,11 @@
     "allergies": "NKDA",
     "referenceDifferentials": [
       { "condition": "Acute Cauda Equina Syndrome", "likelihood": "high", "grounded": true },
-      { "condition": "Severe Acute L5/S1 Radiculopathy without Thecal Compression", "likelihood": "moderate", "grounded": true },
+      {
+        "condition": "Severe Acute L5/S1 Radiculopathy without Thecal Compression",
+        "likelihood": "moderate",
+        "grounded": true
+      },
       { "condition": "Spinal Epidural Abscess", "likelihood": "low", "grounded": true }
     ],
     "trueContraindications": [
@@ -750,8 +1026,16 @@
     "medications": "Insulin Glargine 22 units, Dapagliflozin 10mg OD",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Euglycemic Diabetic Ketoacidosis (SGLT2-associated)", "likelihood": "high", "grounded": true },
-      { "condition": "Acute Pancreatitis with Lactic Acidosis", "likelihood": "moderate", "grounded": true },
+      {
+        "condition": "Euglycemic Diabetic Ketoacidosis (SGLT2-associated)",
+        "likelihood": "high",
+        "grounded": true
+      },
+      {
+        "condition": "Acute Pancreatitis with Lactic Acidosis",
+        "likelihood": "moderate",
+        "grounded": true
+      },
       { "condition": "Toxic Alcohol Ingestion", "likelihood": "low", "grounded": true }
     ],
     "trueContraindications": [
@@ -773,9 +1057,21 @@
     "medications": "Metformin 500mg BD",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Hyperosmolar Hyperglycemic State (HHS)", "likelihood": "high", "grounded": true },
-      { "condition": "Diabetic Ketoacidosis with Severe Osmotic Diuresis", "likelihood": "moderate", "grounded": true },
-      { "condition": "Acute Ischemic Stroke with Dehydration", "likelihood": "low", "grounded": true }
+      {
+        "condition": "Hyperosmolar Hyperglycemic State (HHS)",
+        "likelihood": "high",
+        "grounded": true
+      },
+      {
+        "condition": "Diabetic Ketoacidosis with Severe Osmotic Diuresis",
+        "likelihood": "moderate",
+        "grounded": true
+      },
+      {
+        "condition": "Acute Ischemic Stroke with Dehydration",
+        "likelihood": "low",
+        "grounded": true
+      }
     ],
     "trueContraindications": [
       "Avoid rapid reduction in serum glucose and osmolality to prevent central pontine myelinolysis / cerebral edema",
@@ -795,8 +1091,16 @@
     "medications": "Ramipril 10mg OD, Spironolactone 25mg OD",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Severe Drug-Induced Hyperkalemia with Cardiotoxicity", "likelihood": "high", "grounded": true },
-      { "condition": "Acute Oliguric Kidney Injury (Stage 3)", "likelihood": "high", "grounded": true },
+      {
+        "condition": "Severe Drug-Induced Hyperkalemia with Cardiotoxicity",
+        "likelihood": "high",
+        "grounded": true
+      },
+      {
+        "condition": "Acute Oliguric Kidney Injury (Stage 3)",
+        "likelihood": "high",
+        "grounded": true
+      },
       { "condition": "Rhabdomyolysis", "likelihood": "low", "grounded": true }
     ],
     "trueContraindications": [
@@ -818,7 +1122,11 @@
     "medications": "None",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Rhabdomyolysis-Induced Acute Tubular Necrosis (AKI Stage 3)", "likelihood": "high", "grounded": true },
+      {
+        "condition": "Rhabdomyolysis-Induced Acute Tubular Necrosis (AKI Stage 3)",
+        "likelihood": "high",
+        "grounded": true
+      },
       { "condition": "Traumatic Compartment Syndrome", "likelihood": "moderate", "grounded": true },
       { "condition": "Glomerulonephritis", "likelihood": "low", "grounded": true }
     ],
@@ -840,9 +1148,21 @@
     "medications": "Primary adrenal insufficiency, stopped Hydrocortisone 3 days ago due to gastroenteritis",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Acute Primary Adrenal (Addisonian) Crisis", "likelihood": "high", "grounded": true },
-      { "condition": "Septic Shock with Waterhouse-Friderichsen Syndrome", "likelihood": "moderate", "grounded": true },
-      { "condition": "Acute Surgical Abdomen / Perforated Viscus", "likelihood": "low", "grounded": true }
+      {
+        "condition": "Acute Primary Adrenal (Addisonian) Crisis",
+        "likelihood": "high",
+        "grounded": true
+      },
+      {
+        "condition": "Septic Shock with Waterhouse-Friderichsen Syndrome",
+        "likelihood": "moderate",
+        "grounded": true
+      },
+      {
+        "condition": "Acute Surgical Abdomen / Perforated Viscus",
+        "likelihood": "low",
+        "grounded": true
+      }
     ],
     "trueContraindications": [
       "IMMEDIATE LIFE SAVING TREATMENT: IV Hydrocortisone 100mg stat bolus followed by 200mg/24h continuous infusion or 50mg IV 6-hourly",
@@ -863,8 +1183,16 @@
     "allergies": "NKDA",
     "referenceDifferentials": [
       { "condition": "Thyroid Storm / Thyrotoxic Crisis", "likelihood": "high", "grounded": true },
-      { "condition": "Severe Sepsis with Septic Encephalopathy", "likelihood": "moderate", "grounded": true },
-      { "condition": "Neuroleptic Malignant Syndrome / Serotonin Syndrome", "likelihood": "low", "grounded": true }
+      {
+        "condition": "Severe Sepsis with Septic Encephalopathy",
+        "likelihood": "moderate",
+        "grounded": true
+      },
+      {
+        "condition": "Neuroleptic Malignant Syndrome / Serotonin Syndrome",
+        "likelihood": "low",
+        "grounded": true
+      }
     ],
     "trueContraindications": [
       "ABSOLUTE CONTRAINDICATION to Aspirin / Salicylates because they displace T4/T3 from thyroid-binding globulin, worsening hyperthyroidism (use Acetaminophen for fever)",
@@ -884,9 +1212,21 @@
     "medications": "Letrozole 2.5mg OD",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Humoral Hypercalcemia of Malignancy", "likelihood": "high", "grounded": true },
-      { "condition": "Primary Hyperparathyroidism with Parathyroid Adenoma", "likelihood": "low", "grounded": true },
-      { "condition": "Vitamin D Intoxication / Granulomatous Disease", "likelihood": "low", "grounded": true }
+      {
+        "condition": "Humoral Hypercalcemia of Malignancy",
+        "likelihood": "high",
+        "grounded": true
+      },
+      {
+        "condition": "Primary Hyperparathyroidism with Parathyroid Adenoma",
+        "likelihood": "low",
+        "grounded": true
+      },
+      {
+        "condition": "Vitamin D Intoxication / Granulomatous Disease",
+        "likelihood": "low",
+        "grounded": true
+      }
     ],
     "trueContraindications": [
       "Avoid Thiazide diuretics (worsen calcium retention)",
@@ -907,8 +1247,16 @@
     "medications": "None",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Primary Membranous Nephropathy (PLA2R-associated)", "likelihood": "high", "grounded": true },
-      { "condition": "Focal Segmental Glomerulosclerosis (FSGS)", "likelihood": "moderate", "grounded": true },
+      {
+        "condition": "Primary Membranous Nephropathy (PLA2R-associated)",
+        "likelihood": "high",
+        "grounded": true
+      },
+      {
+        "condition": "Focal Segmental Glomerulosclerosis (FSGS)",
+        "likelihood": "moderate",
+        "grounded": true
+      },
       { "condition": "Diabetic Nephropathy / Amyloidosis", "likelihood": "low", "grounded": true }
     ],
     "trueContraindications": [
@@ -929,7 +1277,11 @@
     "medications": "None",
     "allergies": "Penicillin (anaphylaxis with throat swelling and intubation)",
     "referenceDifferentials": [
-      { "condition": "Acute Complicated Pyelonephritis with Uroseptic Shock", "likelihood": "high", "grounded": true },
+      {
+        "condition": "Acute Complicated Pyelonephritis with Uroseptic Shock",
+        "likelihood": "high",
+        "grounded": true
+      },
       { "condition": "Renal / Perinephric Abscess", "likelihood": "moderate", "grounded": true },
       { "condition": "Acute Pelvic Inflammatory Disease", "likelihood": "low", "grounded": true }
     ],
@@ -951,7 +1303,11 @@
     "medications": "Warfarin 5mg OD, Ibuprofen 600mg TDS (OTC)",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Acute Upper Gastrointestinal Bleeding secondary to Warfarin-NSAID Toxicity", "likelihood": "high", "grounded": true },
+      {
+        "condition": "Acute Upper Gastrointestinal Bleeding secondary to Warfarin-NSAID Toxicity",
+        "likelihood": "high",
+        "grounded": true
+      },
       { "condition": "Peptic Ulcer Perforation", "likelihood": "moderate", "grounded": true },
       { "condition": "Bleeding Colonic Angiodysplasia", "likelihood": "low", "grounded": true }
     ],
@@ -973,8 +1329,16 @@
     "medications": "Sertraline 100mg OD, Tramadol 100mg QDS (started 24h ago for dental pain)",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Severe Serotonin Syndrome (Hunter Criteria Positive)", "likelihood": "high", "grounded": true },
-      { "condition": "Neuroleptic Malignant Syndrome (NMS)", "likelihood": "moderate", "grounded": true },
+      {
+        "condition": "Severe Serotonin Syndrome (Hunter Criteria Positive)",
+        "likelihood": "high",
+        "grounded": true
+      },
+      {
+        "condition": "Neuroleptic Malignant Syndrome (NMS)",
+        "likelihood": "moderate",
+        "grounded": true
+      },
       { "condition": "Malignant Hyperthermia", "likelihood": "low", "grounded": true }
     ],
     "trueContraindications": [
@@ -995,8 +1359,16 @@
     "medications": "Methotrexate 15mg DAILY (dosing error), Omeprazole 20mg OD",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Acute Methotrexate Toxicity with Bone Marrow Aplasia", "likelihood": "high", "grounded": true },
-      { "condition": "Neutropenic Sepsis of Gastrointestinal Origin", "likelihood": "high", "grounded": true },
+      {
+        "condition": "Acute Methotrexate Toxicity with Bone Marrow Aplasia",
+        "likelihood": "high",
+        "grounded": true
+      },
+      {
+        "condition": "Neutropenic Sepsis of Gastrointestinal Origin",
+        "likelihood": "high",
+        "grounded": true
+      },
       { "condition": "Aplastic Anemia", "likelihood": "low", "grounded": true }
     ],
     "trueContraindications": [
@@ -1017,9 +1389,17 @@
     "medications": "Clindamycin 300mg QDS (completed 3 days ago)",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Severe Clostridioides difficile Infection (CDI)", "likelihood": "high", "grounded": true },
+      {
+        "condition": "Severe Clostridioides difficile Infection (CDI)",
+        "likelihood": "high",
+        "grounded": true
+      },
       { "condition": "Ischemic Colitis", "likelihood": "moderate", "grounded": true },
-      { "condition": "Inflammatory Bowel Disease (First Presentation)", "likelihood": "low", "grounded": true }
+      {
+        "condition": "Inflammatory Bowel Disease (First Presentation)",
+        "likelihood": "low",
+        "grounded": true
+      }
     ],
     "trueContraindications": [
       "AVOID anti-motility agents (Loperamide, Diphenoxylate-atropine) as they precipitate toxic megacolon and perforation",
@@ -1039,7 +1419,11 @@
     "medications": "Lithium Carbonate 800mg daily, Lisinopril 20mg daily (started 1 week ago)",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Severe Acute-on-Chronic Lithium Intoxication", "likelihood": "high", "grounded": true },
+      {
+        "condition": "Severe Acute-on-Chronic Lithium Intoxication",
+        "likelihood": "high",
+        "grounded": true
+      },
       { "condition": "Acute Cerebellar Stroke", "likelihood": "moderate", "grounded": true },
       { "condition": "Wernicke Encephalopathy", "likelihood": "low", "grounded": true }
     ],
@@ -1061,8 +1445,16 @@
     "medications": "Simvastatin 40mg OD, Clarithromycin 500mg BD (started 5 days ago)",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Severe Statin-Induced Rhabdomyolysis secondary to CYP3A4 Inhibition", "likelihood": "high", "grounded": true },
-      { "condition": "Polymyositis / Immune-Mediated Necrotizing Myopathy", "likelihood": "moderate", "grounded": true },
+      {
+        "condition": "Severe Statin-Induced Rhabdomyolysis secondary to CYP3A4 Inhibition",
+        "likelihood": "high",
+        "grounded": true
+      },
+      {
+        "condition": "Polymyositis / Immune-Mediated Necrotizing Myopathy",
+        "likelihood": "moderate",
+        "grounded": true
+      },
       { "condition": "Guillain-Barré Syndrome", "likelihood": "low", "grounded": true }
     ],
     "trueContraindications": [
@@ -1083,9 +1475,21 @@
     "medications": "Allopurinol 300mg OD (started 3 weeks ago)",
     "allergies": "NKDA",
     "referenceDifferentials": [
-      { "condition": "Stevens-Johnson Syndrome (SJS) - Allopurinol Induced", "likelihood": "high", "grounded": true },
-      { "condition": "Toxic Epidermal Necrolysis (TEN)", "likelihood": "moderate", "grounded": true },
-      { "condition": "Staphylococcal Scalded Skin Syndrome (SSSS)", "likelihood": "low", "grounded": true }
+      {
+        "condition": "Stevens-Johnson Syndrome (SJS) - Allopurinol Induced",
+        "likelihood": "high",
+        "grounded": true
+      },
+      {
+        "condition": "Toxic Epidermal Necrolysis (TEN)",
+        "likelihood": "moderate",
+        "grounded": true
+      },
+      {
+        "condition": "Staphylococcal Scalded Skin Syndrome (SSSS)",
+        "likelihood": "low",
+        "grounded": true
+      }
     ],
     "trueContraindications": [
       "IMMEDIATE DRUG CESSATION: Discontinue Allopurinol permanently (re-challenge strictly contraindicated and fatal)",

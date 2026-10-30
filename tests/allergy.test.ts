@@ -24,7 +24,8 @@ describe("Allergy System", () => {
     });
 
     it("should cap parsed allergens at 8 items", () => {
-      const input = "Allergen 1, Allergen 2, Allergen 3, Allergen 4, Allergen 5, Allergen 6, Allergen 7, Allergen 8, Allergen 9, Allergen 10";
+      const input =
+        "Allergen 1, Allergen 2, Allergen 3, Allergen 4, Allergen 5, Allergen 6, Allergen 7, Allergen 8, Allergen 9, Allergen 10";
       const parsed = parseAllergies(input);
       expect(parsed.length).toBe(8);
     });
@@ -38,7 +39,7 @@ describe("Allergy System", () => {
 
     it("should detect direct and cross-class contraindications for penicillin", () => {
       const findings = checkAllergies("Penicillin", ["Amoxicillin", "Ceftriaxone"]);
-      
+
       const blocked = findings.find((f) => f.severity === "critical");
       expect(blocked).toBeDefined();
       expect(blocked?.drugs).toContain("Penicillin");

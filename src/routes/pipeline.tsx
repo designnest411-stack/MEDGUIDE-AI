@@ -128,12 +128,12 @@ const AGENT_ENGINE_SPECS: Record<
   },
   "case-similarity": {
     engine: "k-NN Biomedical Case Vector Index",
-    source: "50 peer-reviewed clinical vignettes with verified patient outcomes",
+    source: "50 curated clinical reference vignettes with documented outcomes",
     moduleRoute: "/cases",
   },
   safety: {
     engine: "Autonomous Deterministic Guardrail Interceptor",
-    source: "Zero-tolerance contraindication rules & red-flag contradiction audit",
+    source: "Deterministic contraindication rules & red-flag contradiction audit",
     moduleRoute: "/explainability",
   },
   explainability: {
@@ -152,7 +152,7 @@ const AGENT_ENGINE_SPECS: Record<
     moduleRoute: "/research",
   },
   report: {
-    engine: "Hospital-Grade Clinical Consultation Document Generator",
+    engine: "Structured Clinical Consultation Document Generator",
     source: "SOAP-structured clinical report with QR verification and citations",
     moduleRoute: "/reports",
   },
@@ -352,7 +352,7 @@ function PipelinePage() {
               <Bot className="h-4 w-4 text-primary" />
             </div>
             <p className="font-display text-xl font-bold text-foreground">
-              11 <span className="text-xs font-normal text-muted-foreground">Autonomous</span>
+              12 <span className="text-xs font-normal text-muted-foreground">Autonomous</span>
             </p>
             <p className="text-[0.68rem] text-primary font-medium">Consensus Architecture</p>
           </div>
@@ -384,7 +384,7 @@ function PipelinePage() {
             <p className="font-display text-xl font-bold text-foreground">
               {activeResult?.safety?.flags?.length
                 ? `${activeResult.safety.flags.length} Flag(s)`
-                : "Zero-Tolerance"}
+                : "Active Guardrail"}
             </p>
             <p className="text-[0.68rem] text-emerald-600 dark:text-emerald-400 font-medium">
               {activeResult ? "Deterministic Safety Audit" : "Deterministic Guardrail"}
@@ -448,7 +448,7 @@ function PipelinePage() {
 
               <p className="text-sm font-semibold text-foreground line-clamp-1">
                 {activeConsultation?.question ||
-                  "Pipeline idle on standby. Launch a new consultation to execute all 11 agents in real time, or select a past case to review telemetry."}
+                  "Pipeline idle on standby. Launch a new consultation to execute all 12 agents in real time, or select a past case to review telemetry."}
               </p>
             </div>
 
@@ -465,7 +465,7 @@ function PipelinePage() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="latest">Latest Clinical Run (Active)</SelectItem>
-                      <SelectItem value="standby">All 11 Agents Standby (Clean)</SelectItem>
+                      <SelectItem value="standby">All 12 Agents Standby (Clean)</SelectItem>
                       {consultations.map((c, i) => (
                         <SelectItem key={c.id} value={c.id!}>
                           #{i + 1} {c.question.replace(/^["“”']+|["“”']+$/g, "").slice(0, 32)}...
@@ -507,7 +507,7 @@ function PipelinePage() {
             </h3>
             <p className="text-xs sm:text-sm text-muted-foreground max-w-xl mx-auto">
               No consultations have been run yet in your encrypted workspace. Enter a patient
-              clinical case to activate all 11 autonomous agents in real time.
+              clinical case to activate all 12 autonomous agents in real time.
             </p>
             <Button asChild size="sm" className="gap-2">
               <Link to="/consultation">

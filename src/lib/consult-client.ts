@@ -1,19 +1,36 @@
 import type { ConsultationInput, ConsultationResult, StreamEvent } from "@/lib/agents/types";
+import { auth } from "@/lib/firebase";
 
 export async function streamConsultation(
   input: ConsultationInput,
   onEvent: (e: StreamEvent) => void,
   signal?: AbortSignal,
 ): Promise<ConsultationResult | null> {
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  try {
+    const token = await auth.currentUser?.getIdToken();
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+  } catch {
+    // Continue: if token is missing, the server returns 401
+  }
+
   const res = await fetch("/api/consult", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers,
     body: JSON.stringify(input),
     ...(signal ? { signal } : {}),
   });
 
   if (!res.ok || !res.body) {
-    throw new Error(`Consultation failed (${res.status})`);
+    if (res.status === 401) {
+      throw new Error("Authentication required. Please sign in to run clinical consultations.");
+    }
+    const errData = await res.json().catch(() => ({}));
+    throw new Error(
+      (errData as { error?: string })?.error ?? `Consultation failed (${res.status})`,
+    );
   }
 
   const reader = res.body.getReader();

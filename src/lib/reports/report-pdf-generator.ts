@@ -1,5 +1,5 @@
 /**
- * Hospital-Grade Clinical Report PDF Generator
+ * Clinical Consultation Report PDF Generator
  * Produces executive, vector clinical consultation documents with QR codes,
  * evidence badges, pharmacovigilance callouts, and official clinician attestation.
  *
@@ -568,7 +568,7 @@ export async function generateClinicalReportPdf(options: PdfExportOptions): Prom
     doc.setFontSize(5.5);
     doc.setTextColor(148, 163, 184);
     doc.text(
-      "Clinical decision support advisory only: requires independent clinical validation prior to care delivery.",
+      "Clinical decision support advisory only: Academic prototype requiring independent licensed physician confirmation prior to care.",
       margin + 8,
       y + 30,
     );
@@ -668,7 +668,7 @@ export async function generateClinicalReportPdf(options: PdfExportOptions): Prom
     doc.setFontSize(6);
     doc.setTextColor(148, 163, 184);
     doc.text(
-      "Decision support only: not an autonomous diagnosis. Confirm all clinical decisions with a licensed healthcare provider.",
+      "Academic Clinical Decision Support Prototype. Not an autonomous diagnosis or certified medical record. Confirm all findings with a licensed healthcare professional.",
       margin,
       pageHeight - 12,
     );

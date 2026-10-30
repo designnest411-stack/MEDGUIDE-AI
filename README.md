@@ -17,7 +17,9 @@ MEDGUIDE AI is an evidence-based clinical decision support platform designed for
 ## Pre-Launch & Custom Domain Configuration
 
 ### 1. Custom Domain DNS Setup
+
 When deploying to production (e.g. Vercel), configure the following DNS records on your domain registrar:
+
 - **Apex Domain (`medguide.ai`)**:
   - Type: `A`
   - Name: `@`
@@ -28,12 +30,15 @@ When deploying to production (e.g. Vercel), configure the following DNS records 
   - Value: `cname.vercel-dns.com`
 
 ### 2. Firebase Authentication Authorized Domains
+
 To ensure Google Sign-In succeeds from your custom domain:
+
 1. Open the [Firebase Console](https://console.firebase.google.com/).
 2. Navigate to **Authentication** > **Settings** > **Authorized domains**.
 3. Add `medguide.ai` and `app.medguide.ai` to the allowlist.
 
 ### 3. Pre-Launch Verification Checklist
+
 - [x] Custom Domain & SSL routing documented and configured
 - [x] Vector SVG medical CAD favicon created at `/favicon.svg` and linked in `__root.tsx`
 - [x] Zero "Made with AI" tags or watermarks anywhere in code or bundles

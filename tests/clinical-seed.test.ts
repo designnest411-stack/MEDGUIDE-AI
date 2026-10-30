@@ -54,4 +54,3 @@ describe("Indian Clinical Patient Cohort", () => {
     expect(meds.toLowerCase()).toContain("ibuprofen");
   });
 });
-

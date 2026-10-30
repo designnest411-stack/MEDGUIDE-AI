@@ -120,9 +120,9 @@ function ClinicalGateway() {
             </h2>
 
             <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-xl">
-              MEDGUIDE AI orchestrates 11 specialized clinical agents: structuring patient intake,
+              MEDGUIDE AI orchestrates 12 specialized clinical agents: structuring patient intake,
               querying PubMed literature, analyzing chest radiographs, and verifying drug
-              interactions with a zero-tolerance safety net.
+              interactions with a deterministic safety interceptor.
             </p>
 
             {/* Core Trust Pillars */}
@@ -143,7 +143,7 @@ function ClinicalGateway() {
                   PubMed Provenance
                 </div>
                 <p className="text-[0.7rem] text-muted-foreground mt-1">
-                  Verified NCBI citations & DOI links without hallucinations.
+                  Verified NCBI citations & DOI links with strict evidence grounding.
                 </p>
               </div>
 

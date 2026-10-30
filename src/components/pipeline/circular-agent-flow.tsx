@@ -38,6 +38,7 @@ const AGENT_ORDER: AgentId[] = [
   "safety",
   "explainability",
   "confidence",
+  "research",
   "report",
 ];
 
@@ -161,7 +162,7 @@ export function CircularAgentFlow({
               variant="outline"
               className="text-[0.62rem] font-mono border-emerald-500/30 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10"
             >
-              11 Synchronized Agents
+              12 Synchronized Agents
             </Badge>
           </div>
           <p className="text-xs text-muted-foreground">
@@ -393,7 +394,7 @@ export function CircularAgentFlow({
                       CONSENSUS CORE
                     </p>
                     <span className="font-mono text-[0.58rem] text-emerald-600 dark:text-emerald-400 font-medium">
-                      11 / 11 Active
+                      12 / 12 Active
                     </span>
                   </>
                 )}
@@ -542,7 +543,7 @@ export function CircularAgentFlow({
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
               {currentSummary?.summary ||
-                "All 11 autonomous agents are synchronized in a continuous multi-agent consensus RAG loop. Click any agent station to inspect its biomedical engine and full runtime payload."}
+                "All 12 autonomous agents are synchronized in a continuous multi-agent consensus RAG loop. Click any agent station to inspect its biomedical engine and full runtime payload."}
             </p>
           </div>
 

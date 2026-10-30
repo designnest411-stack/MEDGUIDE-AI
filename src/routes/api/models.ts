@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { checkRateLimit } from "@/lib/rate-limit.server";
 
 export const Route = createFileRoute("/api/models")({
   server: {
@@ -21,6 +22,14 @@ export const Route = createFileRoute("/api/models")({
         }
       },
       POST: async ({ request }) => {
+        const rateLimit = checkRateLimit(request, "models-probe", {
+          windowMs: 60_000,
+          maxRequests: 20,
+        });
+        if (!rateLimit.success && rateLimit.response) {
+          return rateLimit.response;
+        }
+
         try {
           const body = (await request.json().catch(() => ({}))) as {
             tier?: "workhorse" | "reasoning" | "volume";

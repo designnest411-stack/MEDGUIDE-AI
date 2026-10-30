@@ -34,22 +34,22 @@ describe("Case Similarity Agent & Case Library", () => {
       const results = rankCases(query, 3);
       expect(results.length).toBe(3);
       expect(results[0]?.diagnosis.toLowerCase()).toContain("stemi");
-      expect((results[0]?.score ?? 0)).toBeGreaterThan(0.5);
+      expect(results[0]?.score ?? 0).toBeGreaterThan(0.5);
     });
 
     it("should rank PE case top for sudden pleuritic chest pain post-flight", () => {
       const query = "sudden pleuritic chest pain dyspnoea travel flight apixaban";
       const results = rankCases(query, 3);
       expect(results[0]?.tags).toContain("pulmonary embolism");
-      expect((results[0]?.score ?? 0)).toBeGreaterThan(0.4);
+      expect(results[0]?.score ?? 0).toBeGreaterThan(0.4);
     });
 
     it("should damp confidence for single-word queries to avoid misleading 100% scores", () => {
       const oneWord = rankCases("dyspnoea", 1);
       const multiWord = rankCases("sudden severe dyspnoea orthopnoea", 1);
-      
+
       expect(oneWord[0]?.score).toBeLessThanOrEqual(0.3);
-      expect((multiWord[0]?.score ?? 0)).toBeGreaterThan(oneWord[0]?.score ?? 0);
+      expect(multiWord[0]?.score ?? 0).toBeGreaterThan(oneWord[0]?.score ?? 0);
     });
 
     it("should respect the limit parameter", () => {

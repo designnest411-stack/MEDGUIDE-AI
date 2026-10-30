@@ -98,18 +98,27 @@ function PrivacyPage() {
 
           <GlassCard>
             <CardHeader className="pb-3">
-              <SectionTitle icon={Server} title="2. Edge and In-Browser Processing" />
+              <SectionTitle icon={Server} title="2. Client-Side Inference & Cloud Asset Storage" />
             </CardHeader>
             <CardContent className="space-y-3 text-sm leading-relaxed text-muted-foreground">
               <p>
-                <strong className="text-foreground">Local Vision Inference:</strong> Radiograph
-                saliency evaluation occurs inside your client browser through ONNX Runtime
-                WebAssembly. Full-resolution imaging files remain on your local device.
+                <strong className="text-foreground">In-Browser Deep Learning Inference:</strong>{" "}
+                Radiograph classification and occlusion heatmap saliency execute entirely inside
+                your client browser through ONNX Runtime WebAssembly without sending raw image
+                tensors to external vision APIs.
               </p>
               <p>
-                <strong className="text-foreground">Local Guidance Sessions:</strong> Conversations
-                initiated with the in-app guide ("Ask MedGuide") are stored directly in your browser
-                local storage and can be deleted locally at any time.
+                <strong className="text-foreground">Cloud Storage CDN Processing:</strong> When
+                cloud storage is configured, resized and de-identified radiograph images are
+                uploaded to Cloudinary CDN via TLS 1.3 to generate persistent thumbnails and study
+                assets for your authenticated workspace. If Cloudinary is not configured or offline,
+                images remain strictly in local browser memory without leaving your machine.
+              </p>
+              <p>
+                <strong className="text-foreground">Strict PHI Policy:</strong> Clinicians and
+                students must never upload radiographs or case files containing unmasked Protected
+                Health Information (PHI), including burned-in patient legal names, MRNs, or hospital
+                accession identifiers.
               </p>
             </CardContent>
           </GlassCard>
@@ -123,15 +132,18 @@ function PrivacyPage() {
             <p>
               When authenticated via Google OAuth, your workspace records (saved patients,
               consultation traces, clinical timelines, downsampled imaging thumbnails, and generated
-              reports) are stored in Cloud Firestore under strict row-level security rules:
+              reports) are stored in Cloud Firestore under per-user isolation security rules:
             </p>
             <div className="rounded-lg border border-border/80 bg-card/60 p-3 font-mono text-xs text-foreground">
               match /users/&#123;userId&#125;/&#123;document=**&#125; &#123; allow read, write: if
               request.auth != null &amp;&amp; request.auth.uid == userId; &#125;
             </div>
             <p>
-              Every user account is partitioned into an isolated data partition. No clinician can
-              read, modify, or query clinical records belonging to another clinician account.
+              Each user account is isolated to its own sub-collection hierarchy. No clinician can
+              read, modify, or query clinical records belonging to another clinician account. Note
+              that while this enforces strong tenant isolation, MEDGUIDE AI is an academic clinical
+              research prototype and is not certified for regulated hospital production EHR
+              deployments.
             </p>
           </CardContent>
         </GlassCard>

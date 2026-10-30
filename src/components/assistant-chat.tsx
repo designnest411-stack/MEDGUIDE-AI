@@ -22,6 +22,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { ensureThread, newId, saveThread, type AssistantMessage } from "@/lib/assistant/threads";
 import { getCitationUrl } from "@/lib/reports/clinical-report-parser";
+import { auth } from "@/lib/firebase";
 
 interface SuggestionGroup {
   category: string;
@@ -115,9 +116,19 @@ export function AssistantChat({
       const controller = new AbortController();
       abortRef.current = controller;
       try {
+        const headers: Record<string, string> = { "Content-Type": "application/json" };
+        try {
+          const token = await auth.currentUser?.getIdToken();
+          if (token) {
+            headers["Authorization"] = `Bearer ${token}`;
+          }
+        } catch {
+          // Continue
+        }
+
         const res = await fetch("/api/assistant", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers,
           body: JSON.stringify({
             page,
             messages: next.map((m) => ({ role: m.role, content: m.content })),

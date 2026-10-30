@@ -323,7 +323,10 @@ function ImagingPage() {
                 <Upload className="mb-3 h-8 w-8 text-muted-foreground" />
                 <p className="font-display text-sm font-semibold">Upload a chest X-ray</p>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  The image stays in your browser; only the analysis request leaves the device.
+                  Client-side deep learning inference with optional Cloudinary CDN asset storage.
+                </p>
+                <p className="mt-0.5 text-[0.7rem] text-muted-foreground/80">
+                  Experimental decision-support aid. Do not upload identifiable patient PHI.
                 </p>
               </button>
             ) : (

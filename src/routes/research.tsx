@@ -55,7 +55,7 @@ export const Route = createFileRoute("/research")({
       {
         name: "description",
         content:
-          "Empirical benchmark results across 50 multi-system clinical vignettes comparing Zero-Shot LLM, Vector RAG, Graph RAG, and Agentic Graph RAG.",
+          "Simulated comparative benchmark results across 50 multi-system clinical reference vignettes comparing Zero-Shot LLM, Vector RAG, Graph RAG, and Agentic Graph RAG.",
       },
       { property: "og:title", content: "Research Bench & Empirical Evaluation : MEDGUIDE AI" },
       {
@@ -136,7 +136,7 @@ function ResearchPage() {
   return (
     <AppShell
       title="Research Bench"
-      subtitle="Empirical evaluation and peer-reviewed benchmark results across 50 clinical vignettes"
+      subtitle="Simulated illustrative benchmark evaluation and architectural comparison across 50 clinical vignettes"
     >
       {/* Paper Header Banner */}
       <GlassCard className="mb-6 border-primary/30 bg-gradient-to-r from-card via-card to-primary/[0.04]">
@@ -149,6 +149,12 @@ function ResearchPage() {
                   className="border-primary/40 bg-primary/10 text-primary font-mono text-[0.7rem] uppercase tracking-wider"
                 >
                   IEEE Transactions Research Manuscript
+                </Badge>
+                <Badge
+                  variant="outline"
+                  className="border-amber-500/40 bg-amber-500/10 text-amber-600 dark:text-amber-400 font-mono text-[0.7rem] uppercase tracking-wider"
+                >
+                  Simulated Pre-Clinical Evaluation
                 </Badge>
                 <Badge
                   variant="outline"
@@ -179,6 +185,26 @@ function ResearchPage() {
           </div>
         </CardContent>
       </GlassCard>
+
+      {/* Scientific Simulation Disclosure Banner */}
+      <div className="mb-6 rounded-2xl border border-amber-500/30 bg-amber-500/5 p-4 text-xs backdrop-blur-sm">
+        <div className="flex items-start gap-3">
+          <FlaskConical className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
+          <div className="space-y-1">
+            <p className="font-semibold text-foreground">
+              Scientific Disclosure — Simulated Illustrative Benchmark
+            </p>
+            <p className="text-muted-foreground leading-relaxed">
+              The benchmark metrics below (Evidence Grounding, Safety Compliance, Explainability
+              Score, and Ghost Citation Rate) represent a simulated illustrative evaluation
+              calibrated over 50 standardized clinical reference vignettes. These results model
+              architectural trade-offs between Zero-Shot LLM, Vector RAG, Graph RAG, and Agentic
+              Graph RAG for academic research, and should not be cited as peer-reviewed human
+              clinical trial outcomes.
+            </p>
+          </div>
+        </div>
+      </div>
 
       {/* Top Level Metric Summary Cards */}
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
@@ -252,7 +278,7 @@ function ResearchPage() {
               <SectionTitle
                 icon={FlaskConical}
                 title="Empirical Architecture Comparison"
-                hint="Evaluated across 50 multi-system clinical vignettes (n=50) under standardized temperature T=0.2"
+                hint="Simulated architectural evaluation across 50 multi-system clinical reference vignettes (n=50)"
               />
             </CardHeader>
             <CardContent>
@@ -317,8 +343,8 @@ function ResearchPage() {
             <CardHeader className="pb-2">
               <SectionTitle
                 icon={FileText}
-                title="Table I: Quantitative Benchmark Comparison across 50 Clinical Vignettes"
-                hint="Reported as Mean ± Standard Deviation with [95% Confidence Intervals]"
+                title="Table I: Simulated Benchmark Comparison across 50 Clinical Vignettes"
+                hint="Simulated distribution reported as Mean ± Standard Deviation with [95% Confidence Intervals]"
               />
             </CardHeader>
             <CardContent>
@@ -615,7 +641,7 @@ function ResearchPage() {
                         {c.scenario}
                       </h3>
                       <Badge variant="outline" className="font-mono text-[0.65rem] uppercase">
-                        Verified Trace
+                        Trace Case Study
                       </Badge>
                     </div>
 

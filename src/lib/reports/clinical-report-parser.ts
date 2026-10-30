@@ -1,6 +1,6 @@
 /**
  * Clinical Report Parser & Formatter for MEDGUIDE AI
- * Transforms clinical markdown reports into structured hospital-grade chart representations
+ * Transforms clinical markdown reports into structured clinical chart representations
  * with interactive PubMed citations, EHR copy generators, and rich PDF exporting.
  */
 

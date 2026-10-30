@@ -1,12 +1,16 @@
 /**
- * Realistic Indian Clinical Patient Cohort
- * Provides 6 diverse, high-fidelity patient cases across major medical specialties:
+ * Synthetic Clinical Demonstration Cohort
+ * Provides 6 diverse, high-fidelity synthetic patient cases across major medical specialties
+ * for academic decision-support prototyping and demonstration:
  * - Cardiology (Acute Anterior STEMI with Aspirin Allergy)
  * - Pulmonology (Severe Lobar Pneumonia with Penicillin Anaphylaxis)
  * - Nephrology & Endocrinology (DKD Stage 4 with NSAID & Metformin Alerts)
  * - Neurology (Acute Ischemic Stroke with Atrial Fibrillation)
  * - Hepatology (Decompensated HBV Cirrhosis & Encephalopathy)
  * - Rheumatology (Systemic Lupus Erythematosus with Active Nephritis)
+ *
+ * NOTE: All records are synthetic clinical vignettes generated for educational
+ * and algorithm evaluation purposes. They do not represent real human patient data.
  */
 
 import { addDoc } from "firebase/firestore";

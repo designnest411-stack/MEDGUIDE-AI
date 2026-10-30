@@ -13,6 +13,7 @@ import {
   Pencil,
   Play,
   Search,
+  Sparkles,
   Stethoscope,
   Trash2,
   UserPlus,
@@ -103,13 +104,13 @@ function PatientPage() {
   const docInputRef = useRef<HTMLInputElement>(null);
   const autoSeededRef = useRef(false);
 
-  // Auto-initialize realistic Indian clinical cases if a logged-in clinician's directory is empty
+  // Auto-initialize synthetic clinical demonstration vignettes if a logged-in clinician's directory is empty
   useEffect(() => {
     if (user && !patientsLoading && patients.length === 0 && !autoSeededRef.current) {
       autoSeededRef.current = true;
       seedIndianClinicalCohort(user.uid)
         .then(() => {
-          toast.info("Initialized clinical directory with verified cases");
+          toast.info("Loaded 6 Synthetic Demonstration Cases into workspace.");
         })
         .catch(() => {});
     }
@@ -593,17 +594,34 @@ function PatientPage() {
                     </p>
                   </div>
                   {!searchQuery && !isFormActive && (
-                    <Button
-                      size="sm"
-                      onClick={() => {
-                        setEditingId(null);
-                        setForm({ ...blank });
-                        setIsFormOpen(true);
-                      }}
-                      className="gap-1.5 text-xs h-8 shadow-xs"
-                    >
-                      <UserPlus className="h-3.5 w-3.5" /> Add Patient Record
-                    </Button>
+                    <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
+                      <Button
+                        size="sm"
+                        onClick={() => {
+                          setEditingId(null);
+                          setForm({ ...blank });
+                          setIsFormOpen(true);
+                        }}
+                        className="gap-1.5 text-xs h-8 shadow-xs"
+                      >
+                        <UserPlus className="h-3.5 w-3.5" /> Add Patient Record
+                      </Button>
+                      {user && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            seedIndianClinicalCohort(user.uid)
+                              .then(() => toast.success("Loaded 6 Synthetic Demonstration Cases!"))
+                              .catch(() => toast.error("Failed to load demo cases."));
+                          }}
+                          className="gap-1.5 text-xs h-8 border-primary/30"
+                        >
+                          <Sparkles className="h-3.5 w-3.5 text-primary" /> Load 6 Synthetic Demo
+                          Cases
+                        </Button>
+                      )}
+                    </div>
                   )}
                 </div>
               ) : (
@@ -631,10 +649,15 @@ function PatientPage() {
                               <h4 className="font-display text-sm font-bold text-foreground truncate">
                                 {p.name}
                               </h4>
-                              <p className="font-mono text-[0.68rem] text-muted-foreground">
-                                {[p.age ? `${p.age}y` : "", p.sex].filter(Boolean).join(" · ") ||
-                                  "Demographics pending"}
-                              </p>
+                              <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
+                                <p className="font-mono text-[0.68rem] text-muted-foreground">
+                                  {[p.age ? `${p.age}y` : "", p.sex].filter(Boolean).join(" · ") ||
+                                    "Demographics pending"}
+                                </p>
+                                <span className="inline-flex items-center rounded-sm border border-border/80 bg-muted/40 px-1 py-0.2 font-mono text-[0.58rem] text-muted-foreground">
+                                  Synthetic Vignette
+                                </span>
+                              </div>
                             </div>
                           </div>
 
