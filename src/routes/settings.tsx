@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   User,
@@ -11,6 +12,8 @@ import {
   CheckCircle2,
   Trash2,
   ExternalLink,
+  Sparkles,
+  Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -22,6 +25,7 @@ import { wipeAll } from "@/lib/db";
 import { DISCLAIMER } from "@/lib/agents/types";
 import { auth, logout } from "@/lib/firebase";
 import { useTheme } from "@/components/theme-provider";
+import { seedIndianClinicalCohort } from "@/lib/clinical-seed-data";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
@@ -57,6 +61,25 @@ export const Route = createFileRoute("/settings")({
 function SettingsPage() {
   const { theme, setTheme } = useTheme();
   const user = auth.currentUser;
+  const [isSeeding, setIsSeeding] = useState(false);
+
+  const handleSeedCohort = async () => {
+    if (!user) {
+      toast.error("Please sign in to save patient data to your database.");
+      return;
+    }
+    setIsSeeding(true);
+    try {
+      const res = await seedIndianClinicalCohort(user.uid);
+      toast.success(
+        `Successfully populated database with ${res.patientsCount} Indian clinical patient cases and ${res.timelineCount} timeline events!`,
+      );
+    } catch (err) {
+      toast.error((err as Error)?.message || "Failed to seed clinical cohort");
+    } finally {
+      setIsSeeding(false);
+    }
+  };
 
   return (
     <AppShell
@@ -245,6 +268,34 @@ function SettingsPage() {
                   <span className="font-medium text-emerald-600 dark:text-emerald-400">AES-256 at Rest & TLS 1.3 in Transit</span>
                 </div>
               </div>
+              <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/5 p-3 space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 font-semibold text-foreground">
+                    <Sparkles className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+                    <span>Indian Clinical Patient Cohort</span>
+                  </div>
+                  <span className="text-[0.62rem] font-mono text-emerald-600 dark:text-emerald-400">
+                    6 Diverse Cases
+                  </span>
+                </div>
+                <p className="text-[0.7rem] text-muted-foreground leading-relaxed">
+                  Populate your database with 6 comprehensive Indian patient cases (Cardiology, Pulmonology, Nephrology, Stroke, Cirrhosis, Lupus) with full vitals, labs, and drug safety cross-checks for end-to-end testing.
+                </p>
+                <Button
+                  onClick={handleSeedCohort}
+                  disabled={isSeeding}
+                  size="sm"
+                  className="w-full gap-1.5 text-xs shadow-xs"
+                >
+                  {isSeeding ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Database className="h-3.5 w-3.5" />
+                  )}
+                  Load Indian Clinical Cohort into Database
+                </Button>
+              </div>
+
               <div className="pt-1">
                 <Button
                   variant="outline"

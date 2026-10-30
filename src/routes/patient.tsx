@@ -12,6 +12,8 @@ import {
   Loader2,
   Pencil,
   Play,
+  Sparkles,
+  Database,
   Trash2,
   UserPlus,
   UserRound,
@@ -30,6 +32,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { getCollections, useTypedCollection, type PatientRecord, type PatientDocument } from "@/lib/db";
 import { auth } from "@/lib/firebase";
 import { uploadToCloudinary, getCloudinaryThumbnail } from "@/lib/cloudinary";
+import { seedIndianClinicalCohort } from "@/lib/clinical-seed-data";
 
 export const Route = createFileRoute("/patient")({
   head: () => ({
@@ -87,8 +90,27 @@ function PatientPage() {
   const [form, setForm] = useState({ ...blank });
   const [editingId, setEditingId] = useState<string | null>(null);
   const [uploadingDoc, setUploadingDoc] = useState(false);
+  const [isSeeding, setIsSeeding] = useState(false);
   const photoInputRef = useRef<HTMLInputElement>(null);
   const docInputRef = useRef<HTMLInputElement>(null);
+
+  const handleSeed = async () => {
+    if (!user) {
+      toast.error("Please sign in to save patient data to your database.");
+      return;
+    }
+    setIsSeeding(true);
+    try {
+      const res = await seedIndianClinicalCohort(user.uid);
+      toast.success(
+        `Successfully populated database with ${res.patientsCount} Indian clinical patient cases and ${res.timelineCount} timeline events!`,
+      );
+    } catch (err) {
+      toast.error((err as Error)?.message || "Failed to seed clinical cohort");
+    } finally {
+      setIsSeeding(false);
+    }
+  };
 
   const save = async () => {
     if (!form.name.trim()) {
@@ -224,6 +246,23 @@ function PatientPage() {
     <AppShell
       title="Patient Workspace"
       subtitle="Structured patient intake synced securely to your clinical cloud"
+      actions={
+        <Button
+          size="sm"
+          variant="outline"
+          disabled={isSeeding}
+          onClick={handleSeed}
+          className="text-xs gap-1.5 border-emerald-500/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10 shadow-xs"
+          title="Populate database with 6 diverse Indian clinical cases"
+        >
+          {isSeeding ? (
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          ) : (
+            <Sparkles className="h-3.5 w-3.5" />
+          )}
+          Seed Indian Patient Cohort
+        </Button>
+      }
     >
       <div className="grid gap-4 lg:grid-cols-[1fr_360px]">
         <GlassCard>
@@ -445,11 +484,30 @@ function PatientPage() {
                 </div>
               </div>
             ) : patients.length === 0 ? (
-              <EmptyState
-                icon={UserRound}
-                title="No patients"
-                description="Saved patients appear here and can be attached to consultations."
-              />
+              <div className="rounded-xl border border-dashed border-border/80 p-6 text-center space-y-3">
+                <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                  <UserRound className="h-5 w-5" />
+                </div>
+                <div>
+                  <h4 className="font-display text-xs font-bold text-foreground">No patients saved yet</h4>
+                  <p className="mt-1 text-[0.7rem] text-muted-foreground leading-relaxed max-w-xs mx-auto">
+                    Create a record or populate your workspace with 6 diverse Indian clinical cases (Cardiology, Pulmonology, Nephrology, Stroke, Cirrhosis, Lupus) for instant testing.
+                  </p>
+                </div>
+                <Button
+                  onClick={handleSeed}
+                  disabled={isSeeding}
+                  size="sm"
+                  className="gap-1.5 text-xs h-8 shadow-xs"
+                >
+                  {isSeeding ? (
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                  ) : (
+                    <Sparkles className="h-3 w-3" />
+                  )}
+                  Load 6 Indian Patient Cases
+                </Button>
+              </div>
             ) : (
               patients.map((p) => (
                 <div key={p.id} className="rounded-lg border border-border/60 bg-card/40 p-3">
