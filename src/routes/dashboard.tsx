@@ -123,13 +123,13 @@ function Dashboard() {
       }
     >
       {/* Clinical Quick Actions Launcher */}
-      <div className="mb-4 grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+      <div className="mb-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
         <Link
           to="/consultation"
-          className="group flex items-center gap-3 rounded-xl border border-primary/30 bg-primary/[0.07] p-3 transition-all hover:bg-primary/[0.12] hover:border-primary/50 hover:shadow-sm"
+          className="group relative overflow-hidden flex items-center gap-3 rounded-2xl border border-primary/30 bg-primary/[0.08] p-3.5 shadow-xs backdrop-blur-md transition-all duration-200 hover:-translate-y-[1px] hover:bg-primary/[0.14] hover:border-primary/50 hover:shadow-sm active:scale-[0.98] before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-primary/30 before:to-transparent"
         >
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-white shadow-sm transition-transform group-hover:scale-105">
-            <Stethoscope className="h-4 w-4" />
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm transition-transform duration-200 group-hover:scale-105">
+            <Stethoscope className="h-5 w-5" />
           </div>
           <div className="min-w-0">
             <p className="text-xs font-semibold text-foreground group-hover:text-primary transition-colors">
@@ -143,10 +143,10 @@ function Dashboard() {
 
         <Link
           to="/patient"
-          className="group flex items-center gap-3 rounded-xl border border-border/70 bg-card/60 p-3 transition-all hover:bg-card hover:border-primary/40 hover:shadow-sm"
+          className="group relative overflow-hidden flex items-center gap-3 rounded-2xl border border-border/70 dark:border-white/[0.07] bg-card/70 p-3.5 shadow-xs backdrop-blur-md transition-all duration-200 hover:-translate-y-[1px] hover:bg-card hover:border-blue-500/40 hover:shadow-sm active:scale-[0.98] before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/20 dark:before:via-white/10 before:to-transparent"
         >
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/20 transition-transform group-hover:scale-105">
-            <UserRound className="h-4 w-4" />
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/25 shadow-xs transition-transform duration-200 group-hover:scale-105">
+            <UserRound className="h-5 w-5" />
           </div>
           <div className="min-w-0">
             <p className="text-xs font-semibold text-foreground group-hover:text-primary transition-colors">
@@ -160,10 +160,10 @@ function Dashboard() {
 
         <Link
           to="/imaging"
-          className="group flex items-center gap-3 rounded-xl border border-border/70 bg-card/60 p-3 transition-all hover:bg-card hover:border-primary/40 hover:shadow-sm"
+          className="group relative overflow-hidden flex items-center gap-3 rounded-2xl border border-border/70 dark:border-white/[0.07] bg-card/70 p-3.5 shadow-xs backdrop-blur-md transition-all duration-200 hover:-translate-y-[1px] hover:bg-card hover:border-sky-500/40 hover:shadow-sm active:scale-[0.98] before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/20 dark:before:via-white/10 before:to-transparent"
         >
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-sky-500/15 text-sky-600 dark:text-sky-400 border border-sky-500/20 transition-transform group-hover:scale-105">
-            <ImageIcon className="h-4 w-4" />
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sky-500/15 text-sky-600 dark:text-sky-400 border border-sky-500/25 shadow-xs transition-transform duration-200 group-hover:scale-105">
+            <ImageIcon className="h-5 w-5" />
           </div>
           <div className="min-w-0">
             <p className="text-xs font-semibold text-foreground group-hover:text-primary transition-colors">
@@ -177,10 +177,10 @@ function Dashboard() {
 
         <Link
           to="/drugs"
-          className="group flex items-center gap-3 rounded-xl border border-border/70 bg-card/60 p-3 transition-all hover:bg-card hover:border-primary/40 hover:shadow-sm"
+          className="group relative overflow-hidden flex items-center gap-3 rounded-2xl border border-border/70 dark:border-white/[0.07] bg-card/70 p-3.5 shadow-xs backdrop-blur-md transition-all duration-200 hover:-translate-y-[1px] hover:bg-card hover:border-amber-500/40 hover:shadow-sm active:scale-[0.98] before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/20 dark:before:via-white/10 before:to-transparent"
         >
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/20 transition-transform group-hover:scale-105">
-            <Pill className="h-4 w-4" />
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/25 shadow-xs transition-transform duration-200 group-hover:scale-105">
+            <Pill className="h-5 w-5" />
           </div>
           <div className="min-w-0">
             <p className="text-xs font-semibold text-foreground group-hover:text-primary transition-colors">
@@ -280,7 +280,7 @@ function Dashboard() {
                     key={c.id}
                     to="/explainability"
                     search={{ id: String(c.id ?? "") }}
-                    className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 rounded-lg border border-border/60 bg-card/40 p-3 transition-colors hover:border-primary/40"
+                    className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 rounded-xl border border-border/70 dark:border-white/[0.06] bg-card/50 p-3.5 shadow-xs backdrop-blur-xs transition-all duration-200 hover:-translate-y-[1px] hover:border-primary/40 hover:bg-card/90 hover:shadow-sm"
                   >
                     <div className="flex items-center gap-2.5 min-w-0 flex-1 w-full">
                       <Stethoscope className="h-4 w-4 shrink-0 text-primary" />

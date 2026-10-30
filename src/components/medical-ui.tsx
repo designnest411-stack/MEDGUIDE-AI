@@ -23,7 +23,7 @@ export function GlassCard({ className, children }: { className?: string; childre
   return (
     <Card
       className={cn(
-        "relative overflow-hidden rounded-xl border border-border/80 bg-card shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-[1px] hover:shadow-md",
+        "relative overflow-hidden rounded-2xl border border-border/70 dark:border-white/[0.08] bg-card/90 shadow-sm shadow-slate-950/5 dark:shadow-cyan-950/15 backdrop-blur-xl transition-all duration-300 hover:-translate-y-[1px] hover:shadow-md hover:shadow-slate-950/8 dark:hover:shadow-cyan-950/25 before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/30 dark:before:via-white/10 before:to-transparent",
         className,
       )}
     >
@@ -51,7 +51,7 @@ export function SectionTitle({
     <div className="mb-3 grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
       <div className="flex min-w-0 items-start gap-2.5">
         {Icon && (
-          <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded border border-primary/25 bg-primary/10">
+          <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-primary/25 bg-primary/10 shadow-xs">
             <Icon className="h-3.5 w-3.5 text-primary" />
           </span>
         )}
@@ -59,7 +59,7 @@ export function SectionTitle({
           <h2 className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-foreground/90">
             {title}
           </h2>
-          {hint && <p className="mt-0.5 truncate text-sm text-muted-foreground">{hint}</p>}
+          {hint && <p className="mt-0.5 truncate text-xs text-muted-foreground">{hint}</p>}
         </div>
       </div>
       {right}
@@ -83,10 +83,10 @@ export function Rule({ label }: { label?: string }) {
 }
 
 const BAND_STYLES: Record<ConfidenceBand, string> = {
-  High: "border-success/40 bg-success/10 text-success",
-  Medium: "border-warning/40 bg-warning/10 text-warning",
-  Low: "border-destructive/40 bg-destructive/10 text-destructive",
-  "Insufficient evidence": "border-muted-foreground/40 bg-muted/40 text-muted-foreground",
+  High: "border-success/30 bg-success/10 text-success shadow-xs shadow-success/10",
+  Medium: "border-warning/30 bg-warning/10 text-warning shadow-xs shadow-warning/10",
+  Low: "border-destructive/30 bg-destructive/10 text-destructive shadow-xs shadow-destructive/10",
+  "Insufficient evidence": "border-muted-foreground/30 bg-muted/50 text-muted-foreground",
 };
 
 export function ConfidenceBadge({ band }: { band: ConfidenceBand }) {
@@ -94,7 +94,7 @@ export function ConfidenceBadge({ band }: { band: ConfidenceBand }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-2 rounded border px-2.5 py-1 font-mono text-[0.7rem] uppercase tracking-[0.14em]",
+        "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-mono text-[0.68rem] font-medium uppercase tracking-[0.12em] backdrop-blur-xs select-none",
         BAND_STYLES[band],
       )}
       title={
@@ -103,7 +103,12 @@ export function ConfidenceBadge({ band }: { band: ConfidenceBand }) {
           : "Confidence band derived from retrieval, agreement and safety signals."
       }
     >
-      <span className="h-1.5 w-1.5 rounded-full bg-current" />
+      <span className="relative flex h-1.5 w-1.5">
+        {!insufficient && (
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-75" />
+        )}
+        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-current" />
+      </span>
       {insufficient ? "Evidence insufficient" : `Confidence ${band}`}
     </span>
   );
@@ -114,13 +119,13 @@ export function GroundingBadge({ grounded }: { grounded?: boolean | undefined })
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded border px-2 py-0.5 font-mono text-[0.65rem] uppercase tracking-[0.12em]",
+        "inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 font-mono text-[0.64rem] font-medium uppercase tracking-[0.1em] backdrop-blur-xs select-none",
         grounded
-          ? "border-evidence/40 bg-evidence/10 text-evidence"
-          : "border-warning/40 bg-warning/10 text-warning",
+          ? "border-evidence/30 bg-evidence/10 text-evidence"
+          : "border-warning/30 bg-warning/10 text-warning",
       )}
     >
-      <span className="h-1 w-1 rounded-full bg-current" />
+      <span className="h-1.5 w-1.5 rounded-full bg-current" />
       {grounded ? "Sourced" : "Reasoning only"}
     </span>
   );
@@ -148,14 +153,14 @@ export function AgentPill({
   return (
     <div
       className={cn(
-        "group relative flex items-start gap-2.5 border-l-2 py-2 pl-3 pr-2 text-xs transition-colors",
+        "group relative flex items-start gap-2.5 rounded-xl border p-2.5 text-xs transition-all duration-200",
         status === "running"
-          ? "border-l-primary bg-primary/[0.07]"
+          ? "border-primary/40 bg-primary/[0.08] shadow-xs"
           : status === "done"
-            ? "border-l-success/60"
+            ? "border-success/30 bg-success/[0.04] hover:bg-success/[0.07]"
             : status === "error"
-              ? "border-l-destructive/70 bg-destructive/[0.06]"
-              : "border-l-border",
+              ? "border-destructive/40 bg-destructive/[0.08]"
+              : "border-border/60 bg-card/40 hover:bg-card/80",
       )}
     >
       <span className="mt-0.5 shrink-0">{icons[status]}</span>
@@ -172,7 +177,7 @@ export function AgentPill({
             {meta?.name ?? agent}
           </span>
         </span>
-        <span className="mt-0.5 block truncate text-muted-foreground">
+        <span className="mt-0.5 block truncate text-[0.72rem] text-muted-foreground">
           {summary ?? meta?.description}
         </span>
       </span>
@@ -186,10 +191,10 @@ export function EvidenceItem({ source }: { source: EvidenceSource }) {
       href={source.url ?? "#"}
       target="_blank"
       rel="noreferrer"
-      className="group block border-l-2 border-l-border py-2.5 pl-3 pr-2 transition-colors hover:border-l-primary hover:bg-primary/[0.05]"
+      className="group block rounded-xl border border-border/70 dark:border-white/[0.07] bg-card/50 p-3.5 shadow-xs backdrop-blur-xs transition-all duration-200 hover:-translate-y-[1px] hover:border-primary/40 hover:bg-card/90 hover:shadow-sm"
     >
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-        <span className="font-mono text-xs uppercase tracking-[0.14em] text-evidence">
+        <span className="font-mono text-xs font-semibold uppercase tracking-[0.14em] text-evidence">
           {source.source}
         </span>
         {source.year && (
@@ -197,7 +202,7 @@ export function EvidenceItem({ source }: { source: EvidenceSource }) {
         )}
         {source.level && (
           <span
-            className="rounded-sm border border-border/70 px-1.5 py-px font-mono text-[0.65rem] uppercase tracking-[0.1em] text-muted-foreground"
+            className="rounded-full border border-border/70 bg-muted/50 px-2 py-0.5 font-mono text-[0.62rem] uppercase tracking-[0.1em] text-muted-foreground"
             title={`Evidence tier ${source.level.rank}`}
           >
             T{source.level.rank} · {source.level.label}
@@ -206,16 +211,18 @@ export function EvidenceItem({ source }: { source: EvidenceSource }) {
         <span className="ml-auto font-mono text-[0.65rem] text-muted-foreground/70">
           {source.id}
         </span>
-        <ExternalLink className="h-3 w-3 shrink-0 text-muted-foreground/0 transition-colors group-hover:text-muted-foreground" />
+        <ExternalLink className="h-3 w-3 shrink-0 text-muted-foreground/40 transition-colors group-hover:text-primary" />
       </div>
-      <p className="mt-1 text-sm leading-snug">{source.title}</p>
+      <p className="mt-1.5 text-sm font-medium leading-snug group-hover:text-primary transition-colors">
+        {source.title}
+      </p>
       {source.snippet && (
-        <p className="mt-1.5 line-clamp-3 text-sm leading-relaxed text-muted-foreground">
+        <p className="mt-1.5 line-clamp-3 text-xs leading-relaxed text-muted-foreground">
           {source.snippet}
         </p>
       )}
       {source.authors && (
-        <p className="mt-1.5 font-mono text-xs text-muted-foreground/80">{source.authors}</p>
+        <p className="mt-2 font-mono text-[0.7rem] text-muted-foreground/80">{source.authors}</p>
       )}
     </a>
   );
@@ -233,11 +240,13 @@ export function EmptyState({
   action?: ReactNode;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border/70 px-6 py-14 text-center">
-      <span className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl border border-border/70 bg-muted/40">
-        <Icon className="h-5 w-5 text-muted-foreground" />
+    <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border/70 bg-card/30 px-6 py-14 text-center backdrop-blur-xs">
+      <span className="mb-4 flex h-13 w-13 items-center justify-center rounded-2xl border border-border/80 bg-secondary/60 shadow-xs">
+        <Icon className="h-6 w-6 text-primary" />
       </span>
-      <p className="font-mono text-xs uppercase tracking-[0.16em]">{title}</p>
+      <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-foreground/90">
+        {title}
+      </p>
       <p className="mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">{description}</p>
       {action && <div className="mt-5">{action}</div>}
     </div>

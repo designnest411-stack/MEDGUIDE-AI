@@ -427,27 +427,27 @@ function Consultation() {
                       <div
                         key={d.condition}
                         className={cn(
-                          "border-l-2 py-2.5 pl-3.5 pr-2",
+                          "rounded-2xl border p-4 shadow-xs backdrop-blur-xs transition-all duration-200 hover:-translate-y-[1px] hover:shadow-sm",
                           d.likelihood === "high"
-                            ? "border-l-success"
+                            ? "border-success/30 bg-success/[0.03] hover:border-success/50 hover:bg-success/[0.06]"
                             : d.likelihood === "moderate"
-                              ? "border-l-warning"
-                              : "border-l-muted-foreground/50",
+                              ? "border-warning/30 bg-warning/[0.03] hover:border-warning/50 hover:bg-warning/[0.06]"
+                              : "border-border/70 dark:border-white/[0.06] bg-card/60 hover:bg-card/90",
                         )}
                       >
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="font-mono text-[0.6rem] text-muted-foreground/70">
+                          <span className="font-mono text-[0.65rem] text-muted-foreground/70">
                             {String(i + 1).padStart(2, "0")}
                           </span>
                           <p className="font-display text-sm font-semibold">{d.condition}</p>
                           <span
                             className={cn(
-                              "rounded border px-1.5 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.12em]",
+                              "rounded-full border px-2.5 py-0.5 font-mono text-[0.62rem] font-semibold uppercase tracking-[0.12em]",
                               d.likelihood === "high"
-                                ? "border-success/40 text-success"
+                                ? "border-success/40 bg-success/10 text-success"
                                 : d.likelihood === "moderate"
-                                  ? "border-warning/40 text-warning"
-                                  : "border-muted-foreground/40 text-muted-foreground",
+                                  ? "border-warning/40 bg-warning/10 text-warning"
+                                  : "border-muted-foreground/40 bg-muted/40 text-muted-foreground",
                             )}
                           >
                             {d.likelihood}
@@ -462,11 +462,11 @@ function Consultation() {
                         <ListBlock label="Against" items={d.against} tone="destructive" />
                         <ListBlock label="Next steps" items={d.nextSteps} />
                         {d.citations?.length ? (
-                          <p className="mt-2 font-mono text-[0.65rem] text-muted-foreground">
+                          <p className="mt-2.5 font-mono text-[0.65rem] text-muted-foreground">
                             {d.citations.join(" · ")}
                           </p>
                         ) : (
-                          <p className="mt-2 text-[0.65rem] text-warning/90">
+                          <p className="mt-2.5 text-[0.68rem] text-warning/90">
                             No retrieved source attached: treat as clinical reasoning, not
                             evidence.
                           </p>
@@ -499,21 +499,21 @@ function Consultation() {
                 {result.safety.flags.map((f, i) => (
                   <div
                     key={i}
-                    className="rounded-lg border border-border/60 bg-card/40 p-3 text-xs"
+                    className="rounded-xl border border-border/70 dark:border-white/[0.06] bg-card/60 p-3.5 text-xs shadow-xs backdrop-blur-xs transition-colors hover:bg-card/90"
                   >
                     <Badge
                       variant="outline"
                       className={
                         f.severity === "critical"
-                          ? "border-destructive/50 text-destructive"
+                          ? "border-destructive/40 bg-destructive/10 text-destructive"
                           : f.severity === "warning"
-                            ? "border-warning/50 text-warning"
-                            : "border-muted-foreground/40 text-muted-foreground"
+                            ? "border-warning/40 bg-warning/10 text-warning"
+                            : "border-muted-foreground/30 bg-muted/40 text-muted-foreground"
                       }
                     >
                       {f.type.replace(/-/g, " ")}
                     </Badge>
-                    <p className="mt-1.5 leading-relaxed">{f.detail}</p>
+                    <p className="mt-2 leading-relaxed">{f.detail}</p>
                   </div>
                 ))}
               </CardContent>
@@ -529,18 +529,18 @@ function Consultation() {
                 {result.drugs.slice(0, 8).map((d, i) => (
                   <div
                     key={i}
-                    className="rounded-lg border border-border/60 bg-card/40 p-3 text-xs"
+                    className="rounded-xl border border-border/70 dark:border-white/[0.06] bg-card/60 p-3.5 text-xs shadow-xs backdrop-blur-xs transition-colors hover:bg-card/90"
                   >
                     <div className="flex flex-wrap items-center gap-2">
-                      <Badge variant="outline" className="text-[0.65rem]">
+                      <Badge variant="outline" className="text-[0.65rem] border-primary/30 bg-primary/10 text-primary">
                         {d.kind}
                       </Badge>
-                      <span className="text-muted-foreground">{d.drugs.join(" + ")}</span>
-                      <span className="ml-auto text-[0.65rem] text-muted-foreground">
+                      <span className="font-medium text-foreground/90">{d.drugs.join(" + ")}</span>
+                      <span className="ml-auto font-mono text-[0.65rem] text-muted-foreground/80">
                         {d.source}
                       </span>
                     </div>
-                    <p className="mt-1.5 leading-relaxed">{d.detail}</p>
+                    <p className="mt-2 leading-relaxed text-muted-foreground">{d.detail}</p>
                   </div>
                 ))}
               </CardContent>

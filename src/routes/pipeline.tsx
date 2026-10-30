@@ -648,11 +648,11 @@ function RealAgentCard({
   return (
     <div
       onClick={onClick}
-      className={`group relative flex flex-col justify-between rounded-2xl border p-4 transition-all duration-200 cursor-pointer ${
+      className={`group relative overflow-hidden flex flex-col justify-between rounded-2xl border p-4 transition-all duration-200 cursor-pointer backdrop-blur-md active:scale-[0.98] before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/20 dark:before:via-white/10 before:to-transparent ${
         isRunning
           ? "border-primary bg-primary/[0.08] shadow-md shadow-primary/20 scale-[1.01]"
           : isDone
-          ? "border-border/70 bg-card/60 hover:border-primary/50 hover:bg-card/90 hover:shadow-sm"
+          ? "border-border/70 dark:border-white/[0.08] bg-card/70 hover:border-primary/50 hover:bg-card/95 hover:shadow-sm hover:-translate-y-[1px]"
           : "border-border/50 bg-card/30 opacity-75 hover:opacity-100"
       }`}
     >

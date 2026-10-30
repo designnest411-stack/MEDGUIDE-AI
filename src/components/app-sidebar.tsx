@@ -33,6 +33,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Badge } from "@/components/ui/badge";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const clinical = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
@@ -168,8 +169,9 @@ export function AppSidebar() {
         {group("Insight", insight)}
       </SidebarContent>
 
-      {/* Clean Status Footer providing ample breathing room below Settings */}
-      <SidebarFooter className="border-t border-sidebar-border/50 p-3 bg-sidebar-accent/15 mt-auto">
+      {/* Clean Status Footer with Theme Switcher and Engine Indicator */}
+      <SidebarFooter className="border-t border-sidebar-border/50 p-2.5 bg-sidebar-accent/15 mt-auto space-y-2">
+        <ThemeToggle collapsed={collapsed} />
         {collapsed ? (
           <div className="flex items-center justify-center py-1">
             <span

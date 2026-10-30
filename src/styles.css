@@ -7,8 +7,9 @@
 
 /*
  * MEDGUIDE AI Design System
- * Warm, deep obsidian/slate clinical glassmorphism with high contrast,
- * luminous cyan/teal accents, emerald safety, and royal violet agent cues.
+ * Apple-grade precision clinical aesthetic: translucent materials,
+ * optical vibrancy, specular reflections, responsive spring physics,
+ * and harmonious contrast across both light and dark themes.
  */
 
 @theme inline {
@@ -17,11 +18,11 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
-  --radius-4xl: calc(var(--radius) + 16px);
-  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-display: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --radius-3xl: calc(var(--radius) + 14px);
+  --radius-4xl: calc(var(--radius) + 20px);
+  --font-sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+  --font-display: "Space Grotesk", -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -69,29 +70,29 @@
 }
 
 :root {
-  --radius: 0.625rem;
+  --radius: 0.75rem;
 
-  /* Warm, refined off-white / light alabaster background with deep dark slate contrast */
-  --background: #f6f8fb;
-  --foreground: #0f172a;
+  /* Apple Pro Light: clean, luminous alabaster with deep slate contrast & subtle depth */
+  --background: #f8fafc;
+  --foreground: #090e1a;
 
-  --card: rgba(255, 255, 255, 0.94);
-  --card-foreground: #0f172a;
+  --card: rgba(255, 255, 255, 0.88);
+  --card-foreground: #090e1a;
 
-  --popover: #ffffff;
-  --popover-foreground: #0f172a;
+  --popover: rgba(255, 255, 255, 0.96);
+  --popover-foreground: #090e1a;
 
-  --primary: #0891b2;
+  --primary: #0284c7;
   --primary-foreground: #ffffff;
 
-  --secondary: rgba(241, 245, 249, 0.88);
-  --secondary-foreground: #1e293b;
+  --secondary: rgba(241, 245, 249, 0.82);
+  --secondary-foreground: #0f172a;
 
-  --muted: rgba(241, 245, 249, 0.75);
+  --muted: rgba(241, 245, 249, 0.7);
   --muted-foreground: #64748b;
 
-  --accent: rgba(241, 245, 249, 0.95);
-  --accent-foreground: #0f172a;
+  --accent: rgba(238, 242, 246, 0.9);
+  --accent-foreground: #090e1a;
 
   --destructive: #e11d48;
   --destructive-foreground: #ffffff;
@@ -105,54 +106,55 @@
   --info: #0284c7;
   --info-foreground: #ffffff;
 
-  --agent: #0284c7;
+  --agent: #0369a1;
   --agent-foreground: #ffffff;
 
   --evidence: #0284c7;
 
-  --glass: rgba(255, 255, 255, 0.85);
+  --glass: rgba(255, 255, 255, 0.78);
   --glass-border: rgba(15, 23, 42, 0.08);
 
-  --border: rgba(15, 23, 42, 0.1);
-  --input: rgba(15, 23, 42, 0.12);
-  --ring: #0891b2;
+  --border: rgba(15, 23, 42, 0.08);
+  --input: rgba(15, 23, 42, 0.1);
+  --ring: #0284c7;
 
-  --chart-1: #0891b2;
-  --chart-2: #0284c7;
+  --chart-1: #0284c7;
+  --chart-2: #0891b2;
   --chart-3: #d97706;
   --chart-4: #059669;
   --chart-5: #e11d48;
 
-  --sidebar: rgba(250, 252, 255, 0.96);
-  --sidebar-foreground: #0f172a;
-  --sidebar-primary: #0891b2;
+  --sidebar: rgba(252, 253, 255, 0.88);
+  --sidebar-foreground: #090e1a;
+  --sidebar-primary: #0284c7;
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: rgba(241, 245, 249, 0.9);
-  --sidebar-accent-foreground: #0f172a;
-  --sidebar-border: rgba(15, 23, 42, 0.08);
-  --sidebar-ring: #0891b2;
+  --sidebar-accent-foreground: #090e1a;
+  --sidebar-border: rgba(15, 23, 42, 0.07);
+  --sidebar-ring: #0284c7;
 }
 
 .dark {
-  --background: #090d16;
-  --foreground: #f1f5f9;
+  /* Apple Pro Dark: deep obsidian/space gray with celestial cyan specular glow */
+  --background: #060913;
+  --foreground: #f8fafc;
 
-  --card: rgba(15, 23, 42, 0.88);
+  --card: rgba(13, 20, 36, 0.78);
   --card-foreground: #f8fafc;
 
-  --popover: #0f172a;
+  --popover: rgba(15, 23, 42, 0.96);
   --popover-foreground: #f8fafc;
 
   --primary: #06b6d4;
-  --primary-foreground: #041017;
+  --primary-foreground: #04141d;
 
-  --secondary: rgba(30, 41, 59, 0.85);
+  --secondary: rgba(24, 34, 58, 0.75);
   --secondary-foreground: #f1f5f9;
 
-  --muted: rgba(30, 41, 59, 0.65);
+  --muted: rgba(24, 34, 58, 0.55);
   --muted-foreground: #94a3b8;
 
-  --accent: rgba(30, 41, 59, 0.9);
+  --accent: rgba(28, 41, 70, 0.8);
   --accent-foreground: #f8fafc;
 
   --destructive: #f43f5e;
@@ -172,11 +174,11 @@
 
   --evidence: #38bdf8;
 
-  --glass: rgba(15, 23, 42, 0.75);
+  --glass: rgba(13, 20, 36, 0.72);
   --glass-border: rgba(255, 255, 255, 0.08);
 
-  --border: rgba(255, 255, 255, 0.1);
-  --input: rgba(255, 255, 255, 0.12);
+  --border: rgba(255, 255, 255, 0.09);
+  --input: rgba(255, 255, 255, 0.1);
   --ring: #06b6d4;
 
   --chart-1: #06b6d4;
@@ -185,23 +187,23 @@
   --chart-4: #10b981;
   --chart-5: #f43f5e;
 
-  --sidebar: rgba(11, 17, 32, 0.96);
+  --sidebar: rgba(8, 13, 25, 0.92);
   --sidebar-foreground: #f1f5f9;
   --sidebar-primary: #06b6d4;
-  --sidebar-primary-foreground: #041017;
-  --sidebar-accent: rgba(30, 41, 59, 0.85);
+  --sidebar-primary-foreground: #04141d;
+  --sidebar-accent: rgba(28, 41, 70, 0.75);
   --sidebar-accent-foreground: #f8fafc;
   --sidebar-border: rgba(255, 255, 255, 0.08);
   --sidebar-ring: #06b6d4;
 }
 
 .dark body {
-  background-color: #090d16;
+  background-color: #060913;
   color: var(--color-foreground);
   background-image:
-    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(6, 182, 212, 0.12), transparent),
-    radial-gradient(ellipse 60% 40% at 85% 80%, rgba(14, 165, 233, 0.06), transparent),
-    linear-gradient(180deg, #090d16 0%, #0d1527 50%, #090d16 100%);
+    radial-gradient(ellipse 90% 60% at 50% -25%, rgba(6, 182, 212, 0.15), transparent 70%),
+    radial-gradient(ellipse 70% 45% at 90% 85%, rgba(14, 165, 233, 0.08), transparent 60%),
+    linear-gradient(180deg, #060913 0%, #0a1020 50%, #060913 100%);
 }
 
 @layer base {

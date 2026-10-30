@@ -3,6 +3,7 @@ import { ShieldAlert } from "lucide-react";
 
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { DISCLAIMER } from "@/lib/agents/types";
 import { cn } from "@/lib/utils";
 
@@ -36,7 +37,10 @@ export function AppShell({ title, subtitle, kicker, actions, children, wide }: A
                 </h1>
                 {subtitle && <p className="truncate text-xs text-muted-foreground">{subtitle}</p>}
               </div>
-              <div className="flex shrink-0 items-center gap-2">{actions}</div>
+              <div className="flex shrink-0 items-center gap-2">
+                {actions}
+                <ThemeToggle collapsed className="h-8.5 w-8.5" />
+              </div>
             </div>
           </header>
 

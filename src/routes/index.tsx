@@ -16,6 +16,7 @@ import { toast } from "sonner";
 
 import { auth, loginWithGoogle } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { DISCLAIMER } from "@/lib/agents/types";
 
 export const Route = createFileRoute("/")({
@@ -82,9 +83,10 @@ function ClinicalGateway() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
+          <ThemeToggle collapsed className="h-8.5 w-8.5 shadow-xs" />
           {user ? (
-            <Button asChild size="sm" className="gap-1.5 text-xs">
+            <Button asChild size="sm" className="gap-1.5 text-xs font-semibold shadow-xs">
               <Link to="/dashboard">
                 Open Dashboard <ArrowRight className="h-3.5 w-3.5" />
               </Link>
@@ -93,7 +95,7 @@ function ClinicalGateway() {
             <Button
               size="sm"
               onClick={handleSignIn}
-              className="gap-2 text-xs font-semibold shadow-sm"
+              className="gap-2 text-xs font-semibold shadow-xs"
             >
               <GoogleIcon className="h-3.5 w-3.5" />
               Sign In
@@ -166,12 +168,12 @@ function ClinicalGateway() {
 
           {/* Right Column: Clean Authentication Card */}
           <div className="md:col-span-5">
-            <div className="rounded-2xl border border-border/80 bg-card/90 p-6 sm:p-8 shadow-2xl backdrop-blur-2xl space-y-6">
+            <div className="relative overflow-hidden rounded-3xl border border-border/80 dark:border-white/[0.08] bg-card/90 p-6 sm:p-8 shadow-2xl backdrop-blur-2xl space-y-6 before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/20 dark:before:via-white/10 before:to-transparent">
               <div className="space-y-1.5 text-center">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary border border-primary/20 mb-3">
+                <div className="mx-auto flex h-13 w-13 items-center justify-center rounded-2xl bg-primary/10 text-primary border border-primary/20 shadow-xs mb-3">
                   <Stethoscope className="h-6 w-6" />
                 </div>
-                <h3 className="font-display text-xl font-bold text-foreground">
+                <h3 className="font-display text-xl font-bold tracking-tight text-foreground">
                   Clinician Sign In
                 </h3>
                 <p className="text-xs text-muted-foreground">
@@ -183,7 +185,7 @@ function ClinicalGateway() {
                 <Button
                   size="lg"
                   onClick={handleSignIn}
-                  className="w-full gap-3 py-6 text-sm font-semibold shadow-lg shadow-primary/20 hover:shadow-primary/30 active:scale-[0.99] transition-transform"
+                  className="w-full gap-3 py-6 text-sm font-semibold shadow-lg shadow-primary/20 hover:shadow-primary/30 active:scale-[0.98] transition-all rounded-xl"
                 >
                   <GoogleIcon className="h-4 w-4 shrink-0" />
                   Continue with Google

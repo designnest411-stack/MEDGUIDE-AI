@@ -12,6 +12,7 @@ import {
 
 import { auth, loginWithGoogle, getRedirectResult } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -116,7 +117,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   if (!user) {
     return (
-      <div className="flex min-h-screen w-full flex-col lg:flex-row antialiased">
+      <div className="relative flex min-h-screen w-full flex-col lg:flex-row antialiased">
+        {/* Top-Right Ambient Theme Switcher */}
+        <div className="absolute top-5 right-6 z-50">
+          <ThemeToggle collapsed className="h-9 w-9 shadow-sm" />
+        </div>
+
         {/* Left Panel: Branding & Capabilities */}
         <div className="relative flex flex-1 flex-col justify-center bg-transparent px-8 py-12 lg:flex-[1.3] lg:px-20 overflow-hidden">
           {/* Subtle Clinical Background */}
@@ -247,9 +253,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               Sign in to your clinical workspace.
             </p>
 
-            <div className="mt-10 rounded-xl border border-border/70 bg-card/90 p-8 shadow-lg backdrop-blur-md">
+            <div className="relative mt-10 overflow-hidden rounded-2xl border border-border/80 dark:border-white/[0.08] bg-card/90 p-8 shadow-xl backdrop-blur-2xl before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/20 dark:before:via-white/10 before:to-transparent">
               <Button
-                className="h-12 w-full border border-border/80 bg-secondary/80 text-base font-medium text-foreground shadow-sm transition-colors hover:border-primary/50 hover:bg-primary/10 rounded-md"
+                className="h-12 w-full rounded-xl border border-border/80 bg-secondary/80 text-sm font-semibold text-foreground shadow-sm transition-all duration-200 hover:border-primary/50 hover:bg-primary/10 active:scale-[0.98]"
                 variant="outline"
                 disabled={isLoggingIn}
                 onClick={handleLogin}
