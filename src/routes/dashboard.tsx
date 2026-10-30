@@ -143,9 +143,9 @@ function Dashboard() {
 
         <Link
           to="/patient"
-          className="group relative overflow-hidden flex items-center gap-3 rounded-2xl border border-border/70 dark:border-white/[0.07] bg-card/70 p-3.5 shadow-xs backdrop-blur-md transition-all duration-200 hover:-translate-y-[1px] hover:bg-card hover:border-blue-500/40 hover:shadow-sm active:scale-[0.98] before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/20 dark:before:via-white/10 before:to-transparent"
+          className="group relative overflow-hidden flex items-center gap-3 rounded-2xl border border-border/70 dark:border-white/[0.07] bg-card/70 p-3.5 shadow-xs backdrop-blur-md transition-all duration-200 hover:-translate-y-[1px] hover:bg-card hover:border-emerald-500/40 hover:shadow-sm active:scale-[0.98] before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/20 dark:before:via-white/10 before:to-transparent"
         >
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/25 shadow-xs transition-transform duration-200 group-hover:scale-105">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25 shadow-xs transition-transform duration-200 group-hover:scale-105">
             <UserRound className="h-5 w-5" />
           </div>
           <div className="min-w-0">
@@ -160,9 +160,9 @@ function Dashboard() {
 
         <Link
           to="/imaging"
-          className="group relative overflow-hidden flex items-center gap-3 rounded-2xl border border-border/70 dark:border-white/[0.07] bg-card/70 p-3.5 shadow-xs backdrop-blur-md transition-all duration-200 hover:-translate-y-[1px] hover:bg-card hover:border-sky-500/40 hover:shadow-sm active:scale-[0.98] before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/20 dark:before:via-white/10 before:to-transparent"
+          className="group relative overflow-hidden flex items-center gap-3 rounded-2xl border border-border/70 dark:border-white/[0.07] bg-card/70 p-3.5 shadow-xs backdrop-blur-md transition-all duration-200 hover:-translate-y-[1px] hover:bg-card hover:border-teal-500/40 hover:shadow-sm active:scale-[0.98] before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/20 dark:before:via-white/10 before:to-transparent"
         >
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sky-500/15 text-sky-600 dark:text-sky-400 border border-sky-500/25 shadow-xs transition-transform duration-200 group-hover:scale-105">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-teal-500/15 text-teal-600 dark:text-teal-400 border border-teal-500/25 shadow-xs transition-transform duration-200 group-hover:scale-105">
             <ImageIcon className="h-5 w-5" />
           </div>
           <div className="min-w-0">

@@ -21,6 +21,9 @@ import {
   Sparkles,
   Stethoscope,
   Target,
+  Orbit,
+  LayoutGrid,
+  Layers,
 } from "lucide-react";
 
 import { AppShell } from "@/components/app-shell";
@@ -28,6 +31,8 @@ import { GlassCard, SectionTitle } from "@/components/medical-ui";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CardContent, CardHeader } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { CircularAgentFlow } from "@/components/pipeline/circular-agent-flow";
 import {
   Select,
   SelectContent,
@@ -173,6 +178,7 @@ function PipelinePage() {
   const { running, statuses, result: liveResult } = run$;
   const [selectedConsultationId, setSelectedConsultationId] = useState<string>("standby");
   const [inspectedAgent, setInspectedAgent] = useState<AgentMeta | null>(null);
+  const [viewMode, setViewMode] = useState<"both" | "orbit" | "matrix">("both");
 
   // Determine active consultation data to display (null by default in clean standby mode)
   const activeConsultation = useMemo(() => {
@@ -364,9 +370,9 @@ function PipelinePage() {
           <div className="rounded-2xl border border-border/70 bg-card/60 p-4 shadow-sm backdrop-blur-md space-y-1">
             <div className="flex items-center justify-between text-muted-foreground">
               <span className="text-[0.68rem] font-semibold uppercase tracking-wider">Confidence Band</span>
-              <Sparkles className="h-4 w-4 text-cyan-500" />
+              <Sparkles className="h-4 w-4 text-violet-500" />
             </div>
-            <p className="font-display text-xl font-bold text-cyan-600 dark:text-cyan-400">
+            <p className="font-display text-xl font-bold text-violet-600 dark:text-violet-400">
               {activeResult?.confidence?.band ? activeResult.confidence.band.toUpperCase() : "STANDBY"}
             </p>
             <p className="text-[0.68rem] text-muted-foreground">
@@ -452,99 +458,141 @@ function PipelinePage() {
           </div>
         </GlassCard>
 
-        {/* Live Execution Grid */}
-        <GlassCard>
-          <CardHeader className="pb-3 border-b border-border/60">
-            <SectionTitle
-              icon={Activity}
-              title="Autonomous Clinical Pipeline Workflow"
-              hint="Click any agent to inspect its biomedical engine, inputs, and real execution telemetry"
-            />
-          </CardHeader>
+        {/* View Mode Toolbar */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <Badge variant="outline" className="text-xs font-mono border-primary/30 text-primary bg-primary/10">
+              Pipeline Visualizer
+            </Badge>
+            <span className="text-xs text-muted-foreground">
+              {viewMode === "both"
+                ? "Orbital consensus loop & phase telemetry matrix"
+                : viewMode === "orbit"
+                ? "Consensus circular orbit loop"
+                : "Phase column grid"}
+            </span>
+          </div>
 
-          <CardContent className="p-4 sm:p-6 space-y-5">
-            {/* Phase 1: Intake & Retrieval */}
-            <div className="space-y-2.5">
-              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/20 text-[0.65rem] text-primary font-bold">
-                  1
-                </span>
-                Intake & Evidence Retrieval
-              </div>
-              <div className="grid gap-3 sm:grid-cols-3">
-                {AGENT_PHASES.intake.map((id, idx) => {
-                  const meta = AGENTS.find((a) => a.id === id);
-                  const Icon = AGENT_ICONS[id] || Brain;
-                  const st = getRealAgentSummary(id);
-                  return (
-                    <RealAgentCard
-                      key={id}
-                      index={idx + 1}
-                      meta={meta!}
-                      Icon={Icon}
-                      state={st}
-                      onClick={() => setInspectedAgent(meta!)}
-                    />
-                  );
-                })}
-              </div>
-            </div>
+          <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as typeof viewMode)}>
+            <TabsList className="h-8">
+              <TabsTrigger value="both" className="text-xs px-2.5 gap-1.5">
+                <Layers className="h-3.5 w-3.5" /> Both
+              </TabsTrigger>
+              <TabsTrigger value="orbit" className="text-xs px-2.5 gap-1.5">
+                <Orbit className="h-3.5 w-3.5" /> Orbit Flow
+              </TabsTrigger>
+              <TabsTrigger value="matrix" className="text-xs px-2.5 gap-1.5">
+                <LayoutGrid className="h-3.5 w-3.5" /> Phase Grid
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
 
-            {/* Phase 2: Reasoning & Multimodal Synthesis */}
-            <div className="space-y-2.5 pt-2">
-              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/20 text-[0.65rem] text-primary font-bold">
-                  2
-                </span>
-                Multimodal Reasoning & Differential Diagnosis
-              </div>
-              <div className="grid gap-3 sm:grid-cols-3">
-                {AGENT_PHASES.reasoning.map((id, idx) => {
-                  const meta = AGENTS.find((a) => a.id === id);
-                  const Icon = AGENT_ICONS[id] || Brain;
-                  const st = getRealAgentSummary(id);
-                  return (
-                    <RealAgentCard
-                      key={id}
-                      index={idx + 4}
-                      meta={meta!}
-                      Icon={Icon}
-                      state={st}
-                      onClick={() => setInspectedAgent(meta!)}
-                    />
-                  );
-                })}
-              </div>
-            </div>
+        {/* 1. Circular Consensus Flow (when viewMode is "both" or "orbit") */}
+        {(viewMode === "both" || viewMode === "orbit") && (
+          <CircularAgentFlow
+            onSelectAgent={setInspectedAgent}
+            getAgentSummary={getRealAgentSummary}
+            isRunning={running}
+            selectedCaseQuestion={activeConsultation?.question}
+          />
+        )}
 
-            {/* Phase 3: Safety, Verification & Report */}
-            <div className="space-y-2.5 pt-2">
-              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/20 text-[0.65rem] text-primary font-bold">
-                  3
-                </span>
-                Safety Verification & Report Generation
+        {/* 2. Linear / Phase Matrix Execution Grid (when viewMode is "both" or "matrix") */}
+        {(viewMode === "both" || viewMode === "matrix") && (
+          <GlassCard>
+            <CardHeader className="pb-3 border-b border-border/60">
+              <SectionTitle
+                icon={Activity}
+                title="Autonomous Clinical Pipeline Workflow"
+                hint="Click any agent to inspect its biomedical engine, inputs, and real execution telemetry"
+              />
+            </CardHeader>
+
+            <CardContent className="p-4 sm:p-6 space-y-5">
+              {/* Phase 1: Intake & Retrieval */}
+              <div className="space-y-2.5">
+                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/20 text-[0.65rem] text-primary font-bold">
+                    1
+                  </span>
+                  Intake & Evidence Retrieval
+                </div>
+                <div className="grid gap-3 sm:grid-cols-3">
+                  {AGENT_PHASES.intake.map((id, idx) => {
+                    const meta = AGENTS.find((a) => a.id === id);
+                    const Icon = AGENT_ICONS[id] || Brain;
+                    const st = getRealAgentSummary(id);
+                    return (
+                      <RealAgentCard
+                        key={id}
+                        index={idx + 1}
+                        meta={meta!}
+                        Icon={Icon}
+                        state={st}
+                        onClick={() => setInspectedAgent(meta!)}
+                      />
+                    );
+                  })}
+                </div>
               </div>
-              <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
-                {AGENT_PHASES.verification.map((id, idx) => {
-                  const meta = AGENTS.find((a) => a.id === id);
-                  const Icon = AGENT_ICONS[id] || Brain;
-                  const st = getRealAgentSummary(id);
-                  return (
-                    <RealAgentCard
-                      key={id}
-                      index={idx + 7}
-                      meta={meta!}
-                      Icon={Icon}
-                      state={st}
-                      onClick={() => setInspectedAgent(meta!)}
-                    />
-                  );
-                })}
+
+              {/* Phase 2: Reasoning & Multimodal Synthesis */}
+              <div className="space-y-2.5 pt-2">
+                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/20 text-[0.65rem] text-primary font-bold">
+                    2
+                  </span>
+                  Multimodal Reasoning & Differential Diagnosis
+                </div>
+                <div className="grid gap-3 sm:grid-cols-3">
+                  {AGENT_PHASES.reasoning.map((id, idx) => {
+                    const meta = AGENTS.find((a) => a.id === id);
+                    const Icon = AGENT_ICONS[id] || Brain;
+                    const st = getRealAgentSummary(id);
+                    return (
+                      <RealAgentCard
+                        key={id}
+                        index={idx + 4}
+                        meta={meta!}
+                        Icon={Icon}
+                        state={st}
+                        onClick={() => setInspectedAgent(meta!)}
+                      />
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </GlassCard>
+
+              {/* Phase 3: Safety, Verification & Report */}
+              <div className="space-y-2.5 pt-2">
+                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/20 text-[0.65rem] text-primary font-bold">
+                    3
+                  </span>
+                  Safety Verification & Report Generation
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+                  {AGENT_PHASES.verification.map((id, idx) => {
+                    const meta = AGENTS.find((a) => a.id === id);
+                    const Icon = AGENT_ICONS[id] || Brain;
+                    const st = getRealAgentSummary(id);
+                    return (
+                      <RealAgentCard
+                        key={id}
+                        index={idx + 7}
+                        meta={meta!}
+                        Icon={Icon}
+                        state={st}
+                        onClick={() => setInspectedAgent(meta!)}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+            </CardContent>
+          </GlassCard>
+        )}
 
         {/* Empty state prompt if zero consultations exist yet */}
         {(!consultations || consultations.length === 0) && !running && (

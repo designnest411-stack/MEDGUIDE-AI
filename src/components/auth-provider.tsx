@@ -180,11 +180,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               {/* Knowledge Graph */}
               <div className="relative overflow-hidden rounded-xl border border-border/80 bg-card/90 p-4 shadow-sm backdrop-blur-md">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-white shadow-sm">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-600 text-white shadow-sm">
                     <GitBranch className="h-5 w-5" />
                   </div>
                   <div>
-                    <span className="font-mono text-[0.62rem] uppercase tracking-wider text-blue-600 dark:text-blue-400 font-semibold">
+                    <span className="font-mono text-[0.62rem] uppercase tracking-wider text-emerald-600 dark:text-emerald-400 font-semibold">
                       Ontology Graph
                     </span>
                     <p className="font-display text-sm font-bold tracking-tight text-foreground">

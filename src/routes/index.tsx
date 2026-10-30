@@ -145,7 +145,7 @@ function ClinicalGateway() {
               </div>
 
               <div className="rounded-xl border border-border/70 bg-card/60 p-3 backdrop-blur-sm">
-                <div className="flex items-center gap-2 text-sky-600 dark:text-sky-400 text-xs font-semibold">
+                <div className="flex items-center gap-2 text-teal-600 dark:text-teal-400 text-xs font-semibold">
                   <ImageIcon className="h-4 w-4" />
                   Chest X-Ray CAM
                 </div>
