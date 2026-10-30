@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import type { DrugFinding, EvidenceSource } from "@/lib/agents/types";
 
 export const searchLiterature = createServerFn({ method: "POST" })
-  .inputValidator((input: { query: string }) => input)
+  .validator((input: { query: string }) => input)
   .handler(async ({ data }): Promise<{ pubmed: EvidenceSource[]; who: EvidenceSource[] }> => {
     const {
       searchPubMed,
@@ -32,7 +32,7 @@ export const searchLiterature = createServerFn({ method: "POST" })
   });
 
 export const checkDrugs = createServerFn({ method: "POST" })
-  .inputValidator((input: { drugs: string[] }) => input)
+  .validator((input: { drugs: string[] }) => input)
   .handler(
     async ({
       data,

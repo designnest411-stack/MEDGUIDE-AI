@@ -106,7 +106,9 @@ export function AppSidebar() {
                     )}
                     <item.icon
                       className={`h-4 w-4 shrink-0 transition-transform duration-200 group-hover/nav:scale-110 ${
-                        active ? "text-primary" : "text-muted-foreground group-hover/nav:text-foreground"
+                        active
+                          ? "text-primary"
+                          : "text-muted-foreground group-hover/nav:text-foreground"
                       }`}
                     />
                     <span className="truncate flex-1">{item.title}</span>
@@ -128,7 +130,10 @@ export function AppSidebar() {
   );
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-sidebar-border bg-sidebar/95 backdrop-blur-xl">
+    <Sidebar
+      collapsible="icon"
+      className="border-r border-sidebar-border bg-sidebar/95 backdrop-blur-xl"
+    >
       {/* Sidebar Header Brand */}
       <SidebarHeader className="border-b border-sidebar-border/60 p-3">
         <Link

@@ -225,7 +225,10 @@ function ReportsPage() {
                     Saved Consultations
                   </span>
                 </div>
-                <Badge variant="outline" className="text-[0.68rem] font-mono border-primary/30 text-primary">
+                <Badge
+                  variant="outline"
+                  className="text-[0.68rem] font-mono border-primary/30 text-primary"
+                >
                   {reports.length} Total
                 </Badge>
               </div>
@@ -357,8 +360,8 @@ function ReportsPage() {
                           structured.confidenceBand === "High"
                             ? "border-emerald-500/40 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10"
                             : structured.confidenceBand === "Medium"
-                            ? "border-amber-500/40 text-amber-600 dark:text-amber-400 bg-amber-500/10"
-                            : "border-slate-500/40 text-slate-600 bg-slate-500/10"
+                              ? "border-amber-500/40 text-amber-600 dark:text-amber-400 bg-amber-500/10"
+                              : "border-slate-500/40 text-slate-600 bg-slate-500/10"
                         }`}
                       >
                         Confidence: {structured.confidenceBand}
@@ -374,7 +377,10 @@ function ReportsPage() {
 
                   {/* Actions Toolbar */}
                   <div className="flex flex-wrap items-center gap-2">
-                    <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as typeof activeTab)}>
+                    <Tabs
+                      value={activeTab}
+                      onValueChange={(v) => setActiveTab(v as typeof activeTab)}
+                    >
                       <TabsList className="h-8">
                         <TabsTrigger value="structured" className="text-xs px-2.5">
                           Clinical Chart
@@ -451,7 +457,10 @@ function ReportsPage() {
                             <span className="font-medium text-foreground">
                               {selected.patientName || "Clinical Vignette"}
                             </span>{" "}
-                            · Document: <span className="font-mono text-[0.7rem]">{selected.id?.slice(0, 10) || "REP-AUDIT"}</span>
+                            · Document:{" "}
+                            <span className="font-mono text-[0.7rem]">
+                              {selected.id?.slice(0, 10) || "REP-AUDIT"}
+                            </span>
                           </p>
                         </div>
                       </div>
@@ -537,8 +546,8 @@ function ReportsPage() {
                                   isHigh
                                     ? "border-emerald-500/40 bg-emerald-500/5 dark:bg-emerald-950/15"
                                     : isMod
-                                    ? "border-amber-500/40 bg-amber-500/5 dark:bg-amber-950/15"
-                                    : "border-border/70 bg-card/40"
+                                      ? "border-amber-500/40 bg-amber-500/5 dark:bg-amber-950/15"
+                                      : "border-border/70 bg-card/40"
                                 }`}
                               >
                                 <div className="flex flex-wrap items-center justify-between gap-2">
@@ -555,8 +564,8 @@ function ReportsPage() {
                                       isHigh
                                         ? "bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border-emerald-500/30"
                                         : isMod
-                                        ? "bg-amber-500/20 text-amber-700 dark:text-amber-300 border-amber-500/30"
-                                        : "bg-slate-500/20 text-slate-700 dark:text-slate-300 border-slate-500/30"
+                                          ? "bg-amber-500/20 text-amber-700 dark:text-amber-300 border-amber-500/30"
+                                          : "bg-slate-500/20 text-slate-700 dark:text-slate-300 border-slate-500/30"
                                     }`}
                                   >
                                     {d.likelihoodText}
@@ -594,7 +603,9 @@ function ReportsPage() {
                                 <div className="flex items-center gap-2">
                                   <AlertTriangle
                                     className={`h-4 w-4 shrink-0 ${
-                                      ds.isContraindicated ? "text-destructive" : "text-amber-600 dark:text-amber-400"
+                                      ds.isContraindicated
+                                        ? "text-destructive"
+                                        : "text-amber-600 dark:text-amber-400"
                                     }`}
                                   />
                                   <span className="font-display text-xs font-bold text-foreground">
@@ -609,7 +620,9 @@ function ReportsPage() {
                                       : "border-amber-500/40 text-amber-600"
                                   }`}
                                 >
-                                  {ds.isContraindicated ? "Contraindicated / High Alert" : "Safety Advisory"}
+                                  {ds.isContraindicated
+                                    ? "Contraindicated / High Alert"
+                                    : "Safety Advisory"}
                                 </Badge>
                               </div>
                               <p className="text-xs leading-relaxed text-foreground/90">
@@ -634,9 +647,7 @@ function ReportsPage() {
                               key={i}
                               className="rounded-xl border border-border/70 bg-card/40 p-3.5 space-y-1"
                             >
-                              <p className="text-xs font-bold text-foreground">
-                                {eb.topic}
-                              </p>
+                              <p className="text-xs font-bold text-foreground">{eb.topic}</p>
                               <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
                                 {renderTextWithCitations(eb.content)}
                               </p>
@@ -725,7 +736,11 @@ function ReportsPage() {
                       components={{
                         // Enhance inline citation tags in markdown
                         p({ children }) {
-                          return <p className="my-2 leading-relaxed">{renderChildrenWithCitations(children)}</p>;
+                          return (
+                            <p className="my-2 leading-relaxed">
+                              {renderChildrenWithCitations(children)}
+                            </p>
+                          );
                         },
                         li({ children }) {
                           return <li className="my-1">{renderChildrenWithCitations(children)}</li>;
@@ -750,10 +765,10 @@ function ReportsPage() {
  */
 function renderTextWithCitations(text: string) {
   if (!text) return null;
-  const parts = text.split(/(\[(?:pmid:\d+|fda:[\w\-]+|epmc:[\w\-]+)\])/gi);
+  const parts = text.split(/(\[(?:pmid:\d+|fda:[\w-]+|epmc:[\w-]+)\])/gi);
 
   return parts.map((part, index) => {
-    if (/^\[(pmid:\d+|fda:[\w\-]+|epmc:[\w\-]+)\]$/i.test(part)) {
+    if (/^\[(pmid:\d+|fda:[\w-]+|epmc:[\w-]+)\]$/i.test(part)) {
       const { url, type } = getCitationUrl(part);
       return (
         <a

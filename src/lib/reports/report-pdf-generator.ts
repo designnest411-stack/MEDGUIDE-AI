@@ -14,10 +14,7 @@
 import jsPDF from "jspdf";
 import QRCode from "qrcode";
 
-import {
-  type StructuredClinicalReport,
-  parseClinicalReport,
-} from "./clinical-report-parser";
+import { type StructuredClinicalReport, parseClinicalReport } from "./clinical-report-parser";
 
 export interface PdfExportOptions {
   title: string;
@@ -48,7 +45,7 @@ export function sanitizeMedicalText(text: string): string {
     .replace(/±/g, "+/-")
     .replace(/°C/g, " deg C")
     .replace(/°/g, " deg ")
-    .replace(/[^\x00-\x7F]/g, " ")
+    .replace(/[^\x20-\x7E\t\n\r]/g, " ")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -82,7 +79,10 @@ export async function generateClinicalReportPdf(options: PdfExportOptions): Prom
   let estimatedHeight = 110; // Top banner (44pt) + Patient Card (54pt) + Margins
 
   if (structured.patientSummary) {
-    const lines = doc.splitTextToSize(sanitizeMedicalText(structured.patientSummary), contentWidth - 14) as string[];
+    const lines = doc.splitTextToSize(
+      sanitizeMedicalText(structured.patientSummary),
+      contentWidth - 14,
+    ) as string[];
     estimatedHeight += lines.length * 9.5 + 24;
   }
 
@@ -93,7 +93,10 @@ export async function generateClinicalReportPdf(options: PdfExportOptions): Prom
   if (structured.differentials.length > 0) {
     let diffsH = 16;
     for (const d of structured.differentials) {
-      const ratLines = doc.splitTextToSize(sanitizeMedicalText(d.rationale), contentWidth - 16) as string[];
+      const ratLines = doc.splitTextToSize(
+        sanitizeMedicalText(d.rationale),
+        contentWidth - 16,
+      ) as string[];
       diffsH += 14 + ratLines.length * 8.5 + (d.citations.length ? 9 : 0) + 4;
     }
     estimatedHeight += diffsH;
@@ -102,7 +105,10 @@ export async function generateClinicalReportPdf(options: PdfExportOptions): Prom
   if (structured.drugSafety.length > 0) {
     let drugsH = 16;
     for (const ds of structured.drugSafety) {
-      const warnLines = doc.splitTextToSize(sanitizeMedicalText(ds.warning), contentWidth - 16) as string[];
+      const warnLines = doc.splitTextToSize(
+        sanitizeMedicalText(ds.warning),
+        contentWidth - 16,
+      ) as string[];
       drugsH += 12 + warnLines.length * 8 + 4;
     }
     estimatedHeight += drugsH;
@@ -113,7 +119,10 @@ export async function generateClinicalReportPdf(options: PdfExportOptions): Prom
   }
 
   if (structured.confidenceExplanation) {
-    const confLines = doc.splitTextToSize(sanitizeMedicalText(structured.confidenceExplanation), contentWidth - 14) as string[];
+    const confLines = doc.splitTextToSize(
+      sanitizeMedicalText(structured.confidenceExplanation),
+      contentWidth - 14,
+    ) as string[];
     estimatedHeight += 16 + confLines.length * 8.5 + 8;
   }
 
@@ -156,7 +165,10 @@ export async function generateClinicalReportPdf(options: PdfExportOptions): Prom
     doc.text(`ID: ${reportDocId}`, pageWidth - margin - 150, isPageOne ? 33 : 26);
   }
 
-  function ensureSpace(neededHeight: number, continuationTitle = "CLINICAL CONSULTATION REPORT (CONTINUED)") {
+  function ensureSpace(
+    neededHeight: number,
+    continuationTitle = "CLINICAL CONSULTATION REPORT (CONTINUED)",
+  ) {
     if (!isSinglePage && y + neededHeight > pageHeight - 34) {
       doc.addPage();
       drawHeaderBanner(continuationTitle, false);
@@ -203,7 +215,8 @@ export async function generateClinicalReportPdf(options: PdfExportOptions): Prom
     doc.setTextColor(71, 85, 105);
     const patientText = `Patient Context: ${patientName || "Clinical Vignette"} · Generated: ${consultDate}`;
     const cleanPatient = sanitizeMedicalText(patientText);
-    const displayPatient = cleanPatient.length > 85 ? `${cleanPatient.slice(0, 82)}...` : cleanPatient;
+    const displayPatient =
+      cleanPatient.length > 85 ? `${cleanPatient.slice(0, 82)}...` : cleanPatient;
     doc.text(displayPatient, margin + 9, y + 27);
 
     // Status Badges (Confidence & Evidence)
@@ -375,7 +388,11 @@ export async function generateClinicalReportPdf(options: PdfExportOptions): Prom
         doc.setFont("helvetica", "bold");
         doc.setFontSize(6);
         doc.setTextColor(2, 132, 199);
-        doc.text(`Evidence: ${d.citations.join(" · ")}`, margin + 8, y + 20 + ratLines.length * 8.5);
+        doc.text(
+          `Evidence: ${d.citations.join(" · ")}`,
+          margin + 8,
+          y + 20 + ratLines.length * 8.5,
+        );
       }
 
       y += cardHeight + 4;
@@ -550,7 +567,11 @@ export async function generateClinicalReportPdf(options: PdfExportOptions): Prom
 
     doc.setFontSize(5.5);
     doc.setTextColor(148, 163, 184);
-    doc.text("Clinical decision support advisory only: requires independent clinical validation prior to care delivery.", margin + 8, y + 30);
+    doc.text(
+      "Clinical decision support advisory only: requires independent clinical validation prior to care delivery.",
+      margin + 8,
+      y + 30,
+    );
 
     y += 38;
   }
@@ -570,7 +591,6 @@ export async function generateClinicalReportPdf(options: PdfExportOptions): Prom
     renderConfidenceLimitations();
     renderReferencesGrid();
     renderClinicianAttestation();
-
   } else if (structured.isStructured) {
     // --- INTENTIONAL 2-PAGE DOSSIER LAYOUT ---
     // PAGE 1: Clinical Diagnostic Assessment
@@ -601,7 +621,6 @@ export async function generateClinicalReportPdf(options: PdfExportOptions): Prom
     renderConfidenceLimitations();
     renderReferencesGrid();
     renderClinicianAttestation();
-
   } else {
     // Fallback for unstructured text reports
     drawHeaderBanner("CLINICAL CONSULTATION REPORT", true);
@@ -616,7 +635,10 @@ export async function generateClinicalReportPdf(options: PdfExportOptions): Prom
     const strippedText = sanitizeMedicalText(
       markdown
         .replace(/^#+\s+[^\n]+/m, "")
-        .replace(/^(?:clinical support report|clinical consultation report|clinical report contents)[^\n]*/im, "")
+        .replace(
+          /^(?:clinical support report|clinical consultation report|clinical report contents)[^\n]*/im,
+          "",
+        )
         .replace(/[#*`]/g, "")
         .trim(),
     );

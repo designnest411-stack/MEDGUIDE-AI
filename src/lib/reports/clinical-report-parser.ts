@@ -51,35 +51,50 @@ export interface StructuredClinicalReport {
  * Extracts PubMed IDs, FDA labels, and Europe PMC identifiers from markdown text
  */
 export function extractCitations(text: string): string[] {
-  const matches = text.match(/\[(pmid:\d+|fda:[\w\-]+|epmc:[\w\-]+)\]/gi);
+  const matches = text.match(/\[(pmid:\d+|fda:[\w-]+|epmc:[\w-]+)\]/gi);
   return matches ? Array.from(new Set(matches.map((m) => m.replace(/[[\]]/g, "")))) : [];
 }
 
 /**
  * Converts a citation string (e.g. pmid:31573350 or fda:Amlodipine) into a verified external URL
  */
-export function getCitationUrl(citation: string): { url: string; type: "pubmed" | "fda" | "epmc" | "other" } {
+export function getCitationUrl(citation: string): {
+  url: string;
+  type: "pubmed" | "fda" | "epmc" | "other";
+} {
   const clean = citation.trim().replace(/^\[|\]$/g, "");
   const pmidMatch = clean.match(/^pmid:\s*(\d+)/i);
   if (pmidMatch && pmidMatch[1]) {
     return { url: `https://pubmed.ncbi.nlm.nih.gov/${pmidMatch[1]}/`, type: "pubmed" };
   }
-  const fdaMatch = clean.match(/^fda:\s*([\w\-]+)/i);
+  const fdaMatch = clean.match(/^fda:\s*([\w-]+)/i);
   if (fdaMatch && fdaMatch[1]) {
-    return { url: `https://drugs.ncats.io/substances?q=${encodeURIComponent(fdaMatch[1])}`, type: "fda" };
+    return {
+      url: `https://drugs.ncats.io/substances?q=${encodeURIComponent(fdaMatch[1])}`,
+      type: "fda",
+    };
   }
-  const epmcMatch = clean.match(/^epmc:\s*([\w\-]+)/i);
+  const epmcMatch = clean.match(/^epmc:\s*([\w-]+)/i);
   if (epmcMatch && epmcMatch[1]) {
-    return { url: `https://europepmc.org/article/MED/${epmcMatch[1].replace(/^MED/i, "")}`, type: "epmc" };
+    return {
+      url: `https://europepmc.org/article/MED/${epmcMatch[1].replace(/^MED/i, "")}`,
+      type: "epmc",
+    };
   }
-  return { url: `https://pubmed.ncbi.nlm.nih.gov/?term=${encodeURIComponent(clean)}`, type: "other" };
+  return {
+    url: `https://pubmed.ncbi.nlm.nih.gov/?term=${encodeURIComponent(clean)}`,
+    type: "other",
+  };
 }
 
 /**
  * Parses markdown into structured hospital clinical consultation blocks.
  * Robust against variations in LLM formatting (## Header, ### Header, **Header**, Header:, 1. Header).
  */
-export function parseClinicalReport(markdown: string, fallbackTitle = "Clinical Support Report"): StructuredClinicalReport {
+export function parseClinicalReport(
+  markdown: string,
+  fallbackTitle = "Clinical Support Report",
+): StructuredClinicalReport {
   const result: StructuredClinicalReport = {
     title: fallbackTitle,
     patientSummary: "",
@@ -110,7 +125,8 @@ export function parseClinicalReport(markdown: string, fallbackTitle = "Clinical 
 
   // Regex matching all canonical clinical section headers in various markdown/text syntaxes:
   // e.g. "## Patient Summary", "### Clinical Findings", "**Differential Assessment**", "Drug Safety:"
-  const SECTION_HEADER_REGEX = /(?:^|\n)(?:[#*\d\s\.\)\-:–—]+)?(Patient Summary|Patient Presentation|Case Summary|Clinical Presentation|Clinical Summary|Clinical Findings|Objective Findings|Physical Examination|Diagnostic Findings|Differential Assessment|Differential Diagnos(?:is|es)|Differentials|Diagnostic Impressions?|Evidence Base|Biomedical Evidence|Clinical Guidelines|Literature Base|Drug Safety|Pharmacovigilance|Medication Safety|Drug Interactions|Imaging Findings|Imaging|Radiology|Chest X-Ray|Confidence and Limitations|Confidence & Limitations|Confidence Calibration|Confidence|Limitations|References|Audited References|Citations|Bibliography)(?:[*:\s\.\)\-:–—]+(?:\n|$)|(?:\n|$))/gi;
+  const SECTION_HEADER_REGEX =
+    /(?:^|\n)(?:[#*\d\s.)\-:–—]+)?(Patient Summary|Patient Presentation|Case Summary|Clinical Presentation|Clinical Summary|Clinical Findings|Objective Findings|Physical Examination|Diagnostic Findings|Differential Assessment|Differential Diagnos(?:is|es)|Differentials|Diagnostic Impressions?|Evidence Base|Biomedical Evidence|Clinical Guidelines|Literature Base|Drug Safety|Pharmacovigilance|Medication Safety|Drug Interactions|Imaging Findings|Imaging|Radiology|Chest X-Ray|Confidence and Limitations|Confidence & Limitations|Confidence Calibration|Confidence|Limitations|References|Audited References|Citations|Bibliography)(?:[*:\s.)\-:–—]+(?:\n|$)|(?:\n|$))/gi;
 
   const matches: Array<{ name: string; startIndex: number; bodyStart: number }> = [];
   let match: RegExpExecArray | null;
@@ -133,7 +149,9 @@ export function parseClinicalReport(markdown: string, fallbackTitle = "Clinical 
       for (const rawSec of legacySections) {
         if (!rawSec.trim()) continue;
         const newlineIdx = rawSec.indexOf("\n");
-        const header = (newlineIdx > -1 ? rawSec.slice(0, newlineIdx) : rawSec).trim().toLowerCase();
+        const header = (newlineIdx > -1 ? rawSec.slice(0, newlineIdx) : rawSec)
+          .trim()
+          .toLowerCase();
         const body = (newlineIdx > -1 ? rawSec.slice(newlineIdx) : "").trim();
         parseSectionBody(header, body, result);
       }
@@ -144,16 +162,19 @@ export function parseClinicalReport(markdown: string, fallbackTitle = "Clinical 
       for (const line of lines) {
         const trimmed = line.trim();
         if (!trimmed) continue;
-        if (/^\[(pmid:\d+|fda:[\w\-]+|epmc:[\w\-]+)\]/i.test(trimmed)) {
+        if (/^\[(pmid:\d+|fda:[\w-]+|epmc:[\w-]+)\]/i.test(trimmed)) {
           const match = trimmed.match(/^(\[[^\]]+\])\s*(.+)$/);
           if (match && match[1] && match[2]) {
             const { url, type } = getCitationUrl(match[1]);
             result.references.push({ key: match[1], citation: match[2], url, sourceType: type });
           }
           result.isStructured = true;
-        } else if (/^\d+[\.\)]\s+[^:]+:\s*(?:high|moderate|low|unlikely|possible)/i.test(trimmed)) {
+        } else if (/^\d+[.)]\s+[^:]+:\s*(?:high|moderate|low|unlikely|possible)/i.test(trimmed)) {
           const colonIdx = trimmed.indexOf(":");
-          const condition = trimmed.slice(0, colonIdx).replace(/^\d+[\.\)]\s*/, "").trim();
+          const condition = trimmed
+            .slice(0, colonIdx)
+            .replace(/^\d+[.)]\s*/, "")
+            .trim();
           const remainder = trimmed.slice(colonIdx + 1).trim();
           let likelihood: "High" | "Moderate" | "Low" | "Unknown" = "Unknown";
           if (/high/i.test(remainder)) likelihood = "High";
@@ -167,7 +188,11 @@ export function parseClinicalReport(markdown: string, fallbackTitle = "Clinical 
             citations: extractCitations(trimmed),
           });
           result.isStructured = true;
-        } else if (/^(?:bp|blood pressure|hr|heart rate|temp|spo2|rr|resp|wbc|crp|labs?|vitals?):/i.test(trimmed)) {
+        } else if (
+          /^(?:bp|blood pressure|hr|heart rate|temp|spo2|rr|resp|wbc|crp|labs?|vitals?):/i.test(
+            trimmed,
+          )
+        ) {
           const colonIdx = trimmed.indexOf(":");
           result.findings.push({
             label: trimmed.slice(0, colonIdx).trim(),
@@ -224,7 +249,7 @@ function parseSectionBody(header: string, body: string, result: StructuredClinic
     result.isStructured = true;
     const lines = body.split("\n");
     for (const line of lines) {
-      const cleaned = line.replace(/^(?:\d+[\.\)]\s*|[-*•]\s*)/, "").trim();
+      const cleaned = line.replace(/^(?:\d+[.)]\s*|[-*•]\s*)/, "").trim();
       if (!cleaned) continue;
       const colonIdx = cleaned.indexOf(":");
       if (colonIdx > -1) {
@@ -250,7 +275,7 @@ function parseSectionBody(header: string, body: string, result: StructuredClinic
     result.isStructured = true;
     const lines = body.split("\n");
     for (const line of lines) {
-      const cleaned = line.replace(/^(?:\d+[\.\)]\s*|[-*•]\s*)/, "").trim();
+      const cleaned = line.replace(/^(?:\d+[.)]\s*|[-*•]\s*)/, "").trim();
       if (!cleaned) continue;
 
       let condition = "";
@@ -298,7 +323,7 @@ function parseSectionBody(header: string, body: string, result: StructuredClinic
     result.isStructured = true;
     const lines = body.split("\n");
     for (const line of lines) {
-      const cleaned = line.replace(/^(?:\d+[\.\)]\s*|[-*•]\s*)/, "").trim();
+      const cleaned = line.replace(/^(?:\d+[.)]\s*|[-*•]\s*)/, "").trim();
       if (!cleaned) continue;
       const colonIdx = cleaned.indexOf(":");
       if (colonIdx > -1) {
@@ -325,7 +350,7 @@ function parseSectionBody(header: string, body: string, result: StructuredClinic
     result.isStructured = true;
     const lines = body.split("\n");
     for (const line of lines) {
-      const cleaned = line.replace(/^(?:\d+[\.\)]\s*|[-*•]\s*)/, "").trim();
+      const cleaned = line.replace(/^(?:\d+[.)]\s*|[-*•]\s*)/, "").trim();
       if (!cleaned) continue;
       const colonIdx = cleaned.indexOf(":");
       let drug = "Medication";
@@ -334,7 +359,10 @@ function parseSectionBody(header: string, body: string, result: StructuredClinic
         drug = cleaned.slice(0, colonIdx).replace(/\*\*/g, "").trim();
         warning = cleaned.slice(colonIdx + 1).trim();
       }
-      const isContraindicated = /contraindicated|black box|severe|fatal|avoid|toxicity|renal failure|impairment/i.test(warning);
+      const isContraindicated =
+        /contraindicated|black box|severe|fatal|avoid|toxicity|renal failure|impairment/i.test(
+          warning,
+        );
       const citations = extractCitations(cleaned);
       result.drugSafety.push({
         drug,
@@ -354,10 +382,7 @@ function parseSectionBody(header: string, body: string, result: StructuredClinic
     result.imagingFindings = body;
   }
   // 7. Confidence and Limitations
-  else if (
-    normHeader.includes("confidence") ||
-    normHeader.includes("limitation")
-  ) {
+  else if (normHeader.includes("confidence") || normHeader.includes("limitation")) {
     result.isStructured = true;
     if (/confidence:\s*high/i.test(body)) result.confidenceBand = "High";
     else if (/confidence:\s*medium|moderate/i.test(body)) result.confidenceBand = "Medium";
@@ -383,7 +408,7 @@ function parseSectionBody(header: string, body: string, result: StructuredClinic
     result.isStructured = true;
     const lines = body.split("\n");
     for (const line of lines) {
-      const cleaned = line.replace(/^(?:\d+[\.\)]\s*|[-*•]\s*)/, "").trim();
+      const cleaned = line.replace(/^(?:\d+[.)]\s*|[-*•]\s*)/, "").trim();
       if (!cleaned) continue;
       const match = cleaned.match(/^(\[[^\]]+\])\s*(.+)$/);
       if (match && match[1] && match[2]) {
@@ -411,7 +436,11 @@ function parseSectionBody(header: string, body: string, result: StructuredClinic
 /**
  * Generates an Electronic Health Record (EHR / Epic / Cerner) formatted plain text summary
  */
-export function generateEhrSummary(report: StructuredClinicalReport, patientName?: string, dateStr?: string): string {
+export function generateEhrSummary(
+  report: StructuredClinicalReport,
+  patientName?: string,
+  dateStr?: string,
+): string {
   const lines: string[] = [
     "==================================================================",
     "MEDGUIDE AI CLINICAL DECISION SUPPORT CONSULTATION SUMMARY",

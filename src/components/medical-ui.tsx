@@ -84,7 +84,8 @@ export function Rule({ label }: { label?: string }) {
 
 const BAND_STYLES: Record<ConfidenceBand, string> = {
   High: "border-emerald-500/35 bg-emerald-500/12 text-emerald-700 dark:text-emerald-300 shadow-xs shadow-emerald-500/10",
-  Medium: "border-sky-500/35 bg-sky-500/12 text-sky-700 dark:text-sky-300 shadow-xs shadow-sky-500/10",
+  Medium:
+    "border-sky-500/35 bg-sky-500/12 text-sky-700 dark:text-sky-300 shadow-xs shadow-sky-500/10",
   Low: "border-amber-500/35 bg-amber-500/12 text-amber-700 dark:text-amber-300 shadow-xs shadow-amber-500/10",
   "Insufficient evidence": "border-muted-foreground/30 bg-muted/60 text-muted-foreground",
 };

@@ -1,14 +1,7 @@
 import React from "react";
 import type { User } from "firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
-import {
-  Brain,
-  Loader2,
-  Library,
-  GitBranch,
-  ShieldCheck,
-  ScanEye,
-} from "lucide-react";
+import { Brain, Loader2, Library, GitBranch, ShieldCheck, ScanEye } from "lucide-react";
 
 import { auth, loginWithGoogle, getRedirectResult } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
@@ -296,11 +289,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             </div>
 
             <div className="mt-8 flex items-center justify-center gap-4 text-xs text-muted-foreground">
-              <Link to="/privacy" className="hover:text-foreground transition-colors underline-offset-4 hover:underline">
+              <Link
+                to="/privacy"
+                className="hover:text-foreground transition-colors underline-offset-4 hover:underline"
+              >
                 Privacy Policy
               </Link>
               <span>•</span>
-              <Link to="/terms" className="hover:text-foreground transition-colors underline-offset-4 hover:underline">
+              <Link
+                to="/terms"
+                className="hover:text-foreground transition-colors underline-offset-4 hover:underline"
+              >
                 Terms and Conditions
               </Link>
             </div>

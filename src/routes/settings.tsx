@@ -29,12 +29,14 @@ export const Route = createFileRoute("/settings")({
       { title: "Clinical Workspace Settings : MEDGUIDE AI" },
       {
         name: "description",
-        content: "Manage clinician profile, display preferences, clinical safety parameters, and cloud records.",
+        content:
+          "Manage clinician profile, display preferences, clinical safety parameters, and cloud records.",
       },
       { property: "og:title", content: "Clinical Workspace Settings : MEDGUIDE AI" },
       {
         property: "og:description",
-        content: "Clinician profile, workspace preferences, and clinical decision support controls.",
+        content:
+          "Clinician profile, workspace preferences, and clinical decision support controls.",
       },
     ],
   }),
@@ -91,7 +93,9 @@ function SettingsPage() {
                   <h3 className="text-sm font-semibold text-foreground">
                     {user?.displayName || "Licensed Healthcare Professional"}
                   </h3>
-                  <p className="text-xs text-muted-foreground">{user?.email || "clinical-workspace@medguide.ai"}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {user?.email || "clinical-workspace@medguide.ai"}
+                  </p>
                   <div className="mt-1 flex items-center gap-2">
                     <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[0.65rem] font-medium text-emerald-600 dark:text-emerald-400">
                       <CheckCircle2 className="h-3 w-3" /> Active Secure Session
@@ -126,7 +130,8 @@ function SettingsPage() {
             </CardHeader>
             <CardContent className="space-y-3">
               <p className="text-xs text-muted-foreground">
-                Select your preferred interface styling. The Obsidian Dark theme is optimized for low-light clinical environments and night ward rounds.
+                Select your preferred interface styling. The Obsidian Dark theme is optimized for
+                low-light clinical environments and night ward rounds.
               </p>
               <div className="grid grid-cols-3 gap-2 pt-1">
                 <button
@@ -229,7 +234,8 @@ function SettingsPage() {
             </CardHeader>
             <CardContent className="space-y-3 text-xs">
               <p className="text-muted-foreground leading-relaxed">
-                Patient records, clinical consultations, imaging studies, and generated reports are encrypted and synchronized securely to your clinician account.
+                Patient records, clinical consultations, imaging studies, and generated reports are
+                encrypted and synchronized securely to your clinician account.
               </p>
               <div className="rounded-lg border border-border/60 bg-card/40 p-3 space-y-1.5">
                 <div className="flex items-center justify-between">
@@ -242,7 +248,9 @@ function SettingsPage() {
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Data Encryption:</span>
-                  <span className="font-medium text-emerald-600 dark:text-emerald-400">AES-256 at Rest & TLS 1.3 in Transit</span>
+                  <span className="font-medium text-emerald-600 dark:text-emerald-400">
+                    AES-256 at Rest & TLS 1.3 in Transit
+                  </span>
                 </div>
               </div>
 
@@ -280,7 +288,9 @@ function SettingsPage() {
             </CardHeader>
             <CardContent className="space-y-3 text-xs leading-relaxed text-muted-foreground">
               <p>
-                MEDGUIDE AI operates in strict compliance with clinical decision support (CDS) regulations. De-identification protocols ensure that protected health information (PHI) is processed safely.
+                MEDGUIDE AI operates in strict compliance with clinical decision support (CDS)
+                regulations. De-identification protocols ensure that protected health information
+                (PHI) is processed safely.
               </p>
               <div className="flex gap-2">
                 <Button asChild variant="outline" size="sm" className="flex-1 text-xs gap-1">

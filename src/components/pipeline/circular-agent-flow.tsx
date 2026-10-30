@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import {
   Activity,
-  Bot,
   Brain,
   CheckCircle2,
   Cpu,
@@ -57,7 +56,10 @@ const AGENT_ICONS: Record<AgentId, React.ComponentType<{ className?: string }>> 
   report: FileText,
 };
 
-const PHASE_COLORS: Record<string, { ring: string; fill: string; border: string; glow: string; text: string }> = {
+const PHASE_COLORS: Record<
+  string,
+  { ring: string; fill: string; border: string; glow: string; text: string }
+> = {
   intake: {
     ring: "#10b981", // Emerald Mint
     fill: "rgba(16, 185, 129, 0.12)",
@@ -163,7 +165,8 @@ export function CircularAgentFlow({
             </Badge>
           </div>
           <p className="text-xs text-muted-foreground">
-            Continuous evidence-grounded consensus loop: Hover or click any station to inspect telemetry
+            Continuous evidence-grounded consensus loop: Hover or click any station to inspect
+            telemetry
           </p>
         </div>
 
@@ -377,7 +380,8 @@ export function CircularAgentFlow({
                       {currentMeta.name.replace(/ Agent$/i, "")}
                     </p>
                     <span className="font-mono text-[0.58rem] uppercase text-emerald-600 dark:text-emerald-400 font-semibold mt-0.5">
-                      #{String(AGENT_ORDER.indexOf(currentMeta.id) + 1).padStart(2, "0")} · {getPhase(currentMeta.id).toUpperCase()}
+                      #{String(AGENT_ORDER.indexOf(currentMeta.id) + 1).padStart(2, "0")} ·{" "}
+                      {getPhase(currentMeta.id).toUpperCase()}
                     </span>
                   </>
                 ) : (
@@ -405,8 +409,8 @@ export function CircularAgentFlow({
             const isHovered = currentAgentId === pos.id;
             const Icon = AGENT_ICONS[pos.id] || Brain;
             const summary = getAgentSummary(pos.id);
-            const isDone = summary.status === "done";
-            const isRunningNode = summary.status === "running" || (isRunning && AGENT_ORDER[activeStep] === pos.id);
+            const isRunningNode =
+              summary.status === "running" || (isRunning && AGENT_ORDER[activeStep] === pos.id);
 
             return (
               <g
@@ -443,8 +447,8 @@ export function CircularAgentFlow({
                     isHovered
                       ? "fill-card stroke-2"
                       : isRunningNode
-                      ? "fill-card stroke-2"
-                      : "fill-card/95 stroke-1"
+                        ? "fill-card stroke-2"
+                        : "fill-card/95 stroke-1"
                   }`}
                   style={{
                     stroke: isHovered || isRunningNode ? color.ring : "var(--glass-border)",
@@ -557,4 +561,3 @@ export function CircularAgentFlow({
     </div>
   );
 }
-

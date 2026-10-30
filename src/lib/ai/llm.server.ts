@@ -148,24 +148,24 @@ export const FREE_TIER_MODELS_CATALOG: Record<string, ModelQuotaInfo> = {
 export const GEMINI_WORKHORSE_MODELS = [
   "gemini-3.5-flash-lite", // 15 RPM, 500 RPD (fastest)
   "gemini-3.1-flash-lite", // 15 RPM, 500 RPD
-  "gemini-3.5-flash",      // 5 RPM, 20 RPD
-  "gemini-3.6-flash",      // 5 RPM, 20 RPD
+  "gemini-3.5-flash", // 5 RPM, 20 RPD
+  "gemini-3.6-flash", // 5 RPM, 20 RPD
 ] as const;
 
 export const GEMINI_REASONING_MODELS = [
-  "gemini-3.5-flash",      // 5 RPM, 20 RPD (differential diagnosis)
-  "gemini-3.6-flash",      // 5 RPM, 20 RPD
-  "gemini-3.7-flash",      // 5 RPM, 20 RPD
-  "gemini-3.8-flash",      // 5 RPM, 20 RPD
-  "gemini-3-flash-preview",// 5 RPM, 20 RPD
-  "gemini-2.5-flash",      // 5 RPM, 20 RPD
+  "gemini-3.5-flash", // 5 RPM, 20 RPD (differential diagnosis)
+  "gemini-3.6-flash", // 5 RPM, 20 RPD
+  "gemini-3.7-flash", // 5 RPM, 20 RPD
+  "gemini-3.8-flash", // 5 RPM, 20 RPD
+  "gemini-3-flash-preview", // 5 RPM, 20 RPD
+  "gemini-2.5-flash", // 5 RPM, 20 RPD
   "gemini-3.5-flash-lite", // 15 RPM, 500 RPD (fast fallback)
   "gemini-3.1-flash-lite", // 15 RPM, 500 RPD
 ] as const;
 
 export const GEMINI_VOLUME_MODELS = [
-  "gemma-4-26b-a4b-it",   // 30 RPM, 14,400 RPD (massive throughput)
-  "gemma-4-31b-it",       // 30 RPM, 14,400 RPD
+  "gemma-4-26b-a4b-it", // 30 RPM, 14,400 RPD (massive throughput)
+  "gemma-4-31b-it", // 30 RPM, 14,400 RPD
   "gemini-3.5-flash-lite", // 15 RPM, 500 RPD
   "gemini-3.1-flash-lite", // 15 RPM, 500 RPD
 ] as const;
@@ -315,7 +315,8 @@ async function callSingleGeminiModel(
   }
 
   // Adaptive timeout: 25s for fast workhorse/volume models, 45s for deep thinking models
-  const timeoutMs = opts.timeoutMs ?? (opts.tier === "reasoning" || opts.thinking ? 45_000 : 25_000);
+  const timeoutMs =
+    opts.timeoutMs ?? (opts.tier === "reasoning" || opts.thinking ? 45_000 : 25_000);
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
 
@@ -487,7 +488,12 @@ export async function callLlm(opts: LlmOptions): Promise<LlmResult> {
             attemptsCount,
             failoverHistory: [
               ...failoverHistory,
-              { model, error: "Search grounding tool not supported on this model; fell back to raw generation", durationMs: elapsed },
+              {
+                model,
+                error:
+                  "Search grounding tool not supported on this model; fell back to raw generation",
+                durationMs: elapsed,
+              },
             ],
             totalPoolCapacityRpd: 30060,
           };
@@ -560,23 +566,30 @@ export async function callLlm(opts: LlmOptions): Promise<LlmResult> {
   );
 
   return {
-    text: opts.responseMimeType === "application/json"
-      ? JSON.stringify({
-          summary: "Clinical analysis temporarily generated via offline safety rule engine while LLM cascade resets.",
-          differentials: [
-            {
-              condition: "Acute Clinical Assessment Needed",
-              confidence: "Medium",
-              evidence: "Primary clinical guidelines (UpToDate / NICE). Clinical evaluation recommended.",
-              grounded: false,
-            },
-          ],
-          redFlags: ["Verify all vital signs directly with the attending clinician."],
-          investigations: ["Complete Blood Count (CBC)", "Basic Metabolic Panel (BMP)", "Targeted Imaging"],
-          flags: [],
-          verdict: "Standard clinical review required.",
-        })
-      : "Clinical assessment: The system has activated resilient diagnostic fallback mode while upstream AI Studio quotas cycle. Please review vitals and reference evidence tabs.",
+    text:
+      opts.responseMimeType === "application/json"
+        ? JSON.stringify({
+            summary:
+              "Clinical analysis temporarily generated via offline safety rule engine while LLM cascade resets.",
+            differentials: [
+              {
+                condition: "Acute Clinical Assessment Needed",
+                confidence: "Medium",
+                evidence:
+                  "Primary clinical guidelines (UpToDate / NICE). Clinical evaluation recommended.",
+                grounded: false,
+              },
+            ],
+            redFlags: ["Verify all vital signs directly with the attending clinician."],
+            investigations: [
+              "Complete Blood Count (CBC)",
+              "Basic Metabolic Panel (BMP)",
+              "Targeted Imaging",
+            ],
+            flags: [],
+            verdict: "Standard clinical review required.",
+          })
+        : "Clinical assessment: The system has activated resilient diagnostic fallback mode while upstream AI Studio quotas cycle. Please review vitals and reference evidence tabs.",
     provider: "google-gemini",
     model: "resilient-offline-engine",
     attemptsCount,
@@ -594,12 +607,16 @@ export function extractAndParseJson<T>(rawText: string, fallback: T): T {
 
   // Strip markdown code fences if present
   if (text.startsWith("```")) {
-    text = text.replace(/^```(?:json)?\s*\n?/, "").replace(/\n?\s*```$/, "").trim();
+    text = text
+      .replace(/^```(?:json)?\s*\n?/, "")
+      .replace(/\n?\s*```$/, "")
+      .trim();
   }
 
   const startObj = text.indexOf("{");
   const startArr = text.indexOf("[");
-  const first = startObj === -1 ? startArr : startArr === -1 ? startObj : Math.min(startObj, startArr);
+  const first =
+    startObj === -1 ? startArr : startArr === -1 ? startObj : Math.min(startObj, startArr);
   if (first === -1) return fallback;
 
   text = text.slice(first);
@@ -695,7 +712,10 @@ export async function callLlmJson<T>(
       };
     }
   } catch (err) {
-    console.warn("[callLlmJson] Structured JSON call failed, cascading to text mode with auto-repair:", err);
+    console.warn(
+      "[callLlmJson] Structured JSON call failed, cascading to text mode with auto-repair:",
+      err,
+    );
   }
 
   // Second attempt: standard text mode with JSON repair

@@ -9,9 +9,8 @@
  * - Rheumatology (Systemic Lupus Erythematosus with Active Nephritis)
  */
 
-import { addDoc, doc, writeBatch } from "firebase/firestore";
+import { addDoc } from "firebase/firestore";
 import { getCollections, type PatientRecord, type TimelineEvent } from "./db";
-import { db as firestoreDb } from "./firebase";
 
 export interface SeedPatientWithTimeline {
   patient: Omit<PatientRecord, "createdAt">;
@@ -34,8 +33,7 @@ export const INDIAN_CLINICAL_COHORT: SeedPatientWithTimeline[] = [
         "Aspirin (severe bronchospasm and facial angioedema documented 3 years ago; contraindicates standard ASA loading in acute coronary protocol).",
       vitals:
         "BP: 154/94 mmHg, HR: 102 bpm (regular sinus tachycardia), RR: 22/min, SpO2: 94% on room air, Temp: 36.8°C, BMI: 27.8 kg/m².",
-      labs:
-        "High-sensitivity Troponin-I: 1.84 ng/mL (elevated, ref <0.04), CK-MB: 48 U/L, HbA1c: 8.6%, Random Blood Glucose: 214 mg/dL, Serum Creatinine: 1.1 mg/dL, eGFR: 74 mL/min/1.73m², Potassium: 4.2 mEq/L, Total Cholesterol: 238 mg/dL, LDL: 152 mg/dL.",
+      labs: "High-sensitivity Troponin-I: 1.84 ng/mL (elevated, ref <0.04), CK-MB: 48 U/L, HbA1c: 8.6%, Random Blood Glucose: 214 mg/dL, Serum Creatinine: 1.1 mg/dL, eGFR: 74 mL/min/1.73m², Potassium: 4.2 mEq/L, Total Cholesterol: 238 mg/dL, LDL: 152 mg/dL.",
     },
     timeline: [
       {
@@ -82,8 +80,7 @@ export const INDIAN_CLINICAL_COHORT: SeedPatientWithTimeline[] = [
         "Penicillin & Amoxicillin (anaphylaxis - generalized urticaria, wheezing, and laryngeal edema at age 14; strict avoidance of beta-lactams).",
       vitals:
         "BP: 112/74 mmHg, HR: 108 bpm, RR: 26/min, SpO2: 91% on room air (corrects to 96% on 2L nasal cannula), Temp: 39.1°C, BMI: 22.4 kg/m².",
-      labs:
-        "WBC: 17,400/mcL (88% neutrophils, 6% bands), CRP: 168 mg/L (ref <5), ESR: 62 mm/hr, Serum Procalcitonin: 2.4 ng/mL, Sputum Gram stain: Gram-positive lancet-shaped diplococci, Urea: 24 mg/dL (CURB-65 score = 1).",
+      labs: "WBC: 17,400/mcL (88% neutrophils, 6% bands), CRP: 168 mg/L (ref <5), ESR: 62 mm/hr, Serum Procalcitonin: 2.4 ng/mL, Sputum Gram stain: Gram-positive lancet-shaped diplococci, Urea: 24 mg/dL (CURB-65 score = 1).",
     },
     timeline: [
       {
@@ -131,8 +128,7 @@ export const INDIAN_CLINICAL_COHORT: SeedPatientWithTimeline[] = [
         "Sulfonamides / Co-trimoxazole (fixed drug eruption and severe erythema multiforme-like rash).",
       vitals:
         "BP: 168/98 mmHg, HR: 76 bpm (regular), RR: 18/min, SpO2: 96% on room air, Temp: 36.6°C, Weight: 74 kg, BMI: 29.2 kg/m².",
-      labs:
-        "Serum Creatinine: 2.9 mg/dL (baseline 1.8 three months prior), eGFR: 18 mL/min/1.73m² (CKD stage 4), Blood Urea Nitrogen: 58 mg/dL, Serum Potassium: 5.3 mEq/L, Urine Albumin-Creatinine Ratio (UACR): 890 mg/g, Hemoglobin: 9.8 g/dL (normocytic normochromic), Serum Bicarbonate: 18 mEq/L.",
+      labs: "Serum Creatinine: 2.9 mg/dL (baseline 1.8 three months prior), eGFR: 18 mL/min/1.73m² (CKD stage 4), Blood Urea Nitrogen: 58 mg/dL, Serum Potassium: 5.3 mEq/L, Urine Albumin-Creatinine Ratio (UACR): 890 mg/g, Hemoglobin: 9.8 g/dL (normocytic normochromic), Serum Bicarbonate: 18 mEq/L.",
     },
     timeline: [
       {
@@ -179,8 +175,7 @@ export const INDIAN_CLINICAL_COHORT: SeedPatientWithTimeline[] = [
       allergies: "No known drug allergies (NKDA).",
       vitals:
         "BP: 178/102 mmHg, HR: 96 bpm (irregularly irregular rhythm), RR: 19/min, SpO2: 97% on ambient air, Temp: 37.0°C, Point-of-care Blood Glucose: 126 mg/dL.",
-      labs:
-        "INR: 1.1, PT: 12.8s, aPTT: 31s, Platelet count: 245,000/mcL, Serum Sodium: 139 mEq/L, Serum Creatinine: 1.0 mg/dL. Non-contrast Head CT: ASPECTS score 9, no acute intracranial hemorrhage or midline shift.",
+      labs: "INR: 1.1, PT: 12.8s, aPTT: 31s, Platelet count: 245,000/mcL, Serum Sodium: 139 mEq/L, Serum Creatinine: 1.0 mg/dL. Non-contrast Head CT: ASPECTS score 9, no acute intracranial hemorrhage or midline shift.",
     },
     timeline: [
       {
@@ -228,8 +223,7 @@ export const INDIAN_CLINICAL_COHORT: SeedPatientWithTimeline[] = [
         "Ciprofloxacin & Levofloxacin (severe bilateral Achilles tendonitis and arthralgia).",
       vitals:
         "BP: 104/64 mmHg, HR: 84 bpm, RR: 20/min, SpO2: 95% on room air, Temp: 37.4°C, BMI: 24.1 kg/m².",
-      labs:
-        "Total Bilirubin: 6.8 mg/dL (direct 4.9 mg/dL), ALT: 98 U/L, AST: 142 U/L, Alkaline Phosphatase: 184 U/L, Serum Albumin: 2.4 g/dL, INR: 1.82 (coagulopathy), Platelets: 68,000/mcL (hypersplenism), Blood Ammonia: 86 mcg/dL (elevated), Serum Sodium: 131 mEq/L.",
+      labs: "Total Bilirubin: 6.8 mg/dL (direct 4.9 mg/dL), ALT: 98 U/L, AST: 142 U/L, Alkaline Phosphatase: 184 U/L, Serum Albumin: 2.4 g/dL, INR: 1.82 (coagulopathy), Platelets: 68,000/mcL (hypersplenism), Blood Ammonia: 86 mcg/dL (elevated), Serum Sodium: 131 mEq/L.",
     },
     timeline: [
       {
@@ -277,8 +271,7 @@ export const INDIAN_CLINICAL_COHORT: SeedPatientWithTimeline[] = [
         "Trimethoprim-Sulfamethoxazole (severe photo-distributed bullous skin eruptions; cross-reactivity warning for sulfonamides).",
       vitals:
         "BP: 118/76 mmHg, HR: 82 bpm, RR: 16/min, SpO2: 98% on room air, Temp: 37.8°C, BMI: 21.0 kg/m².",
-      labs:
-        "Antinuclear Antibody (ANA): Positive 1:640 (homogeneous and speckled pattern), Anti-dsDNA: 145 IU/mL (strongly elevated, ref <25), Anti-Smith (Sm): Positive, Serum Complement C3: 54 mg/dL (low, ref 90-180), Serum Complement C4: 8 mg/dL (low, ref 10-40), ESR: 78 mm/hr, 24-hour urine protein: 620 mg/day (sub-nephrotic proteinuria), Urinalysis: 10-15 RBCs/HPF without red cell casts.",
+      labs: "Antinuclear Antibody (ANA): Positive 1:640 (homogeneous and speckled pattern), Anti-dsDNA: 145 IU/mL (strongly elevated, ref <25), Anti-Smith (Sm): Positive, Serum Complement C3: 54 mg/dL (low, ref 90-180), Serum Complement C4: 8 mg/dL (low, ref 10-40), ESR: 78 mm/hr, 24-hour urine protein: 620 mg/day (sub-nephrotic proteinuria), Urinalysis: 10-15 RBCs/HPF without red cell casts.",
     },
     timeline: [
       {
@@ -353,4 +346,3 @@ export async function seedIndianClinicalCohort(userId: string): Promise<{
     timelineCount: totalTimeline,
   };
 }
-

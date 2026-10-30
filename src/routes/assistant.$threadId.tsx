@@ -1,13 +1,6 @@
 import { createFileRoute, Link, useNavigate, useParams } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import {
-  MessageSquare,
-  MessageSquarePlus,
-  Plus,
-  Search,
-  Sparkles,
-  Trash2,
-} from "lucide-react";
+import { MessageSquare, MessageSquarePlus, Plus, Search, Sparkles, Trash2 } from "lucide-react";
 
 import { AppShell } from "@/components/app-shell";
 import { GlassCard } from "@/components/medical-ui";
@@ -83,11 +76,7 @@ function AssistantThreadPage() {
       title="Ask MedGuide"
       subtitle="Interactive clinical decision support: clarify differentials, evaluate evidence tiers, and navigate complex patient cases"
       actions={
-        <Button
-          size="sm"
-          onClick={handleNewThread}
-          className="gap-1.5 shadow-sm"
-        >
+        <Button size="sm" onClick={handleNewThread} className="gap-1.5 shadow-sm">
           <Plus className="h-3.5 w-3.5" /> New Discussion
         </Button>
       }
@@ -104,7 +93,10 @@ function AssistantThreadPage() {
                   Saved Threads
                 </span>
               </div>
-              <Badge variant="outline" className="text-[0.62rem] font-mono border-primary/30 text-primary">
+              <Badge
+                variant="outline"
+                className="text-[0.62rem] font-mono border-primary/30 text-primary"
+              >
                 {threads.length}
               </Badge>
             </div>
@@ -161,13 +153,17 @@ function AssistantThreadPage() {
                         <Sparkles
                           className={cn(
                             "h-3 w-3 shrink-0",
-                            isActive ? "text-primary" : "text-muted-foreground group-hover:text-primary",
+                            isActive
+                              ? "text-primary"
+                              : "text-muted-foreground group-hover:text-primary",
                           )}
                         />
                         <p
                           className={cn(
                             "truncate text-xs font-medium leading-snug",
-                            isActive ? "text-foreground font-semibold" : "text-muted-foreground group-hover:text-foreground",
+                            isActive
+                              ? "text-foreground font-semibold"
+                              : "text-muted-foreground group-hover:text-foreground",
                           )}
                         >
                           {t.title || "Clinical Discussion"}
@@ -175,7 +171,11 @@ function AssistantThreadPage() {
                       </div>
                       <div className="flex items-center gap-2 pl-4 text-[0.62rem] text-muted-foreground font-mono">
                         <span>{new Date(t.updatedAt).toLocaleDateString()}</span>
-                        {msgCount > 0 && <span>· {msgCount} msg{msgCount > 1 ? "s" : ""}</span>}
+                        {msgCount > 0 && (
+                          <span>
+                            · {msgCount} msg{msgCount > 1 ? "s" : ""}
+                          </span>
+                        )}
                       </div>
                     </Link>
 

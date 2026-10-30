@@ -53,7 +53,8 @@ export const Route = createFileRoute("/timeline")({
       },
       {
         property: "og:description",
-        content: "Track symptoms, tests, medications, imaging and clinical outcomes chronologically.",
+        content:
+          "Track symptoms, tests, medications, imaging and clinical outcomes chronologically.",
       },
     ],
   }),
@@ -188,7 +189,15 @@ function TimelinePage() {
     return true;
   });
 
-  const counts: Record<string, number> = {
+  const counts: {
+    all: number;
+    symptom: number;
+    test: number;
+    medication: number;
+    imaging: number;
+    outcome: number;
+    note: number;
+  } = {
     all: events.length,
     symptom: events.filter((e) => e.kind === "symptom").length,
     test: events.filter((e) => e.kind === "test").length,
@@ -414,7 +423,9 @@ function TimelinePage() {
             ) : filteredEvents.length === 0 ? (
               <div className="py-8 text-center">
                 <Filter className="mx-auto h-8 w-8 text-muted-foreground/60" />
-                <p className="mt-2 text-sm font-medium">No events matching &ldquo;{kindFilter}&rdquo; filter</p>
+                <p className="mt-2 text-sm font-medium">
+                  No events matching &ldquo;{kindFilter}&rdquo; filter
+                </p>
                 <p className="mt-1 text-xs text-muted-foreground">
                   Try selecting another category or view all events.
                 </p>
@@ -454,7 +465,10 @@ function TimelinePage() {
                           <div className="flex flex-wrap items-center gap-2">
                             <Badge
                               variant="outline"
-                              className={cn("px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider", kindMeta.badgeCls)}
+                              className={cn(
+                                "px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider",
+                                kindMeta.badgeCls,
+                              )}
                             >
                               {kindMeta.label}
                             </Badge>
@@ -490,9 +504,7 @@ function TimelinePage() {
                           </button>
                         </div>
 
-                        <h3 className="mt-2 text-base font-semibold text-foreground">
-                          {e.title}
-                        </h3>
+                        <h3 className="mt-2 text-base font-semibold text-foreground">{e.title}</h3>
 
                         {e.detail && (
                           <p className="mt-1.5 whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">

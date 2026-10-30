@@ -332,7 +332,9 @@ Only cite ids that appear in RETRIEVED EVIDENCE.`,
         citations: evidenceIds,
         grounded: evidenceIds.length > 0,
       })),
-      redFlags: ["Monitor for sudden hemodynamic instability, respiratory compromise, or acute deterioration."],
+      redFlags: [
+        "Monitor for sudden hemodynamic instability, respiratory compromise, or acute deterioration.",
+      ],
       investigations: [
         "Complete Blood Count (CBC) and comprehensive metabolic panel",
         "Targeted diagnostic imaging and microbiological cultures as indicated",
@@ -557,9 +559,10 @@ End with the exact line: ${DISCLAIMER}`,
   }).catch(() => ({ text: "", provider: "fallback" as const, model: "" }));
   finish("report", "Clinical report drafted", report.text.slice(0, 200));
 
-  result.provider = report.provider !== "fallback" && report.model
-    ? `Google AI Studio (${report.model})`
-    : provider;
+  result.provider =
+    report.provider !== "fallback" && report.model
+      ? `Google AI Studio (${report.model})`
+      : provider;
   result.reportMarkdown = report.text;
   emit({ type: "partial", key: "provider", value: result.provider });
   return result;

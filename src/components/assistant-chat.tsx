@@ -192,8 +192,9 @@ export function AssistantChat({
                 </div>
               </div>
               <p className="text-xs sm:text-sm text-foreground/90 leading-relaxed pt-2">
-                Ask how differential hypotheses are weighted, clarify evidence tiers (T1–T5), explore
-                how contraindications are audited, or ask how to navigate patient workspaces.
+                Ask how differential hypotheses are weighted, clarify evidence tiers (T1–T5),
+                explore how contraindications are audited, or ask how to navigate patient
+                workspaces.
               </p>
             </div>
 
@@ -242,7 +243,12 @@ export function AssistantChat({
                 <div className="flex items-center justify-end gap-2 text-[0.65rem] text-muted-foreground font-mono pr-1">
                   <span>Clinician</span>
                   <span>·</span>
-                  <span>{new Date(m.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+                  <span>
+                    {new Date(m.createdAt).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </span>
                 </div>
               </div>
               <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-primary/20 text-primary border border-primary/30 mt-1">
@@ -295,7 +301,11 @@ export function AssistantChat({
                       remarkPlugins={[remarkGfm]}
                       components={{
                         p({ children }) {
-                          return <p className="my-2 leading-relaxed">{renderChatTextWithCitations(children)}</p>;
+                          return (
+                            <p className="my-2 leading-relaxed">
+                              {renderChatTextWithCitations(children)}
+                            </p>
+                          );
                         },
                         li({ children }) {
                           return <li className="my-1">{renderChatTextWithCitations(children)}</li>;
@@ -418,7 +428,9 @@ export function AssistantChat({
 
         <div className="flex items-center justify-between text-[0.65rem] text-muted-foreground px-1">
           <span>Guidance only: not a diagnosis. Encrypted local browser session.</span>
-          <span className="hidden sm:inline font-mono">Press Enter to send · Shift+Enter for newline</span>
+          <span className="hidden sm:inline font-mono">
+            Press Enter to send · Shift+Enter for newline
+          </span>
         </div>
       </div>
     </div>
@@ -430,9 +442,9 @@ export function AssistantChat({
  */
 function renderChatTextWithCitations(children: React.ReactNode): React.ReactNode {
   if (typeof children === "string") {
-    const parts = children.split(/(\[(?:pmid:\d+|fda:[\w\-]+|epmc:[\w\-]+)\])/gi);
+    const parts = children.split(/(\[(?:pmid:\d+|fda:[\w-]+|epmc:[\w-]+)\])/gi);
     return parts.map((part, index) => {
-      if (/^\[(pmid:\d+|fda:[\w\-]+|epmc:[\w\-]+)\]$/i.test(part)) {
+      if (/^\[(pmid:\d+|fda:[\w-]+|epmc:[\w-]+)\]$/i.test(part)) {
         const { url, type } = getCitationUrl(part);
         const isFda = type === "fda";
         return (

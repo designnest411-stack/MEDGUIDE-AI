@@ -14,19 +14,15 @@ export interface ServerUploadResult {
 }
 
 export const uploadAssetServerFn = createServerFn({ method: "POST" })
-  .inputValidator(
-    (input: { dataUrl: string; folder?: string; tags?: string[] }) => input,
-  )
+  .validator((input: { dataUrl: string; folder?: string; tags?: string[] }) => input)
   .handler(async ({ data }): Promise<ServerUploadResult> => {
     try {
       const cloudName =
-        process.env["CLOUDINARY_CLOUD_NAME"] ||
-        process.env["VITE_CLOUDINARY_CLOUD_NAME"];
+        process.env["CLOUDINARY_CLOUD_NAME"] || process.env["VITE_CLOUDINARY_CLOUD_NAME"];
       const apiKey = process.env["CLOUDINARY_API_KEY"];
       const apiSecret = process.env["CLOUDINARY_API_SECRET"];
       const uploadPreset =
-        process.env["CLOUDINARY_UPLOAD_PRESET"] ||
-        process.env["VITE_CLOUDINARY_UPLOAD_PRESET"];
+        process.env["CLOUDINARY_UPLOAD_PRESET"] || process.env["VITE_CLOUDINARY_UPLOAD_PRESET"];
 
       if (!cloudName) {
         return {
@@ -49,12 +45,8 @@ export const uploadAssetServerFn = createServerFn({ method: "POST" })
         };
 
         const sortedKeys = Object.keys(paramsToSign).sort();
-        const stringToSign =
-          sortedKeys.map((k) => `${k}=${paramsToSign[k]}`).join("&") + apiSecret;
-        const signature = crypto
-          .createHash("sha1")
-          .update(stringToSign)
-          .digest("hex");
+        const stringToSign = sortedKeys.map((k) => `${k}=${paramsToSign[k]}`).join("&") + apiSecret;
+        const signature = crypto.createHash("sha1").update(stringToSign).digest("hex");
 
         formData.append("api_key", apiKey);
         formData.append("timestamp", String(timestamp));
@@ -71,13 +63,10 @@ export const uploadAssetServerFn = createServerFn({ method: "POST" })
         };
       }
 
-      const uploadRes = await fetch(
-        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-        {
-          method: "POST",
-          body: formData,
-        },
-      );
+      const uploadRes = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+        method: "POST",
+        body: formData,
+      });
 
       if (!uploadRes.ok) {
         const errText = await uploadRes.text();

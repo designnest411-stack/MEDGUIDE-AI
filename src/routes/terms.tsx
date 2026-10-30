@@ -1,5 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, ShieldAlert, AlertTriangle, Scale, Stethoscope, CheckCircle2 } from "lucide-react";
+import {
+  ArrowLeft,
+  ShieldAlert,
+  AlertTriangle,
+  Scale,
+  Stethoscope,
+  CheckCircle2,
+} from "lucide-react";
 
 import { AppShell } from "@/components/app-shell";
 import { GlassCard, SectionTitle } from "@/components/medical-ui";
@@ -64,11 +71,13 @@ function TermsPage() {
             />
           </CardHeader>
           <CardContent className="space-y-3 text-sm leading-relaxed text-foreground">
-            <p className="font-semibold text-warning">
-              {DISCLAIMER}
-            </p>
+            <p className="font-semibold text-warning">{DISCLAIMER}</p>
             <p className="text-muted-foreground text-xs leading-relaxed">
-              MEDGUIDE AI is an evidence aggregation and clinical decision support system designed solely for educational, informational, and advisory exploration by qualified healthcare professionals and students under supervision. It is not an autonomous medical practitioner, does not provide medical diagnoses, and cannot substitute for individualized clinical evaluation, physical examination, and professional judgment.
+              MEDGUIDE AI is an evidence aggregation and clinical decision support system designed
+              solely for educational, informational, and advisory exploration by qualified
+              healthcare professionals and students under supervision. It is not an autonomous
+              medical practitioner, does not provide medical diagnoses, and cannot substitute for
+              individualized clinical evaluation, physical examination, and professional judgment.
             </p>
           </CardContent>
         </GlassCard>
@@ -80,7 +89,13 @@ function TermsPage() {
             </CardHeader>
             <CardContent className="space-y-3 text-sm leading-relaxed text-muted-foreground">
               <p>
-                <strong className="text-foreground">Do not use in acute medical emergencies:</strong> If you are evaluating a patient with sudden cardiovascular collapse, acute respiratory arrest, active severe hemorrhage, or immediate life-threatening conditions, bypass software decision tools and activate local emergency medical protocols immediately.
+                <strong className="text-foreground">
+                  Do not use in acute medical emergencies:
+                </strong>{" "}
+                If you are evaluating a patient with sudden cardiovascular collapse, acute
+                respiratory arrest, active severe hemorrhage, or immediate life-threatening
+                conditions, bypass software decision tools and activate local emergency medical
+                protocols immediately.
               </p>
             </CardContent>
           </GlassCard>
@@ -91,7 +106,11 @@ function TermsPage() {
             </CardHeader>
             <CardContent className="space-y-3 text-sm leading-relaxed text-muted-foreground">
               <p>
-                <strong className="text-foreground">Clinician Responsibility:</strong> The treating clinician retains exclusive legal, ethical, and clinical responsibility for patient care. Every proposed differential diagnosis, drug recommendation, laboratory test, and radiologic finding must be corroborated against standard hospital protocols, drug formularies, and primary literature.
+                <strong className="text-foreground">Clinician Responsibility:</strong> The treating
+                clinician retains exclusive legal, ethical, and clinical responsibility for patient
+                care. Every proposed differential diagnosis, drug recommendation, laboratory test,
+                and radiologic finding must be corroborated against standard hospital protocols,
+                drug formularies, and primary literature.
               </p>
             </CardContent>
           </GlassCard>
@@ -103,12 +122,23 @@ function TermsPage() {
           </CardHeader>
           <CardContent className="space-y-3 text-sm leading-relaxed text-muted-foreground">
             <p>
-              To the fullest extent permitted by applicable law, MEDGUIDE AI, its contributors, and developers shall not be liable for any direct, indirect, incidental, special, consequential, or punitive damages resulting from:
+              To the fullest extent permitted by applicable law, MEDGUIDE AI, its contributors, and
+              developers shall not be liable for any direct, indirect, incidental, special,
+              consequential, or punitive damages resulting from:
             </p>
             <ul className="list-disc space-y-1.5 pl-5">
-              <li>Clinical decisions, prescriptions, or therapeutic courses initiated using system outputs.</li>
-              <li>Omissions, inaccuracies, or delays in external biomedical APIs (PubMed, openFDA, RxNav, WHO).</li>
-              <li>Radiological interpretations derived from browser-based WebAssembly occlusion heatmaps.</li>
+              <li>
+                Clinical decisions, prescriptions, or therapeutic courses initiated using system
+                outputs.
+              </li>
+              <li>
+                Omissions, inaccuracies, or delays in external biomedical APIs (PubMed, openFDA,
+                RxNav, WHO).
+              </li>
+              <li>
+                Radiological interpretations derived from browser-based WebAssembly occlusion
+                heatmaps.
+              </li>
               <li>Temporary unavailability or degradation of third-party network services.</li>
             </ul>
           </CardContent>
@@ -116,14 +146,22 @@ function TermsPage() {
 
         <GlassCard>
           <CardHeader className="pb-3">
-            <SectionTitle icon={CheckCircle2} title="4. Scientific Integrity and Sourced Inferences" />
+            <SectionTitle
+              icon={CheckCircle2}
+              title="4. Scientific Integrity and Sourced Inferences"
+            />
           </CardHeader>
           <CardContent className="space-y-3 text-sm leading-relaxed text-muted-foreground">
             <p>
-              The platform implements algorithmic citation verification to identify and prune unsupported citation IDs. Inferences marked as "Reasoning only" represent synthetic reasoning steps without an attached peer-reviewed document ID and must be treated with heightened scrutiny.
+              The platform implements algorithmic citation verification to identify and prune
+              unsupported citation IDs. Inferences marked as "Reasoning only" represent synthetic
+              reasoning steps without an attached peer-reviewed document ID and must be treated with
+              heightened scrutiny.
             </p>
             <p>
-              Qualitative confidence bands (High, Medium, Low, Insufficient evidence) represent empirical proxy metrics derived from citation counts and guideline concordance, not statistical guarantees of diagnostic precision.
+              Qualitative confidence bands (High, Medium, Low, Insufficient evidence) represent
+              empirical proxy metrics derived from citation counts and guideline concordance, not
+              statistical guarantees of diagnostic precision.
             </p>
           </CardContent>
         </GlassCard>

@@ -25,14 +25,16 @@ const clamp01 = (n: unknown) =>
   typeof n === "number" && Number.isFinite(n) ? Math.min(1, Math.max(0, n)) : 0;
 
 export const analyzeXray = createServerFn({ method: "POST" })
-  .inputValidator((input: { base64: string; mediaType: string; context?: string }) => input)
+  .validator((input: { base64: string; mediaType: string; context?: string }) => input)
   .handler(async ({ data }): Promise<XrayAnalysis> => {
     const { callLlmJson } = await import("@/lib/ai/llm.server");
 
     // Clean and validate MIME type for Gemini Vision
     let mediaType = (data.mediaType || "image/jpeg").toLowerCase().trim();
     if (mediaType === "image/jpg") mediaType = "image/jpeg";
-    if (!["image/png", "image/jpeg", "image/webp", "image/heic", "image/heif"].includes(mediaType)) {
+    if (
+      !["image/png", "image/jpeg", "image/webp", "image/heic", "image/heif"].includes(mediaType)
+    ) {
       mediaType = "image/jpeg";
     }
 

@@ -31,7 +31,8 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Clinical Workspace Login : MEDGUIDE AI" },
       {
         property: "og:description",
-        content: "Secure clinical decision support gateway with Google OAuth and multi-tenant patient records.",
+        content:
+          "Secure clinical decision support gateway with Google OAuth and multi-tenant patient records.",
       },
     ],
   }),
@@ -119,7 +120,9 @@ function ClinicalGateway() {
             </h2>
 
             <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-xl">
-              MEDGUIDE AI orchestrates 11 specialized clinical agents: structuring patient intake, querying PubMed literature, analyzing chest radiographs, and verifying drug interactions with a zero-tolerance safety net.
+              MEDGUIDE AI orchestrates 11 specialized clinical agents: structuring patient intake,
+              querying PubMed literature, analyzing chest radiographs, and verifying drug
+              interactions with a zero-tolerance safety net.
             </p>
 
             {/* Core Trust Pillars */}

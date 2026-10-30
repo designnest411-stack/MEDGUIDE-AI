@@ -91,9 +91,7 @@ export function AssistantWidget() {
 
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1.5">
-                <p className="font-display font-bold text-xs text-foreground">
-                  Ask MedGuide
-                </p>
+                <p className="font-display font-bold text-xs text-foreground">Ask MedGuide</p>
                 <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 px-1.5 py-0.2 text-[0.6rem] font-mono text-emerald-600 dark:text-emerald-400">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
                   Grounded
@@ -136,7 +134,9 @@ export function AssistantWidget() {
           {showList && (
             <div className="max-h-56 overflow-y-auto border-b border-border/70 bg-card/60 p-1.5 space-y-1">
               {threads.length === 0 && (
-                <p className="px-4 py-3 text-xs text-muted-foreground text-center">No saved conversations yet.</p>
+                <p className="px-4 py-3 text-xs text-muted-foreground text-center">
+                  No saved conversations yet.
+                </p>
               )}
               {threads.map((t) => (
                 <div

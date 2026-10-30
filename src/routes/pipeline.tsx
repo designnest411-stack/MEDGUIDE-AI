@@ -3,8 +3,6 @@ import { useSyncExternalStore, useMemo, useState } from "react";
 import { query, orderBy } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
 import {
-  Activity,
-  ArrowRight,
   Bot,
   Brain,
   CheckCircle2,
@@ -24,10 +22,8 @@ import {
 } from "lucide-react";
 
 import { AppShell } from "@/components/app-shell";
-import { GlassCard, SectionTitle } from "@/components/medical-ui";
+import { GlassCard } from "@/components/medical-ui";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { CardContent, CardHeader } from "@/components/ui/card";
 import { CircularAgentFlow } from "@/components/pipeline/circular-agent-flow";
 import {
   Select,
@@ -44,7 +40,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { consultRunStore } from "@/lib/consult-run-store";
-import { AGENTS, type AgentId, type AgentMeta, type AgentStatus, type ConsultationResult } from "@/lib/agents/types";
+import {
+  AGENTS,
+  type AgentId,
+  type AgentMeta,
+  type AgentStatus,
+  type ConsultationResult,
+} from "@/lib/agents/types";
 import { getCollections, useTypedCollection, type ConsultationRecord } from "@/lib/db";
 import { auth } from "@/lib/firebase";
 
@@ -54,7 +56,8 @@ export const Route = createFileRoute("/pipeline")({
       { title: "Agent Pipeline : MEDGUIDE AI" },
       {
         name: "description",
-        content: "Operational multi-agent consensus, execution telemetry, and clinical safety auditing.",
+        content:
+          "Operational multi-agent consensus, execution telemetry, and clinical safety auditing.",
       },
     ],
   }),
@@ -89,7 +92,10 @@ const AGENT_ICONS: Record<AgentId, React.ComponentType<{ className?: string }>> 
   report: FileText,
 };
 
-const AGENT_ENGINE_SPECS: Record<AgentId, { engine: string; source: string; moduleRoute?: string }> = {
+const AGENT_ENGINE_SPECS: Record<
+  AgentId,
+  { engine: string; source: string; moduleRoute?: string }
+> = {
   planner: {
     engine: "Clinical Task Router & Decomposition Engine",
     source: "Clinical intake protocol & missing-parameter heuristics",
@@ -214,7 +220,8 @@ function PipelinePage() {
       if (st) {
         return {
           status: st.status,
-          summary: st.summary || (st.status === "running" ? "Executing live..." : "Completed execution."),
+          summary:
+            st.summary || (st.status === "running" ? "Executing live..." : "Completed execution."),
         };
       }
       return { status: "idle", summary: "Queued in execution sequence" };
@@ -339,7 +346,9 @@ function PipelinePage() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <div className="rounded-2xl border border-border/70 bg-card/60 p-4 shadow-sm backdrop-blur-md space-y-1">
             <div className="flex items-center justify-between text-muted-foreground">
-              <span className="text-[0.68rem] font-semibold uppercase tracking-wider">Agents Fleet</span>
+              <span className="text-[0.68rem] font-semibold uppercase tracking-wider">
+                Agents Fleet
+              </span>
               <Bot className="h-4 w-4 text-primary" />
             </div>
             <p className="font-display text-xl font-bold text-foreground">
@@ -350,11 +359,15 @@ function PipelinePage() {
 
           <div className="rounded-2xl border border-border/70 bg-card/60 p-4 shadow-sm backdrop-blur-md space-y-1">
             <div className="flex items-center justify-between text-muted-foreground">
-              <span className="text-[0.68rem] font-semibold uppercase tracking-wider">Evidence Grounding</span>
+              <span className="text-[0.68rem] font-semibold uppercase tracking-wider">
+                Evidence Grounding
+              </span>
               <Library className="h-4 w-4 text-emerald-500" />
             </div>
             <p className="font-display text-xl font-bold text-emerald-600 dark:text-emerald-400">
-              {activeResult?.evidence?.length ? `${activeResult.evidence.length} Citations` : "Standby"}
+              {activeResult?.evidence?.length
+                ? `${activeResult.evidence.length} Citations`
+                : "Standby"}
             </p>
             <p className="text-[0.68rem] text-muted-foreground">
               {activeResult ? "PubMed E-utilities" : "PubMed & WHO Ready"}
@@ -363,11 +376,15 @@ function PipelinePage() {
 
           <div className="rounded-2xl border border-border/70 bg-card/60 p-4 shadow-sm backdrop-blur-md space-y-1">
             <div className="flex items-center justify-between text-muted-foreground">
-              <span className="text-[0.68rem] font-semibold uppercase tracking-wider">Safety Interceptor</span>
+              <span className="text-[0.68rem] font-semibold uppercase tracking-wider">
+                Safety Interceptor
+              </span>
               <ShieldAlert className="h-4 w-4 text-rose-500" />
             </div>
             <p className="font-display text-xl font-bold text-foreground">
-              {activeResult?.safety?.flags?.length ? `${activeResult.safety.flags.length} Flag(s)` : "Zero-Tolerance"}
+              {activeResult?.safety?.flags?.length
+                ? `${activeResult.safety.flags.length} Flag(s)`
+                : "Zero-Tolerance"}
             </p>
             <p className="text-[0.68rem] text-emerald-600 dark:text-emerald-400 font-medium">
               {activeResult ? "Deterministic Safety Audit" : "Deterministic Guardrail"}
@@ -376,11 +393,15 @@ function PipelinePage() {
 
           <div className="rounded-2xl border border-border/70 bg-card/60 p-4 shadow-sm backdrop-blur-md space-y-1">
             <div className="flex items-center justify-between text-muted-foreground">
-              <span className="text-[0.68rem] font-semibold uppercase tracking-wider">Confidence Band</span>
+              <span className="text-[0.68rem] font-semibold uppercase tracking-wider">
+                Confidence Band
+              </span>
               <Sparkles className="h-4 w-4 text-violet-500" />
             </div>
             <p className="font-display text-xl font-bold text-violet-600 dark:text-violet-400">
-              {activeResult?.confidence?.band ? activeResult.confidence.band.toUpperCase() : "STANDBY"}
+              {activeResult?.confidence?.band
+                ? activeResult.confidence.band.toUpperCase()
+                : "STANDBY"}
             </p>
             <p className="text-[0.68rem] text-muted-foreground">
               {activeResult ? "Multi-Signal Agreement" : "Calibrated on Run"}
@@ -398,20 +419,24 @@ function PipelinePage() {
                     running
                       ? "bg-primary/10 text-primary border border-primary/30 animate-pulse"
                       : activeResult
-                      ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30"
-                      : "bg-muted text-muted-foreground border border-border/60"
+                        ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30"
+                        : "bg-muted text-muted-foreground border border-border/60"
                   }`}
                 >
                   <span
                     className={`h-1.5 w-1.5 rounded-full ${
-                      running ? "bg-primary animate-ping" : activeResult ? "bg-emerald-500" : "bg-primary/80"
+                      running
+                        ? "bg-primary animate-ping"
+                        : activeResult
+                          ? "bg-emerald-500"
+                          : "bg-primary/80"
                     }`}
                   />
                   {running
                     ? "Live Pipeline Execution Active"
                     : activeResult
-                    ? "Audited Real Case Telemetry"
-                    : "Idle Standby · Ready for Clinical Intake"}
+                      ? "Audited Real Case Telemetry"
+                      : "Idle Standby · Ready for Clinical Intake"}
                 </span>
 
                 {activeConsultation?.createdAt && (
@@ -474,8 +499,6 @@ function PipelinePage() {
           selectedCaseQuestion={activeConsultation?.question}
         />
 
-
-
         {/* Empty state prompt if zero consultations exist yet */}
         {(!consultations || consultations.length === 0) && !running && (
           <div className="rounded-2xl border border-primary/20 bg-primary/5 p-6 text-center space-y-3">
@@ -483,8 +506,8 @@ function PipelinePage() {
               Ready for Real Clinical Intake
             </h3>
             <p className="text-xs sm:text-sm text-muted-foreground max-w-xl mx-auto">
-              No consultations have been run yet in your encrypted workspace. Enter a patient clinical case
-              to activate all 11 autonomous agents in real time.
+              No consultations have been run yet in your encrypted workspace. Enter a patient
+              clinical case to activate all 11 autonomous agents in real time.
             </p>
             <Button asChild size="sm" className="gap-2">
               <Link to="/consultation">
@@ -521,10 +544,12 @@ function PipelinePage() {
                     Biomedical Engine & Protocols
                   </p>
                   <p className="text-xs font-semibold text-foreground">
-                    {AGENT_ENGINE_SPECS[inspectedAgent.id]?.engine || "Clinical Intelligence Engine"}
+                    {AGENT_ENGINE_SPECS[inspectedAgent.id]?.engine ||
+                      "Clinical Intelligence Engine"}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {AGENT_ENGINE_SPECS[inspectedAgent.id]?.source || "Medical decision support protocol"}
+                    {AGENT_ENGINE_SPECS[inspectedAgent.id]?.source ||
+                      "Medical decision support protocol"}
                   </p>
                 </div>
 

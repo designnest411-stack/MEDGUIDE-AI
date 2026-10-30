@@ -82,9 +82,7 @@ function Dashboard() {
   const [imaging, imagingLoading] = useTypedCollection<ImagingRecord>(cols?.imaging);
 
   const filteredConsultations = searchQuery.trim()
-    ? consultations.filter((c) =>
-        c.question.toLowerCase().includes(searchQuery.toLowerCase()),
-      )
+    ? consultations.filter((c) => c.question.toLowerCase().includes(searchQuery.toLowerCase()))
     : consultations;
 
   const totalPages = Math.ceil(filteredConsultations.length / pageSize) || 1;
@@ -93,7 +91,8 @@ function Dashboard() {
     (page + 1) * pageSize,
   );
 
-  const isStatsLoading = consultationsLoading || patientsLoading || reportsLoading || imagingLoading;
+  const isStatsLoading =
+    consultationsLoading || patientsLoading || reportsLoading || imagingLoading;
 
   const evidenceCount = consultations.reduce((n, c) => n + (c.result?.evidence?.length ?? 0), 0);
 
@@ -135,9 +134,7 @@ function Dashboard() {
             <p className="text-xs font-semibold text-foreground group-hover:text-primary transition-colors">
               New Consultation
             </p>
-            <p className="text-[0.68rem] text-muted-foreground truncate">
-              Differential reasoning
-            </p>
+            <p className="text-[0.68rem] text-muted-foreground truncate">Differential reasoning</p>
           </div>
         </Link>
 
@@ -152,9 +149,7 @@ function Dashboard() {
             <p className="text-xs font-semibold text-foreground group-hover:text-primary transition-colors">
               Patient Intake
             </p>
-            <p className="text-[0.68rem] text-muted-foreground truncate">
-              Vitals, labs & photos
-            </p>
+            <p className="text-[0.68rem] text-muted-foreground truncate">Vitals, labs & photos</p>
           </div>
         </Link>
 
@@ -169,9 +164,7 @@ function Dashboard() {
             <p className="text-xs font-semibold text-foreground group-hover:text-primary transition-colors">
               Chest Radiograph
             </p>
-            <p className="text-[0.68rem] text-muted-foreground truncate">
-              CAM deep learning
-            </p>
+            <p className="text-[0.68rem] text-muted-foreground truncate">CAM deep learning</p>
           </div>
         </Link>
 
@@ -186,9 +179,7 @@ function Dashboard() {
             <p className="text-xs font-semibold text-foreground group-hover:text-primary transition-colors">
               Drug Safety
             </p>
-            <p className="text-[0.68rem] text-muted-foreground truncate">
-              Allergies & warnings
-            </p>
+            <p className="text-[0.68rem] text-muted-foreground truncate">Allergies & warnings</p>
           </div>
         </Link>
       </div>

@@ -103,8 +103,10 @@ export const CASE_LIBRARY: SimilarCase[] = [
     presentation:
       "Progressive exertional breathlessness, waking gasping for breath, 3-pillow orthopnoea, elevated JVP 5cm, bilateral pitting pedal oedema to mid-calf.",
     diagnosis: "Acute decompensated heart failure (HFrEF, EF 32%), NT-proBNP 4,800 pg/mL",
-    treatment: "IV furosemide bolus followed by infusion, fluid restriction, titration onto guideline-directed 4-pillar medical therapy (Sacubitril/valsartan, Dapagliflozin, Bisoprolol, Spironolactone)",
-    outcome: "Euvolic at discharge with 5.5kg fluid loss, ambulatory NYHA Class II at 6-week review",
+    treatment:
+      "IV furosemide bolus followed by infusion, fluid restriction, titration onto guideline-directed 4-pillar medical therapy (Sacubitril/valsartan, Dapagliflozin, Bisoprolol, Spironolactone)",
+    outcome:
+      "Euvolic at discharge with 5.5kg fluid loss, ambulatory NYHA Class II at 6-week review",
     tags: ["heart failure", "orthopnoea", "edema", "bnp", "cardiomyopathy"],
   },
   {
@@ -115,8 +117,10 @@ export const CASE_LIBRARY: SimilarCase[] = [
     presentation:
       "Sudden onset fluttering in chest, dizziness, BP 138/84, irregular pulse at 134 bpm. ECG confirms absent P waves with irregular ventricular rate.",
     diagnosis: "New-onset Atrial Fibrillation with rapid ventricular response, CHA2DS2-VASc 3",
-    treatment: "Rate control with oral Bisoprolol 2.5mg BD, therapeutic oral anticoagulation started with Apixaban 5mg BD, outpatient cardiology referral for rhythm strategy",
-    outcome: "Resting HR controlled at 76 bpm, elective DCCV performed at 4 weeks with sinus rhythm restoration",
+    treatment:
+      "Rate control with oral Bisoprolol 2.5mg BD, therapeutic oral anticoagulation started with Apixaban 5mg BD, outpatient cardiology referral for rhythm strategy",
+    outcome:
+      "Resting HR controlled at 76 bpm, elective DCCV performed at 4 weeks with sinus rhythm restoration",
     tags: ["atrial fibrillation", "palpitations", "arrhythmia", "anticoagulation", "ecg"],
   },
   {
@@ -127,8 +131,10 @@ export const CASE_LIBRARY: SimilarCase[] = [
     presentation:
       "Sudden catastrophic tearing pain between shoulder blades, BP right arm 188/104, left arm 152/88. Diaphoretic and pale.",
     diagnosis: "Acute Stanford Type A Aortic Dissection involving ascending aorta",
-    treatment: "Immediate IV Labetalol infusion targeting systolic BP < 120 mmHg and HR < 60 bpm, emergency cardiothoracic surgical consultation, urgent hemiarch replacement",
-    outcome: "Successful surgical repair, uncomplicated ICU stay, recovered well with lifelong strict blood pressure surveillance",
+    treatment:
+      "Immediate IV Labetalol infusion targeting systolic BP < 120 mmHg and HR < 60 bpm, emergency cardiothoracic surgical consultation, urgent hemiarch replacement",
+    outcome:
+      "Successful surgical repair, uncomplicated ICU stay, recovered well with lifelong strict blood pressure surveillance",
     tags: ["aortic dissection", "tearing pain", "hypertension", "emergency", "surgery"],
   },
   {
@@ -139,8 +145,10 @@ export const CASE_LIBRARY: SimilarCase[] = [
     presentation:
       "6 weeks of lethargy, low-grade fevers to 38.2C, night sweats, splinter hemorrhages on fingernails, new pan-systolic murmur at apex.",
     diagnosis: "Subacute Bacterial Endocarditis (Streptococcus viridans) on mitral valve",
-    treatment: "Six-week course of IV Benzylpenicillin plus Gentamicin synergistic therapy, echocardiographic vegetation monitoring",
-    outcome: "Blood cultures cleared by day 3, complete resolution of systemic symptoms without need for acute valve surgery",
+    treatment:
+      "Six-week course of IV Benzylpenicillin plus Gentamicin synergistic therapy, echocardiographic vegetation monitoring",
+    outcome:
+      "Blood cultures cleared by day 3, complete resolution of systemic symptoms without need for acute valve surgery",
     tags: ["endocarditis", "fever", "murmur", "bacteremia", "echocardiogram"],
   },
   {
@@ -151,8 +159,10 @@ export const CASE_LIBRARY: SimilarCase[] = [
     presentation:
       "Severe dyspnoea, green sputum, RR 28, SpO2 86% on air, ABG: pH 7.31, PaCO2 7.1 kPa, PaO2 7.6 kPa (acute respiratory acidosis).",
     diagnosis: "Acute severe COPD exacerbation with hypercapnic respiratory failure",
-    treatment: "Controlled 28% Venturi oxygen targeting SpO2 88-92%, nebulised Salbutamol + Ipratropium, oral Prednisolone 30mg, Amoxicillin, non-invasive ventilation (NIV BiPAP) for 24 hours",
-    outcome: "Respiratory acidosis resolved by hour 6, weaned from BiPAP on day 3, discharged with pulmonary rehabilitation plan",
+    treatment:
+      "Controlled 28% Venturi oxygen targeting SpO2 88-92%, nebulised Salbutamol + Ipratropium, oral Prednisolone 30mg, Amoxicillin, non-invasive ventilation (NIV BiPAP) for 24 hours",
+    outcome:
+      "Respiratory acidosis resolved by hour 6, weaned from BiPAP on day 3, discharged with pulmonary rehabilitation plan",
     tags: ["copd", "hypercapnia", "wheeze", "respiratory acidosis", "bipap"],
   },
   {
@@ -163,8 +173,10 @@ export const CASE_LIBRARY: SimilarCase[] = [
     presentation:
       "Sudden sharp right-sided chest pain while sitting, extreme breathlessness, cyanosis, absent right breath sounds, trachea shifted to left, BP 84/52.",
     diagnosis: "Right-sided Tension Pneumothorax",
-    treatment: "Immediate life-saving needle decompression at 2nd intercostal space mid-clavicular line, rapid rush of air, followed immediately by 24Fr chest tube insertion with underwater seal",
-    outcome: "Immediate hemodynamic recovery (BP 124/78), lung fully reinflated on post-procedure X-ray, drain removed on day 4",
+    treatment:
+      "Immediate life-saving needle decompression at 2nd intercostal space mid-clavicular line, rapid rush of air, followed immediately by 24Fr chest tube insertion with underwater seal",
+    outcome:
+      "Immediate hemodynamic recovery (BP 124/78), lung fully reinflated on post-procedure X-ray, drain removed on day 4",
     tags: ["pneumothorax", "emergency", "decompression", "chest tube", "shock"],
   },
   {
@@ -174,9 +186,12 @@ export const CASE_LIBRARY: SimilarCase[] = [
     sex: "F",
     presentation:
       "2 days of severe nausea, vomiting, abdominal pain, deep rapid sighing respirations, acetone breath, capillary glucose 28 mmol/L, capillary ketones 5.2 mmol/L, venous pH 7.18.",
-    diagnosis: "Severe Diabetic Ketoacidosis (DKA) presenting as first manifestation of Type 1 Diabetes",
-    treatment: "Intravenous 0.9% saline fluid resuscitation protocol, fixed-rate IV insulin infusion (0.1 units/kg/hr), potassium chloride infusion to maintain K+ > 4.5, transitioned to basal-bolus subcutaneous regimen after ketoacidosis cleared",
-    outcome: "Full metabolic recovery within 24 hours (pH 7.38, ketones 0.3), intensive diabetes nurse education completed",
+    diagnosis:
+      "Severe Diabetic Ketoacidosis (DKA) presenting as first manifestation of Type 1 Diabetes",
+    treatment:
+      "Intravenous 0.9% saline fluid resuscitation protocol, fixed-rate IV insulin infusion (0.1 units/kg/hr), potassium chloride infusion to maintain K+ > 4.5, transitioned to basal-bolus subcutaneous regimen after ketoacidosis cleared",
+    outcome:
+      "Full metabolic recovery within 24 hours (pH 7.38, ketones 0.3), intensive diabetes nurse education completed",
     tags: ["dka", "diabetes", "acidosis", "ketones", "insulin"],
   },
   {
@@ -187,8 +202,10 @@ export const CASE_LIBRARY: SimilarCase[] = [
     presentation:
       "Brought from care facility with marked confusion, dry mucous membranes, glucose 44 mmol/L, serum osmolality 348 mOsm/kg, trace urinary ketones, venous pH 7.36.",
     diagnosis: "Hyperosmolar Hyperglycemic State (HHS) triggered by urinary tract infection",
-    treatment: "Careful slow IV 0.9% saline resuscitation over 48 hours, low-dose insulin infusion initiated once glucose stopped falling with fluids, therapeutic LMWH thromboprophylaxis, IV Ceftriaxone for UTI",
-    outcome: "Gradual cognitive clearance, osmolality normalized without neurological deficit, discharged on oral hypoglycemics",
+    treatment:
+      "Careful slow IV 0.9% saline resuscitation over 48 hours, low-dose insulin infusion initiated once glucose stopped falling with fluids, therapeutic LMWH thromboprophylaxis, IV Ceftriaxone for UTI",
+    outcome:
+      "Gradual cognitive clearance, osmolality normalized without neurological deficit, discharged on oral hypoglycemics",
     tags: ["hhs", "hyperosmolar", "dehydration", "elderly", "hyperglycemia"],
   },
   {
@@ -199,8 +216,10 @@ export const CASE_LIBRARY: SimilarCase[] = [
     presentation:
       "Sudden right facial weakness, right arm and leg paralysis, inability to speak, onset witnessed 55 minutes prior. Non-contrast CT brain negative for hemorrhage. CTA demonstrates left M1 MCA occlusion.",
     diagnosis: "Acute Ischemic Stroke (Left MCA territory, NIHSS 18)",
-    treatment: "Intravenous Tenecteplase bolus administered at door-to-needle time of 28 minutes, transferred immediately to catheterisation suite for emergency endovascular mechanical thrombectomy (TICI 3 revascularisation achieved)",
-    outcome: "Dramatic neurological improvement: NIHSS 2 at 24 hours, discharged walking independently at day 5 with minimal speech impairment",
+    treatment:
+      "Intravenous Tenecteplase bolus administered at door-to-needle time of 28 minutes, transferred immediately to catheterisation suite for emergency endovascular mechanical thrombectomy (TICI 3 revascularisation achieved)",
+    outcome:
+      "Dramatic neurological improvement: NIHSS 2 at 24 hours, discharged walking independently at day 5 with minimal speech impairment",
     tags: ["stroke", "thrombectomy", "thrombolysis", "aphasia", "neurology"],
   },
   {
@@ -210,9 +229,12 @@ export const CASE_LIBRARY: SimilarCase[] = [
     sex: "F",
     presentation:
       "Instantaneous explosive headache 'like being struck on the back of head', peak severity within 5 seconds, vomiting, neck stiffness, Kernig sign positive.",
-    diagnosis: "Subarachnoid Hemorrhage (Hunt & Hess Grade II) secondary to ruptured anterior communicating artery aneurysm",
-    treatment: "Oral Nimodipine 60mg started immediately, urgent cerebral angiography, successful endovascular platinum coil embolization within 18 hours of admission",
-    outcome: "Zero re-bleeding, no delayed cerebral ischemia, discharged on day 16 neurologically intact",
+    diagnosis:
+      "Subarachnoid Hemorrhage (Hunt & Hess Grade II) secondary to ruptured anterior communicating artery aneurysm",
+    treatment:
+      "Oral Nimodipine 60mg started immediately, urgent cerebral angiography, successful endovascular platinum coil embolization within 18 hours of admission",
+    outcome:
+      "Zero re-bleeding, no delayed cerebral ischemia, discharged on day 16 neurologically intact",
     tags: ["subarachnoid hemorrhage", "aneurysm", "headache", "thunderclap", "nimodipine"],
   },
   {
@@ -223,8 +245,10 @@ export const CASE_LIBRARY: SimilarCase[] = [
     presentation:
       "Fever 39.4C, severe throbbing headache, photophobia, inability to touch chin to chest, non-blanching petechial and purpuric rash on lower limbs. Deteriorating GCS 12.",
     diagnosis: "Acute Meningococcal Meningitis and Septicaemia (Neisseria meningitidis)",
-    treatment: "Immediate IV Ceftriaxone 2g and IV Dexamethasone 10mg started before imaging, intensive care monitoring, public health contact tracing with Ciprofloxacin prophylaxis for hallmates",
-    outcome: "Rapid fever defervescence, rash resolved without tissue necrosis, hearing test normal on follow-up, made full recovery",
+    treatment:
+      "Immediate IV Ceftriaxone 2g and IV Dexamethasone 10mg started before imaging, intensive care monitoring, public health contact tracing with Ciprofloxacin prophylaxis for hallmates",
+    outcome:
+      "Rapid fever defervescence, rash resolved without tissue necrosis, hearing test normal on follow-up, made full recovery",
     tags: ["meningitis", "purpura", "fever", "infection", "ceftriaxone"],
   },
   {
@@ -235,8 +259,10 @@ export const CASE_LIBRARY: SimilarCase[] = [
     presentation:
       "Severe epigastric pain after fatty meal radiating through to lumbar spine, relieved somewhat by leaning forward, persistent bilious vomiting, serum lipase 1,940 U/L (normal < 60).",
     diagnosis: "Acute Gallstone Pancreatitis (Modified Glasgow score 1)",
-    treatment: "Targeted IV crystalloid fluid therapy (Ringer's lactate 250 mL/hr), multimodal analgesia with IV fentanyl, ultrasound confirmed multiple cholelithiasis with common bile duct dilatation, early oral feeding resumed day 2",
-    outcome: "Index-admission laparoscopic cholecystectomy performed on day 5, uneventful recovery with no recurrence",
+    treatment:
+      "Targeted IV crystalloid fluid therapy (Ringer's lactate 250 mL/hr), multimodal analgesia with IV fentanyl, ultrasound confirmed multiple cholelithiasis with common bile duct dilatation, early oral feeding resumed day 2",
+    outcome:
+      "Index-admission laparoscopic cholecystectomy performed on day 5, uneventful recovery with no recurrence",
     tags: ["pancreatitis", "lipase", "gallstones", "epigastric pain", "cholecystectomy"],
   },
   {
@@ -246,9 +272,12 @@ export const CASE_LIBRARY: SimilarCase[] = [
     sex: "F",
     presentation:
       "Taking high-dose Naproxen for knee osteoarthritis without gastroprotection. Presents with 2 days of dark black tarry offensive stool (melaena), postural syncope, resting HR 112, BP 94/58, Hb 72 g/L.",
-    diagnosis: "Acute Upper Gastrointestinal Bleed secondary to Bleeding Duodenal Peptic Ulcer (Forrest IIa)",
-    treatment: "IV resuscitation with packed red blood cells (target Hb > 80 g/L), high-dose IV Pantoprazole bolus + infusion, urgent gastroscopy within 12 hours with dual endoscopic hemostasis (adrenaline injection + through-the-scope clips)",
-    outcome: "No re-bleeding, H. pylori stool antigen positive treated with 14-day triple eradication therapy, complete healing on repeat OGD at 8 weeks",
+    diagnosis:
+      "Acute Upper Gastrointestinal Bleed secondary to Bleeding Duodenal Peptic Ulcer (Forrest IIa)",
+    treatment:
+      "IV resuscitation with packed red blood cells (target Hb > 80 g/L), high-dose IV Pantoprazole bolus + infusion, urgent gastroscopy within 12 hours with dual endoscopic hemostasis (adrenaline injection + through-the-scope clips)",
+    outcome:
+      "No re-bleeding, H. pylori stool antigen positive treated with 14-day triple eradication therapy, complete healing on repeat OGD at 8 weeks",
     tags: ["gi bleed", "melena", "peptic ulcer", "endoscopy", "nsaid"],
   },
   {
@@ -258,9 +287,12 @@ export const CASE_LIBRARY: SimilarCase[] = [
     sex: "M",
     presentation:
       "Known alcoholic liver cirrhosis. Presents with worsening abdominal swelling, mild abdominal tenderness, low-grade fever 38.0C, and coarse flapping hand tremor (asterixis). Ascitic tap neutrophils 420/mm3.",
-    diagnosis: "Decompensated Liver Cirrhosis with Spontaneous Bacterial Peritonitis (SBP) and Grade 2 Hepatic Encephalopathy",
-    treatment: "IV Ceftriaxone 2g daily for 5 days, IV 20% Human Albumin Solution (1.5g/kg day 1, 1.0g/kg day 3 to prevent hepatorenal syndrome), oral Lactulose titrated to 3 soft stools/day plus Rifaximin 550mg BD",
-    outcome: "Ascitic neutrophil count dropped to 80/mm3 by 48 hours, encephalopathy cleared, discharged on long-term Ciprofloxacin secondary SBP prophylaxis and liver transplant waitlist",
+    diagnosis:
+      "Decompensated Liver Cirrhosis with Spontaneous Bacterial Peritonitis (SBP) and Grade 2 Hepatic Encephalopathy",
+    treatment:
+      "IV Ceftriaxone 2g daily for 5 days, IV 20% Human Albumin Solution (1.5g/kg day 1, 1.0g/kg day 3 to prevent hepatorenal syndrome), oral Lactulose titrated to 3 soft stools/day plus Rifaximin 550mg BD",
+    outcome:
+      "Ascitic neutrophil count dropped to 80/mm3 by 48 hours, encephalopathy cleared, discharged on long-term Ciprofloxacin secondary SBP prophylaxis and liver transplant waitlist",
     tags: ["cirrhosis", "ascites", "sbp", "hepatic encephalopathy", "hepatology"],
   },
   {
@@ -270,9 +302,12 @@ export const CASE_LIBRARY: SimilarCase[] = [
     sex: "M",
     presentation:
       "4 days of severe profuse diarrhea and vomiting, unable to retain oral fluids, urine output < 100 mL in last 18 hours. Blood tests show serum creatinine 460 umol/L (baseline 82 umol/L), urea 28 mmol/L, K+ 5.8 mmol/L.",
-    diagnosis: "Severe Acute Kidney Injury (KDIGO Stage 3) secondary to volume depletion / pre-renal azotemia and acute tubular necrosis",
-    treatment: "Withheld all ACE inhibitors and NSAIDs, administered 3 litres IV balanced crystalloid in first 24 hours, tracked fluid balance with urinary catheter, insulin-dextrose for mild hyperkalaemia",
-    outcome: "Brisk diuresis on day 2 (urine output 2.2 L/day), serum creatinine improved to 110 umol/L on discharge, normal renal ultrasound",
+    diagnosis:
+      "Severe Acute Kidney Injury (KDIGO Stage 3) secondary to volume depletion / pre-renal azotemia and acute tubular necrosis",
+    treatment:
+      "Withheld all ACE inhibitors and NSAIDs, administered 3 litres IV balanced crystalloid in first 24 hours, tracked fluid balance with urinary catheter, insulin-dextrose for mild hyperkalaemia",
+    outcome:
+      "Brisk diuresis on day 2 (urine output 2.2 L/day), serum creatinine improved to 110 umol/L on discharge, normal renal ultrasound",
     tags: ["aki", "creatinine", "oliguria", "dehydration", "nephrology"],
   },
   {
@@ -283,8 +318,10 @@ export const CASE_LIBRARY: SimilarCase[] = [
     presentation:
       "Receiving adjuvant chemotherapy for breast cancer. Presents with violent rigors, temperature 39.8C, BP 76/44, HR 130, RR 26, blood lactate 4.6 mmol/L, absolute neutrophil count 0.3 x 10^9/L.",
     diagnosis: "Septic Shock secondary to Neutropenic Enterocolitis / Bacteremia",
-    treatment: "Surviving Sepsis Hour-1 bundle executed: immediate peripheral blood cultures, IV Meropenem 1g stat within 30 minutes, 30 mL/kg IV crystalloid fluid bolus, continuous Noradrenaline infusion titrated to MAP >= 65 mmHg, G-CSF support",
-    outcome: "Lactate cleared to 1.4 mmol/L by hour 8, weaned off noradrenaline by day 3, ANC recovered to > 1.5, discharged home on day 9 in good health",
+    treatment:
+      "Surviving Sepsis Hour-1 bundle executed: immediate peripheral blood cultures, IV Meropenem 1g stat within 30 minutes, 30 mL/kg IV crystalloid fluid bolus, continuous Noradrenaline infusion titrated to MAP >= 65 mmHg, G-CSF support",
+    outcome:
+      "Lactate cleared to 1.4 mmol/L by hour 8, weaned off noradrenaline by day 3, ANC recovered to > 1.5, discharged home on day 9 in good health",
     tags: ["sepsis", "shock", "neutropenia", "noradrenaline", "lactate"],
   },
 ];

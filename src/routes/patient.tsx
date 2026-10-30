@@ -22,7 +22,7 @@ import {
 import { toast } from "sonner";
 
 import { AppShell } from "@/components/app-shell";
-import { EmptyState, GlassCard, SectionTitle } from "@/components/medical-ui";
+import { GlassCard, SectionTitle } from "@/components/medical-ui";
 import { FormArea, FormField } from "@/components/form-fields";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -31,7 +31,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
-import { getCollections, useTypedCollection, type PatientRecord, type PatientDocument } from "@/lib/db";
+import {
+  getCollections,
+  useTypedCollection,
+  type PatientRecord,
+  type PatientDocument,
+} from "@/lib/db";
 import { auth } from "@/lib/firebase";
 import { uploadToCloudinary, getCloudinaryThumbnail } from "@/lib/cloudinary";
 import { seedIndianClinicalCohort } from "@/lib/clinical-seed-data";
@@ -149,7 +154,9 @@ function PatientPage() {
       });
       const url = res.secureUrl || res.url;
       setForm((f) => ({ ...f, photoUrl: url }));
-      toast.success(res.isLocalFallback ? "Photo stored locally" : "Photo uploaded to secure cloud!");
+      toast.success(
+        res.isLocalFallback ? "Photo stored locally" : "Photo uploaded to secure cloud!",
+      );
     } catch (err) {
       toast.error("Failed to upload photo: " + (err as Error).message);
     } finally {
@@ -181,7 +188,9 @@ function PatientPage() {
         ...f,
         documents: [...(f.documents || []), newDoc],
       }));
-      toast.success(res.isLocalFallback ? "Document attached locally" : "Document saved to Cloudinary CDN!");
+      toast.success(
+        res.isLocalFallback ? "Document attached locally" : "Document saved to Cloudinary CDN!",
+      );
     } catch (err) {
       toast.error("Failed to upload document: " + (err as Error).message);
     } finally {
@@ -271,7 +280,11 @@ function PatientPage() {
             <CardHeader className="pb-3 border-b border-border/50">
               <SectionTitle
                 icon={UserPlus}
-                title={editingId !== null ? `Edit: ${form.name || "Patient Record"}` : "New Clinical Patient Intake"}
+                title={
+                  editingId !== null
+                    ? `Edit: ${form.name || "Patient Record"}`
+                    : "New Clinical Patient Intake"
+                }
                 hint="All fields optional except identifier"
                 right={
                   <Button
@@ -289,175 +302,188 @@ function PatientPage() {
                 }
               />
             </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
-              <div className="flex items-start justify-between gap-2">
-                <div className="flex-1">
-                  <Label className="text-xs font-semibold text-primary">Clinical question</Label>
-                  <p className="text-xs text-muted-foreground">What do you need evidence on?</p>
-                </div>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  onClick={suggestQuestion}
-                  className="h-7 gap-1 text-xs"
-                >
-                  <Lightbulb className="h-3.5 w-3.5" /> Suggest
-                </Button>
-              </div>
-              <Textarea
-                className="mt-2 bg-background/60"
-                rows={3}
-                placeholder="e.g. 52-year-old male with fever, productive cough and right basal crackles: most likely diagnosis and first-line treatment?"
-                value={form.question}
-                onChange={(e) => set("question")(e.target.value)}
-              />
-              <p className="mt-1.5 text-xs text-muted-foreground">
-                This is saved with the patient and pre-filled when you run the agents. It drives the
-                entire evidence search.
-              </p>
-            </div>
-
-            <div className="grid gap-3 sm:grid-cols-3">
-              <FormField label="Name / ID" value={form.name} onChange={set("name")} />
-              <FormField label="Age" value={form.age} onChange={set("age")} />
-              <FormField label="Sex" value={form.sex} onChange={set("sex")} />
-            </div>
-
-            {/* Patient Photo & Attachments */}
-            <div className="rounded-lg border border-border/70 bg-card/50 p-3 space-y-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label className="text-xs font-semibold flex items-center gap-1.5">
-                    <Cloud className="h-3.5 w-3.5 text-primary" />
-                    Patient Photo & Clinical Documents
-                  </Label>
-                  <p className="text-[0.7rem] text-muted-foreground">
-                    Securely encrypted cloud storage for clinical media, labs, and documentation.
-                  </p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="file"
-                    ref={photoInputRef}
-                    onChange={handlePhotoUpload}
-                    accept="image/*"
-                    className="hidden"
-                  />
+            <CardContent className="space-y-3">
+              <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex-1">
+                    <Label className="text-xs font-semibold text-primary">Clinical question</Label>
+                    <p className="text-xs text-muted-foreground">What do you need evidence on?</p>
+                  </div>
                   <Button
                     type="button"
                     size="sm"
                     variant="outline"
-                    disabled={uploadingDoc}
-                    onClick={() => photoInputRef.current?.click()}
+                    onClick={suggestQuestion}
                     className="h-7 gap-1 text-xs"
                   >
-                    {uploadingDoc ? (
-                      <Loader2 className="h-3 w-3 animate-spin" />
-                    ) : (
-                      <ImageIcon className="h-3 w-3" />
-                    )}
-                    {form.photoUrl ? "Change Photo" : "Add Photo"}
-                  </Button>
-
-                  <input
-                    type="file"
-                    ref={docInputRef}
-                    onChange={handleDocUpload}
-                    accept="image/*,.pdf,.doc,.docx"
-                    className="hidden"
-                  />
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="outline"
-                    disabled={uploadingDoc}
-                    onClick={() => docInputRef.current?.click()}
-                    className="h-7 gap-1 text-xs"
-                  >
-                    <FileUp className="h-3 w-3" />
-                    Attach Document
+                    <Lightbulb className="h-3.5 w-3.5" /> Suggest
                   </Button>
                 </div>
+                <Textarea
+                  className="mt-2 bg-background/60"
+                  rows={3}
+                  placeholder="e.g. 52-year-old male with fever, productive cough and right basal crackles: most likely diagnosis and first-line treatment?"
+                  value={form.question}
+                  onChange={(e) => set("question")(e.target.value)}
+                />
+                <p className="mt-1.5 text-xs text-muted-foreground">
+                  This is saved with the patient and pre-filled when you run the agents. It drives
+                  the entire evidence search.
+                </p>
               </div>
 
-              {form.photoUrl && (
-                <div className="flex items-center gap-3 rounded border border-border/40 bg-background/50 p-2">
-                  <img
-                    src={getCloudinaryThumbnail(form.photoUrl, 64, 64)}
-                    alt="Patient portrait"
-                    className="h-10 w-10 rounded-full object-cover ring-1 ring-primary/40"
-                  />
-                  <div className="min-w-0 flex-1 text-xs">
-                    <p className="font-medium">Patient Photo Attached</p>
-                    <a
-                      href={form.photoUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-[0.65rem] text-primary hover:underline flex items-center gap-1"
+              <div className="grid gap-3 sm:grid-cols-3">
+                <FormField label="Name / ID" value={form.name} onChange={set("name")} />
+                <FormField label="Age" value={form.age} onChange={set("age")} />
+                <FormField label="Sex" value={form.sex} onChange={set("sex")} />
+              </div>
+
+              {/* Patient Photo & Attachments */}
+              <div className="rounded-lg border border-border/70 bg-card/50 p-3 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="text-xs font-semibold flex items-center gap-1.5">
+                      <Cloud className="h-3.5 w-3.5 text-primary" />
+                      Patient Photo & Clinical Documents
+                    </Label>
+                    <p className="text-[0.7rem] text-muted-foreground">
+                      Securely encrypted cloud storage for clinical media, labs, and documentation.
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="file"
+                      ref={photoInputRef}
+                      onChange={handlePhotoUpload}
+                      accept="image/*"
+                      className="hidden"
+                    />
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      disabled={uploadingDoc}
+                      onClick={() => photoInputRef.current?.click()}
+                      className="h-7 gap-1 text-xs"
                     >
-                      View on Cloudinary CDN <ExternalLink className="h-2.5 w-2.5" />
-                    </a>
-                  </div>
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => setForm((f) => ({ ...f, photoUrl: "" }))}
-                    className="h-6 w-6 p-0 text-muted-foreground hover:text-destructive"
-                  >
-                    <X className="h-3.5 w-3.5" />
-                  </Button>
-                </div>
-              )}
+                      {uploadingDoc ? (
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                      ) : (
+                        <ImageIcon className="h-3 w-3" />
+                      )}
+                      {form.photoUrl ? "Change Photo" : "Add Photo"}
+                    </Button>
 
-              {form.documents && form.documents.length > 0 && (
-                <div className="space-y-1.5 pt-1">
-                  <p className="text-[0.7rem] font-medium text-muted-foreground">
-                    Attached Files ({form.documents.length}):
-                  </p>
-                  <div className="grid gap-1.5 sm:grid-cols-2">
-                    {form.documents.map((docItem) => (
-                      <div
-                        key={docItem.id}
-                        className="flex items-center justify-between rounded border border-border/50 bg-background/40 px-2 py-1.5 text-xs"
+                    <input
+                      type="file"
+                      ref={docInputRef}
+                      onChange={handleDocUpload}
+                      accept="image/*,.pdf,.doc,.docx"
+                      className="hidden"
+                    />
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      disabled={uploadingDoc}
+                      onClick={() => docInputRef.current?.click()}
+                      className="h-7 gap-1 text-xs"
+                    >
+                      <FileUp className="h-3 w-3" />
+                      Attach Document
+                    </Button>
+                  </div>
+                </div>
+
+                {form.photoUrl && (
+                  <div className="flex items-center gap-3 rounded border border-border/40 bg-background/50 p-2">
+                    <img
+                      src={getCloudinaryThumbnail(form.photoUrl, 64, 64)}
+                      alt="Patient portrait"
+                      className="h-10 w-10 rounded-full object-cover ring-1 ring-primary/40"
+                    />
+                    <div className="min-w-0 flex-1 text-xs">
+                      <p className="font-medium">Patient Photo Attached</p>
+                      <a
+                        href={form.photoUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-[0.65rem] text-primary hover:underline flex items-center gap-1"
                       >
-                        <div className="flex items-center gap-1.5 min-w-0">
-                          <FileText className="h-3.5 w-3.5 shrink-0 text-primary" />
-                          <span className="truncate text-[0.75rem]">{docItem.name}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <a
-                            href={docItem.url}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-muted-foreground hover:text-primary p-0.5"
-                          >
-                            <ExternalLink className="h-3 w-3" />
-                          </a>
-                          <button
-                            type="button"
-                            onClick={() => removeDoc(docItem.id)}
-                            className="text-muted-foreground hover:text-destructive p-0.5"
-                          >
-                            <X className="h-3 w-3" />
-                          </button>
-                        </div>
-                      </div>
-                    ))}
+                        View on Cloudinary CDN <ExternalLink className="h-2.5 w-2.5" />
+                      </a>
+                    </div>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => setForm((f) => ({ ...f, photoUrl: "" }))}
+                      className="h-6 w-6 p-0 text-muted-foreground hover:text-destructive"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </Button>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
 
-            <FormArea label="Past medical history" value={form.history} onChange={set("history")} />
-            <FormArea label="Current medications" value={form.medications} onChange={set("medications")} />
-            <div className="grid gap-3 sm:grid-cols-2">
-              <FormArea label="Allergies" value={form.allergies} onChange={set("allergies")} rows={2} />
-              <FormArea label="Vitals" value={form.vitals} onChange={set("vitals")} rows={2} />
-            </div>
-            <FormArea label="Labs" value={form.labs} onChange={set("labs")} rows={3} />
+                {form.documents && form.documents.length > 0 && (
+                  <div className="space-y-1.5 pt-1">
+                    <p className="text-[0.7rem] font-medium text-muted-foreground">
+                      Attached Files ({form.documents.length}):
+                    </p>
+                    <div className="grid gap-1.5 sm:grid-cols-2">
+                      {form.documents.map((docItem) => (
+                        <div
+                          key={docItem.id}
+                          className="flex items-center justify-between rounded border border-border/50 bg-background/40 px-2 py-1.5 text-xs"
+                        >
+                          <div className="flex items-center gap-1.5 min-w-0">
+                            <FileText className="h-3.5 w-3.5 shrink-0 text-primary" />
+                            <span className="truncate text-[0.75rem]">{docItem.name}</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <a
+                              href={docItem.url}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-muted-foreground hover:text-primary p-0.5"
+                            >
+                              <ExternalLink className="h-3 w-3" />
+                            </a>
+                            <button
+                              type="button"
+                              onClick={() => removeDoc(docItem.id)}
+                              className="text-muted-foreground hover:text-destructive p-0.5"
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <FormArea
+                label="Past medical history"
+                value={form.history}
+                onChange={set("history")}
+              />
+              <FormArea
+                label="Current medications"
+                value={form.medications}
+                onChange={set("medications")}
+              />
+              <div className="grid gap-3 sm:grid-cols-2">
+                <FormArea
+                  label="Allergies"
+                  value={form.allergies}
+                  onChange={set("allergies")}
+                  rows={2}
+                />
+                <FormArea label="Vitals" value={form.vitals} onChange={set("vitals")} rows={2} />
+              </div>
+              <FormArea label="Labs" value={form.labs} onChange={set("labs")} rows={3} />
               <div className="flex items-center gap-2 pt-2 border-t border-border/50">
                 <Button onClick={save} className="h-9 gap-1.5 text-xs">
                   {editingId !== null ? "Update Patient Record" : "Save Patient to Roster"}
@@ -498,7 +524,10 @@ function PatientPage() {
                   <h3 className="font-display text-base font-bold text-foreground">
                     Clinical Patient Directory
                   </h3>
-                  <Badge variant="outline" className="text-xs font-mono border-primary/30 text-primary bg-primary/10">
+                  <Badge
+                    variant="outline"
+                    className="text-xs font-mono border-primary/30 text-primary bg-primary/10"
+                  >
                     {patientsLoading ? "Loading..." : `${patients.length} Records`}
                   </Badge>
                 </div>
@@ -532,7 +561,10 @@ function PatientPage() {
               {patientsLoading ? (
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {[1, 2, 3, 4, 5, 6].map((i) => (
-                    <div key={i} className="rounded-xl border border-border/60 bg-card/40 p-4 space-y-3">
+                    <div
+                      key={i}
+                      className="rounded-xl border border-border/60 bg-card/40 p-4 space-y-3"
+                    >
                       <div className="flex items-center gap-3">
                         <Skeleton className="h-10 w-10 rounded-full" />
                         <div className="space-y-1.5 flex-1">
@@ -681,4 +713,3 @@ function PatientPage() {
     </AppShell>
   );
 }
-

@@ -52,10 +52,7 @@ export async function uploadToCloudinary(
 
   // Check if we can do client-side direct unsigned upload
   const canDirectUpload =
-    cloudName &&
-    cloudName !== "demo" &&
-    uploadPreset &&
-    uploadPreset !== "medguide_unsigned";
+    cloudName && cloudName !== "demo" && uploadPreset && uploadPreset !== "medguide_unsigned";
 
   if (canDirectUpload) {
     try {
@@ -101,9 +98,7 @@ export async function uploadToCloudinary(
   if (isCloudinaryConfigured()) {
     try {
       const payload =
-        typeof fileOrDataUrl === "string"
-          ? fileOrDataUrl
-          : await fileToDataUrl(fileOrDataUrl);
+        typeof fileOrDataUrl === "string" ? fileOrDataUrl : await fileToDataUrl(fileOrDataUrl);
 
       const serverRes = await uploadAssetServerFn({
         data: {
@@ -132,9 +127,7 @@ export async function uploadToCloudinary(
 
   // Graceful fallback for local development or when credentials are not yet entered
   const fallbackUrl =
-    typeof fileOrDataUrl === "string"
-      ? fileOrDataUrl
-      : await fileToDataUrl(fileOrDataUrl);
+    typeof fileOrDataUrl === "string" ? fileOrDataUrl : await fileToDataUrl(fileOrDataUrl);
 
   const localId = `local_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
   return {
@@ -181,10 +174,9 @@ export function getCloudinaryThumbnail(url: string, width = 200, height = 200): 
 export function getCloudinaryOptimized(url: string, width?: number): string {
   if (!url || !url.includes("cloudinary.com")) return url;
   const normalized = normalizeCloudinaryUrl(url);
-  if (normalized.includes("/f_auto") || (width && normalized.includes(`/w_${width}`))) return normalized;
-  const transform = width
-    ? `w_${width},c_limit,f_auto,q_auto`
-    : `f_auto,q_auto`;
+  if (normalized.includes("/f_auto") || (width && normalized.includes(`/w_${width}`)))
+    return normalized;
+  const transform = width ? `w_${width},c_limit,f_auto,q_auto` : `f_auto,q_auto`;
   return normalized.replace(/\/upload\//, `/upload/${transform}/`);
 }
 

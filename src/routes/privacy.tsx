@@ -64,10 +64,13 @@ function PrivacyPage() {
           </CardHeader>
           <CardContent className="space-y-4 text-sm leading-relaxed text-muted-foreground">
             <p className="text-foreground font-medium">
-              MEDGUIDE AI operates as an evidence-based clinical decision support tool designed for licensed clinicians, healthcare trainees, and medical researchers. We adhere to rigorous information security, patient data privacy, and minimal retention principles.
+              MEDGUIDE AI operates as an evidence-based clinical decision support tool designed for
+              licensed clinicians, healthcare trainees, and medical researchers. We adhere to
+              rigorous information security, patient data privacy, and minimal retention principles.
             </p>
             <p>
-              This Privacy Policy explains how information entered into the platform is handled, where it is processed, and how your clinician account data is isolated.
+              This Privacy Policy explains how information entered into the platform is handled,
+              where it is processed, and how your clinician account data is isolated.
             </p>
           </CardContent>
         </GlassCard>
@@ -79,10 +82,16 @@ function PrivacyPage() {
             </CardHeader>
             <CardContent className="space-y-3 text-sm leading-relaxed text-muted-foreground">
               <p>
-                <strong className="text-foreground">De-Identified Data Input:</strong> Clinicians are required to enter only de-identified or pseudonymized clinical case summaries. Do not input unmasked direct identifiers such as full patient legal names, national identification numbers, or residential addresses.
+                <strong className="text-foreground">De-Identified Data Input:</strong> Clinicians
+                are required to enter only de-identified or pseudonymized clinical case summaries.
+                Do not input unmasked direct identifiers such as full patient legal names, national
+                identification numbers, or residential addresses.
               </p>
               <p>
-                <strong className="text-foreground">Clinical Purpose Limitation:</strong> Information submitted during consultation intake is utilized exclusively to perform real-time literature retrieval, allergy verification, drug-drug interaction auditing, and differential reasoning.
+                <strong className="text-foreground">Clinical Purpose Limitation:</strong>{" "}
+                Information submitted during consultation intake is utilized exclusively to perform
+                real-time literature retrieval, allergy verification, drug-drug interaction
+                auditing, and differential reasoning.
               </p>
             </CardContent>
           </GlassCard>
@@ -93,10 +102,14 @@ function PrivacyPage() {
             </CardHeader>
             <CardContent className="space-y-3 text-sm leading-relaxed text-muted-foreground">
               <p>
-                <strong className="text-foreground">Local Vision Inference:</strong> Radiograph saliency evaluation occurs inside your client browser through ONNX Runtime WebAssembly. Full-resolution imaging files remain on your local device.
+                <strong className="text-foreground">Local Vision Inference:</strong> Radiograph
+                saliency evaluation occurs inside your client browser through ONNX Runtime
+                WebAssembly. Full-resolution imaging files remain on your local device.
               </p>
               <p>
-                <strong className="text-foreground">Local Guidance Sessions:</strong> Conversations initiated with the in-app guide ("Ask MedGuide") are stored directly in your browser local storage and can be deleted locally at any time.
+                <strong className="text-foreground">Local Guidance Sessions:</strong> Conversations
+                initiated with the in-app guide ("Ask MedGuide") are stored directly in your browser
+                local storage and can be deleted locally at any time.
               </p>
             </CardContent>
           </GlassCard>
@@ -108,13 +121,17 @@ function PrivacyPage() {
           </CardHeader>
           <CardContent className="space-y-4 text-sm leading-relaxed text-muted-foreground">
             <p>
-              When authenticated via Google OAuth, your workspace records (saved patients, consultation traces, clinical timelines, downsampled imaging thumbnails, and generated reports) are stored in Cloud Firestore under strict row-level security rules:
+              When authenticated via Google OAuth, your workspace records (saved patients,
+              consultation traces, clinical timelines, downsampled imaging thumbnails, and generated
+              reports) are stored in Cloud Firestore under strict row-level security rules:
             </p>
             <div className="rounded-lg border border-border/80 bg-card/60 p-3 font-mono text-xs text-foreground">
-              match /users/&#123;userId&#125;/&#123;document=**&#125; &#123; allow read, write: if request.auth != null &amp;&amp; request.auth.uid == userId; &#125;
+              match /users/&#123;userId&#125;/&#123;document=**&#125; &#123; allow read, write: if
+              request.auth != null &amp;&amp; request.auth.uid == userId; &#125;
             </div>
             <p>
-              Every user account is partitioned into an isolated data partition. No clinician can read, modify, or query clinical records belonging to another clinician account.
+              Every user account is partitioned into an isolated data partition. No clinician can
+              read, modify, or query clinical records belonging to another clinician account.
             </p>
           </CardContent>
         </GlassCard>
@@ -125,26 +142,40 @@ function PrivacyPage() {
           </CardHeader>
           <CardContent className="space-y-3 text-sm leading-relaxed text-muted-foreground">
             <p>
-              To synthesize verifiable differential diagnoses, MEDGUIDE AI communicates with authoritative public medical databases:
+              To synthesize verifiable differential diagnoses, MEDGUIDE AI communicates with
+              authoritative public medical databases:
             </p>
             <ul className="list-disc space-y-1.5 pl-5">
               <li>
-                <strong className="text-foreground">National Center for Biotechnology Information (NCBI):</strong> Keyword queries to PubMed E-utilities for peer-reviewed studies.
+                <strong className="text-foreground">
+                  National Center for Biotechnology Information (NCBI):
+                </strong>{" "}
+                Keyword queries to PubMed E-utilities for peer-reviewed studies.
               </li>
               <li>
-                <strong className="text-foreground">Europe PMC:</strong> Supplemental biomedical literature indexing.
+                <strong className="text-foreground">Europe PMC:</strong> Supplemental biomedical
+                literature indexing.
               </li>
               <li>
-                <strong className="text-foreground">U.S. National Library of Medicine (NLM):</strong> RxNav API for standardized drug interaction checks.
+                <strong className="text-foreground">
+                  U.S. National Library of Medicine (NLM):
+                </strong>{" "}
+                RxNav API for standardized drug interaction checks.
               </li>
               <li>
-                <strong className="text-foreground">U.S. Food and Drug Administration (FDA):</strong> openFDA API for official drug labeling and boxed warnings.
+                <strong className="text-foreground">
+                  U.S. Food and Drug Administration (FDA):
+                </strong>{" "}
+                openFDA API for official drug labeling and boxed warnings.
               </li>
               <li>
-                <strong className="text-foreground">World Health Organization (WHO):</strong> Clinical practice guideline indices.
+                <strong className="text-foreground">World Health Organization (WHO):</strong>{" "}
+                Clinical practice guideline indices.
               </li>
               <li>
-                <strong className="text-foreground">Google Generative AI (AI Studio):</strong> Server-side processing for synthesis and safety guardrail auditing under enterprise API terms with zero model training on customer data.
+                <strong className="text-foreground">Google Generative AI (AI Studio):</strong>{" "}
+                Server-side processing for synthesis and safety guardrail auditing under enterprise
+                API terms with zero model training on customer data.
               </li>
             </ul>
           </CardContent>
@@ -155,18 +186,23 @@ function PrivacyPage() {
             <SectionTitle icon={UserCheck} title="5. Data Retention, Portability, and Deletion" />
           </CardHeader>
           <CardContent className="space-y-3 text-sm leading-relaxed text-muted-foreground">
+            <p>You maintain complete ownership and control over your clinical workspace data.</p>
             <p>
-              You maintain complete ownership and control over your clinical workspace data.
-            </p>
-            <p>
-              To permanently remove all patient records, consultations, timelines, and reports from the cloud database, navigate to the <Link to="/settings" className="text-primary underline font-medium">Settings</Link> page and use the "Wipe all data" utility. This initiates an immediate batch deletion across all sub-collections.
+              To permanently remove all patient records, consultations, timelines, and reports from
+              the cloud database, navigate to the{" "}
+              <Link to="/settings" className="text-primary underline font-medium">
+                Settings
+              </Link>{" "}
+              page and use the "Wipe all data" utility. This initiates an immediate batch deletion
+              across all sub-collections.
             </p>
           </CardContent>
         </GlassCard>
 
         <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-border/80 bg-card/60 p-4 text-xs text-muted-foreground">
           <p>
-            Questions or security reports regarding data privacy may be directed to your local system administrator.
+            Questions or security reports regarding data privacy may be directed to your local
+            system administrator.
           </p>
           <div className="flex items-center gap-4">
             <Link to="/terms" className="text-primary hover:underline font-medium">

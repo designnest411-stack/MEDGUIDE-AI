@@ -81,7 +81,7 @@ export const Route = createFileRoute("/research")({
   component: ResearchPage,
 });
 
-export function ResearchPage() {
+function ResearchPage() {
   const [selectedDomain, setSelectedDomain] = useState<string>("All");
   const [vignetteSearch, setVignetteSearch] = useState<string>("");
   const [selectedVignetteId, setSelectedVignetteId] = useState<string>("card-001");
@@ -130,9 +130,7 @@ export function ResearchPage() {
   }, [selectedDomain, vignetteSearch]);
 
   const activeVignette = useMemo(() => {
-    return (
-      BENCHMARK_VIGNETTES.find((v) => v.id === selectedVignetteId) || BENCHMARK_VIGNETTES[0]!
-    );
+    return BENCHMARK_VIGNETTES.find((v) => v.id === selectedVignetteId) || BENCHMARK_VIGNETTES[0]!;
   }, [selectedVignetteId]);
 
   return (
@@ -146,18 +144,29 @@ export function ResearchPage() {
           <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
             <div className="space-y-2">
               <div className="flex flex-wrap items-center gap-2">
-                <Badge variant="outline" className="border-primary/40 bg-primary/10 text-primary font-mono text-[0.7rem] uppercase tracking-wider">
+                <Badge
+                  variant="outline"
+                  className="border-primary/40 bg-primary/10 text-primary font-mono text-[0.7rem] uppercase tracking-wider"
+                >
                   IEEE Transactions Research Manuscript
                 </Badge>
-                <Badge variant="outline" className="border-border text-muted-foreground font-mono text-[0.7rem]">
+                <Badge
+                  variant="outline"
+                  className="border-border text-muted-foreground font-mono text-[0.7rem]"
+                >
                   Department of Computer Science & Engineering (AI & ML), PCCOE Pune
                 </Badge>
               </div>
               <h1 className="font-display text-xl md:text-2xl font-bold tracking-tight text-foreground">
-                Agentic Graph RAG for Explainable Multimodal Clinical Decision Support with Verifiable Evidence and Client-Side Radiographic Saliency
+                Agentic Graph RAG for Explainable Multimodal Clinical Decision Support with
+                Verifiable Evidence and Client-Side Radiographic Saliency
               </h1>
               <p className="text-sm text-muted-foreground max-w-4xl leading-relaxed">
-                Authored by Vikram Kadam, Keshav Mittal, Sandesh Phad, Tejas Shidam, and Madhuri Pagale. Evaluates a 12-agent orchestration framework integrating live biomedical retrieval (PubMed, Europe PMC, WHO, ClinicalTrials.gov), relational clinical knowledge graphs ($G=(V,E)$), deterministic pharmacovigilance (openFDA, RxNav), and in-browser WebAssembly DenseNet-121 occlusion saliency.
+                Authored by Vikram Kadam, Keshav Mittal, Sandesh Phad, Tejas Shidam, and Madhuri
+                Pagale. Evaluates a 12-agent orchestration framework integrating live biomedical
+                retrieval (PubMed, Europe PMC, WHO, ClinicalTrials.gov), relational clinical
+                knowledge graphs ($G=(V,E)$), deterministic pharmacovigilance (openFDA, RxNav), and
+                in-browser WebAssembly DenseNet-121 occlusion saliency.
               </p>
             </div>
             <div className="flex shrink-0 items-center gap-2">
@@ -250,7 +259,11 @@ export function ResearchPage() {
               <div className="h-[340px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 20 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" opacity={0.6} />
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke="var(--color-border)"
+                      opacity={0.6}
+                    />
                     <XAxis
                       dataKey="name"
                       tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }}
@@ -314,12 +327,18 @@ export function ResearchPage() {
                   <TableHeader>
                     <TableRow className="border-border/80">
                       <TableHead className="font-semibold text-foreground">Architecture</TableHead>
-                      <TableHead className="font-semibold text-foreground">Grounding (GR)</TableHead>
+                      <TableHead className="font-semibold text-foreground">
+                        Grounding (GR)
+                      </TableHead>
                       <TableHead className="font-semibold text-foreground">Safety (SC)</TableHead>
-                      <TableHead className="font-semibold text-foreground">Explainability (EF)</TableHead>
+                      <TableHead className="font-semibold text-foreground">
+                        Explainability (EF)
+                      </TableHead>
                       <TableHead className="font-semibold text-foreground">Latency (L)</TableHead>
                       <TableHead className="font-semibold text-foreground">Ghost Cit.</TableHead>
-                      <TableHead className="font-semibold text-foreground">Primary Failure Mode</TableHead>
+                      <TableHead className="font-semibold text-foreground">
+                        Primary Failure Mode
+                      </TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -328,7 +347,9 @@ export function ResearchPage() {
                       return (
                         <TableRow
                           key={a.name}
-                          className={isProposed ? "bg-primary/[0.05] font-medium border-primary/30" : ""}
+                          className={
+                            isProposed ? "bg-primary/[0.05] font-medium border-primary/30" : ""
+                          }
                         >
                           <TableCell className="font-medium">
                             <div className="flex items-center gap-1.5">
@@ -338,28 +359,50 @@ export function ResearchPage() {
                           </TableCell>
                           <TableCell>
                             <div>
-                              <span className="font-mono text-sm">{(a.meanGrounding ?? 0).toFixed(1)}%</span>
-                              <span className="text-xs text-muted-foreground ml-1">± {a.sdGrounding}</span>
-                              <div className="text-[0.68rem] text-muted-foreground">[{a.ci95Grounding.join(", ")}]</div>
+                              <span className="font-mono text-sm">
+                                {(a.meanGrounding ?? 0).toFixed(1)}%
+                              </span>
+                              <span className="text-xs text-muted-foreground ml-1">
+                                ± {a.sdGrounding}
+                              </span>
+                              <div className="text-[0.68rem] text-muted-foreground">
+                                [{a.ci95Grounding.join(", ")}]
+                              </div>
                             </div>
                           </TableCell>
                           <TableCell>
                             <div>
-                              <span className="font-mono text-sm">{(a.meanSafety ?? 0).toFixed(1)}%</span>
-                              <span className="text-xs text-muted-foreground ml-1">± {a.sdSafety}</span>
-                              <div className="text-[0.68rem] text-muted-foreground">[{a.ci95Safety.join(", ")}]</div>
+                              <span className="font-mono text-sm">
+                                {(a.meanSafety ?? 0).toFixed(1)}%
+                              </span>
+                              <span className="text-xs text-muted-foreground ml-1">
+                                ± {a.sdSafety}
+                              </span>
+                              <div className="text-[0.68rem] text-muted-foreground">
+                                [{a.ci95Safety.join(", ")}]
+                              </div>
                             </div>
                           </TableCell>
                           <TableCell>
                             <div>
-                              <span className="font-mono text-sm">{(a.meanExplainability ?? 0).toFixed(1)}%</span>
-                              <span className="text-xs text-muted-foreground ml-1">± {a.sdExplainability}</span>
-                              <div className="text-[0.68rem] text-muted-foreground">[{a.ci95Explainability.join(", ")}]</div>
+                              <span className="font-mono text-sm">
+                                {(a.meanExplainability ?? 0).toFixed(1)}%
+                              </span>
+                              <span className="text-xs text-muted-foreground ml-1">
+                                ± {a.sdExplainability}
+                              </span>
+                              <div className="text-[0.68rem] text-muted-foreground">
+                                [{a.ci95Explainability.join(", ")}]
+                              </div>
                             </div>
                           </TableCell>
                           <TableCell>
-                            <span className="font-mono text-sm">{(a.meanLatency ?? 0).toFixed(2)}s</span>
-                            <span className="text-xs text-muted-foreground ml-1">± {a.sdLatency}</span>
+                            <span className="font-mono text-sm">
+                              {(a.meanLatency ?? 0).toFixed(2)}s
+                            </span>
+                            <span className="text-xs text-muted-foreground ml-1">
+                              ± {a.sdLatency}
+                            </span>
                           </TableCell>
                           <TableCell>
                             <Badge
@@ -408,7 +451,9 @@ export function ResearchPage() {
                     {LATENCY_STAGES.map((s) => (
                       <TableRow key={s.stage}>
                         <TableCell className="text-xs font-medium">{s.stage}</TableCell>
-                        <TableCell className="text-right font-mono text-xs">{(s.seconds ?? 0).toFixed(2)}s</TableCell>
+                        <TableCell className="text-right font-mono text-xs">
+                          {(s.seconds ?? 0).toFixed(2)}s
+                        </TableCell>
                         <TableCell className="text-right font-mono text-xs text-muted-foreground">
                           {(s.percentage ?? 0).toFixed(1)}%
                         </TableCell>
@@ -427,10 +472,16 @@ export function ResearchPage() {
                     Latency vs. Clinical Verification Engineering Trade-Off
                   </h3>
                   <p className="text-xs text-muted-foreground leading-relaxed">
-                    The 14.80-second end-to-end execution of MEDGUIDE AI reflects an intentional clinical design choice: multi-source biomedical literature retrieval (PubMed, Europe PMC, WHO) and post-hoc safety auditing take precedence over sub-second conversational latency.
+                    The 14.80-second end-to-end execution of MEDGUIDE AI reflects an intentional
+                    clinical design choice: multi-source biomedical literature retrieval (PubMed,
+                    Europe PMC, WHO) and post-hoc safety auditing take precedence over sub-second
+                    conversational latency.
                   </p>
                   <p className="text-xs text-muted-foreground leading-relaxed">
-                    For emergency clinical triage workflows, isolated sub-agents such as deterministic drug interaction checking (1.80s) and client-side radiographic saliency (0.45s) execute independently without incurring the complete reasoning chain latency.
+                    For emergency clinical triage workflows, isolated sub-agents such as
+                    deterministic drug interaction checking (1.80s) and client-side radiographic
+                    saliency (0.45s) execute independently without incurring the complete reasoning
+                    chain latency.
                   </p>
                 </div>
               </div>
@@ -465,16 +516,26 @@ export function ResearchPage() {
                       <TableRow key={d.domain}>
                         <TableCell className="font-medium text-xs">{d.domain}</TableCell>
                         <TableCell className="text-right font-mono text-xs">{d.cases}</TableCell>
-                        <TableCell className="text-right font-mono text-xs text-primary">{(d.grounding ?? 0).toFixed(1)}%</TableCell>
-                        <TableCell className="text-right font-mono text-xs text-success">{(d.safety ?? 0).toFixed(1)}%</TableCell>
-                        <TableCell className="text-right font-mono text-xs">{(d.explainability ?? 0).toFixed(1)}%</TableCell>
+                        <TableCell className="text-right font-mono text-xs text-primary">
+                          {(d.grounding ?? 0).toFixed(1)}%
+                        </TableCell>
+                        <TableCell className="text-right font-mono text-xs text-success">
+                          {(d.safety ?? 0).toFixed(1)}%
+                        </TableCell>
+                        <TableCell className="text-right font-mono text-xs">
+                          {(d.explainability ?? 0).toFixed(1)}%
+                        </TableCell>
                       </TableRow>
                     ))}
                     <TableRow className="border-t-2 font-bold bg-muted/20">
                       <TableCell>Overall Mean</TableCell>
                       <TableCell className="text-right font-mono text-xs">50</TableCell>
-                      <TableCell className="text-right font-mono text-xs text-primary">90.0%</TableCell>
-                      <TableCell className="text-right font-mono text-xs text-success">92.0%</TableCell>
+                      <TableCell className="text-right font-mono text-xs text-primary">
+                        90.0%
+                      </TableCell>
+                      <TableCell className="text-right font-mono text-xs text-success">
+                        92.0%
+                      </TableCell>
                       <TableCell className="text-right font-mono text-xs">95.0%</TableCell>
                     </TableRow>
                   </TableBody>
@@ -482,10 +543,24 @@ export function ResearchPage() {
 
                 <div className="h-[240px] w-full">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={domainChartData} margin={{ top: 10, right: 10, left: 0, bottom: 20 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" opacity={0.6} />
-                      <XAxis dataKey="domain" tick={{ fontSize: 10, fill: "var(--color-muted-foreground)" }} />
-                      <YAxis domain={[80, 100]} tick={{ fontSize: 10, fill: "var(--color-muted-foreground)" }} unit="%" />
+                    <BarChart
+                      data={domainChartData}
+                      margin={{ top: 10, right: 10, left: 0, bottom: 20 }}
+                    >
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        stroke="var(--color-border)"
+                        opacity={0.6}
+                      />
+                      <XAxis
+                        dataKey="domain"
+                        tick={{ fontSize: 10, fill: "var(--color-muted-foreground)" }}
+                      />
+                      <YAxis
+                        domain={[80, 100]}
+                        tick={{ fontSize: 10, fill: "var(--color-muted-foreground)" }}
+                        unit="%"
+                      />
                       <Tooltip
                         contentStyle={{
                           background: "var(--color-popover)",
@@ -494,9 +569,24 @@ export function ResearchPage() {
                           fontSize: 11,
                         }}
                       />
-                      <Bar dataKey="grounding" name="Grounding" fill="var(--color-primary)" radius={[3, 3, 0, 0]} />
-                      <Bar dataKey="safety" name="Safety" fill="var(--color-chart-2)" radius={[3, 3, 0, 0]} />
-                      <Bar dataKey="explainability" name="Explainability" fill="var(--color-chart-4)" radius={[3, 3, 0, 0]} />
+                      <Bar
+                        dataKey="grounding"
+                        name="Grounding"
+                        fill="var(--color-primary)"
+                        radius={[3, 3, 0, 0]}
+                      />
+                      <Bar
+                        dataKey="safety"
+                        name="Safety"
+                        fill="var(--color-chart-2)"
+                        radius={[3, 3, 0, 0]}
+                      />
+                      <Bar
+                        dataKey="explainability"
+                        name="Explainability"
+                        fill="var(--color-chart-4)"
+                        radius={[3, 3, 0, 0]}
+                      />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -521,7 +611,9 @@ export function ResearchPage() {
                     className="rounded-lg border border-border/80 bg-muted/20 p-4 space-y-3"
                   >
                     <div className="flex items-center justify-between border-b border-border/50 pb-2">
-                      <h3 className="font-display text-sm font-semibold text-foreground">{c.scenario}</h3>
+                      <h3 className="font-display text-sm font-semibold text-foreground">
+                        {c.scenario}
+                      </h3>
                       <Badge variant="outline" className="font-mono text-[0.65rem] uppercase">
                         Verified Trace
                       </Badge>
@@ -531,7 +623,9 @@ export function ResearchPage() {
                       <p className="text-[0.7rem] font-mono uppercase text-muted-foreground tracking-wider">
                         Patient Presentation
                       </p>
-                      <p className="text-xs text-foreground/90 mt-0.5 leading-relaxed">{c.presentation}</p>
+                      <p className="text-xs text-foreground/90 mt-0.5 leading-relaxed">
+                        {c.presentation}
+                      </p>
                     </div>
 
                     <div>
@@ -685,7 +779,9 @@ export function ResearchPage() {
                       <h5 className="font-mono text-[0.7rem] uppercase text-muted-foreground">
                         Vital Signs
                       </h5>
-                      <p className="font-mono text-xs text-foreground/90 mt-1">{activeVignette.vitals}</p>
+                      <p className="font-mono text-xs text-foreground/90 mt-1">
+                        {activeVignette.vitals}
+                      </p>
                     </div>
                     <div className="rounded border border-border/60 bg-muted/20 p-2.5">
                       <h5 className="font-mono text-[0.7rem] uppercase text-muted-foreground">
@@ -700,13 +796,17 @@ export function ResearchPage() {
                       <h5 className="font-mono text-[0.7rem] uppercase text-muted-foreground">
                         Active Medications
                       </h5>
-                      <p className="text-xs text-foreground/90 mt-0.5">{activeVignette.medications}</p>
+                      <p className="text-xs text-foreground/90 mt-0.5">
+                        {activeVignette.medications}
+                      </p>
                     </div>
                     <div>
                       <h5 className="font-mono text-[0.7rem] uppercase text-muted-foreground">
                         Documented Allergies
                       </h5>
-                      <p className="text-xs text-foreground/90 mt-0.5">{activeVignette.allergies}</p>
+                      <p className="text-xs text-foreground/90 mt-0.5">
+                        {activeVignette.allergies}
+                      </p>
                     </div>
                   </div>
 
@@ -802,8 +902,12 @@ export function ResearchPage() {
                 <TableBody>
                   {MODEL_FACTS_SPEC.map((m) => (
                     <TableRow key={m.dimension}>
-                      <TableCell className="font-semibold text-xs font-mono">{m.dimension}</TableCell>
-                      <TableCell className="text-xs text-foreground/90 leading-relaxed">{m.specification}</TableCell>
+                      <TableCell className="font-semibold text-xs font-mono">
+                        {m.dimension}
+                      </TableCell>
+                      <TableCell className="text-xs text-foreground/90 leading-relaxed">
+                        {m.specification}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -826,7 +930,9 @@ export function ResearchPage() {
                     Human-in-the-Loop Decision Boundary
                   </h4>
                   <p className="text-xs text-muted-foreground leading-relaxed">
-                    The platform enforces strict non-autonomous operating rules. All generated outputs include prominent disclaimers requiring clinical verification by qualified medical professionals.
+                    The platform enforces strict non-autonomous operating rules. All generated
+                    outputs include prominent disclaimers requiring clinical verification by
+                    qualified medical professionals.
                   </p>
                 </div>
 
@@ -835,7 +941,9 @@ export function ResearchPage() {
                     Verifiable Literature Provenance
                   </h4>
                   <p className="text-xs text-muted-foreground leading-relaxed">
-                    Every diagnostic assertion is linked to an Oxford CEBM-graded citation. Unverified citations and ghost identifiers are pruned by the post-hoc Safety Auditor Agent.
+                    Every diagnostic assertion is linked to an Oxford CEBM-graded citation.
+                    Unverified citations and ghost identifiers are pruned by the post-hoc Safety
+                    Auditor Agent.
                   </p>
                 </div>
 
@@ -844,7 +952,9 @@ export function ResearchPage() {
                     Client-Side Radiographic Privacy
                   </h4>
                   <p className="text-xs text-muted-foreground leading-relaxed">
-                    Thoracic radiograph saliency localization is executed locally within the clinician's browser using WebAssembly and ONNX Runtime, preserving privacy by avoiding cloud pixel uploads.
+                    Thoracic radiograph saliency localization is executed locally within the
+                    clinician's browser using WebAssembly and ONNX Runtime, preserving privacy by
+                    avoiding cloud pixel uploads.
                   </p>
                 </div>
               </div>

@@ -274,7 +274,9 @@ function Consultation() {
                     <Select value={selectedPatient} onValueChange={loadPatient}>
                       <SelectTrigger className="h-8 w-full text-xs bg-background/60">
                         <SelectValue
-                          placeholder={patients.length ? "Select saved patient..." : "No saved patients"}
+                          placeholder={
+                            patients.length ? "Select saved patient..." : "No saved patients"
+                          }
                         />
                       </SelectTrigger>
                       <SelectContent>
@@ -304,7 +306,8 @@ function Consultation() {
 
                         {activePatient.history && (
                           <p className="text-[0.7rem] text-muted-foreground line-clamp-2">
-                            <span className="font-semibold text-foreground">Hx:</span> {activePatient.history}
+                            <span className="font-semibold text-foreground">Hx:</span>{" "}
+                            {activePatient.history}
                           </p>
                         )}
 
@@ -339,8 +342,14 @@ function Consultation() {
                         className="flex items-center gap-1.5 text-[0.68rem] font-medium text-muted-foreground hover:text-primary transition-colors"
                       >
                         <SlidersHorizontal className="h-3 w-3" />
-                        <span>{showManualOverride ? "Hide manual fields" : "Manual parameter override"}</span>
-                        {showManualOverride ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                        <span>
+                          {showManualOverride ? "Hide manual fields" : "Manual parameter override"}
+                        </span>
+                        {showManualOverride ? (
+                          <ChevronUp className="h-3 w-3" />
+                        ) : (
+                          <ChevronDown className="h-3 w-3" />
+                        )}
                       </button>
                     </div>
 
@@ -543,8 +552,7 @@ function Consultation() {
                           </p>
                         ) : (
                           <p className="mt-2.5 text-[0.68rem] text-warning/90">
-                            No retrieved source attached: treat as clinical reasoning, not
-                            evidence.
+                            No retrieved source attached: treat as clinical reasoning, not evidence.
                           </p>
                         )}
                       </div>
@@ -608,7 +616,10 @@ function Consultation() {
                     className="rounded-xl border border-border/70 dark:border-white/[0.06] bg-card/60 p-3.5 text-xs shadow-xs backdrop-blur-xs transition-colors hover:bg-card/90"
                   >
                     <div className="flex flex-wrap items-center gap-2">
-                      <Badge variant="outline" className="text-[0.65rem] border-primary/30 bg-primary/10 text-primary">
+                      <Badge
+                        variant="outline"
+                        className="text-[0.65rem] border-primary/30 bg-primary/10 text-primary"
+                      >
                         {d.kind}
                       </Badge>
                       <span className="font-medium text-foreground/90">{d.drugs.join(" + ")}</span>

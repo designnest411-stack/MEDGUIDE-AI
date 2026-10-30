@@ -14,10 +14,10 @@ export const Route = createFileRoute("/api/models")({
             },
           });
         } catch (err) {
-          return new Response(
-            JSON.stringify({ success: false, error: (err as Error).message }),
-            { status: 500, headers: { "Content-Type": "application/json" } },
-          );
+          return new Response(JSON.stringify({ success: false, error: (err as Error).message }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          });
         }
       },
       POST: async ({ request }) => {
@@ -31,11 +31,13 @@ export const Route = createFileRoute("/api/models")({
           const t0 = Date.now();
           const res = await callLlm({
             tier: body.tier ?? "workhorse",
-            system: "You are a clinical decision support verification probe. Answer in under 10 words.",
+            system:
+              "You are a clinical decision support verification probe. Answer in under 10 words.",
             messages: [
               {
                 role: "user",
-                content: body.testPrompt || "Confirm AI Engine operational status and response latency.",
+                content:
+                  body.testPrompt || "Confirm AI Engine operational status and response latency.",
               },
             ],
             maxTokens: 100,
@@ -63,10 +65,10 @@ export const Route = createFileRoute("/api/models")({
             },
           );
         } catch (err) {
-          return new Response(
-            JSON.stringify({ success: false, error: (err as Error).message }),
-            { status: 500, headers: { "Content-Type": "application/json" } },
-          );
+          return new Response(JSON.stringify({ success: false, error: (err as Error).message }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          });
         }
       },
     },

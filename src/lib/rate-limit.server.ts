@@ -62,9 +62,7 @@ export function checkRateLimit(
   record.timestamps = record.timestamps.filter((t) => now - t < windowMs);
 
   const resetMs =
-    record.timestamps.length > 0
-      ? Math.max(0, windowMs - (now - record.timestamps[0]!))
-      : windowMs;
+    record.timestamps.length > 0 ? Math.max(0, windowMs - (now - record.timestamps[0]!)) : windowMs;
 
   if (record.timestamps.length >= maxRequests) {
     const retryAfterSec = Math.ceil(resetMs / 1000);

@@ -103,7 +103,8 @@ function computeContrastSaliency(canvas: HTMLCanvasElement): SaliencyOutput {
       for (let y = gy * cell; y < (gy + 1) * cell; y++) {
         for (let x = gx * cell; x < (gx + 1) * cell; x++) {
           const idx = (y * 224 + x) * 4;
-          const lum = 0.299 * (data[idx] ?? 0) + 0.587 * (data[idx + 1] ?? 0) + 0.114 * (data[idx + 2] ?? 0);
+          const lum =
+            0.299 * (data[idx] ?? 0) + 0.587 * (data[idx + 1] ?? 0) + 0.114 * (data[idx + 2] ?? 0);
           sum += lum;
           count++;
         }
@@ -173,7 +174,10 @@ export async function computeSaliency(
       modelName: "DenseNet-121 (ONNX Model Zoo) : occlusion saliency",
     };
   } catch (err) {
-    console.warn("DenseNet WASM model download timed out or was blocked; using local saliency approximation:", err);
+    console.warn(
+      "DenseNet WASM model download timed out or was blocked; using local saliency approximation:",
+      err,
+    );
     onProgress?.(SALIENCY_GRID * SALIENCY_GRID, SALIENCY_GRID * SALIENCY_GRID);
     return computeContrastSaliency(canvas);
   }

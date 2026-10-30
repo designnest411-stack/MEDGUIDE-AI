@@ -3,7 +3,15 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { query, orderBy, addDoc, deleteDoc, doc } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { Cloud, ExternalLink, Image as ImageIcon, Loader2, ScanEye, Trash2, Upload } from "lucide-react";
+import {
+  Cloud,
+  ExternalLink,
+  Image as ImageIcon,
+  Loader2,
+  ScanEye,
+  Trash2,
+  Upload,
+} from "lucide-react";
 import { toast } from "sonner";
 
 import { AppShell } from "@/components/app-shell";
@@ -20,7 +28,12 @@ import { getCollections, useTypedCollection, type ImagingRecord } from "@/lib/db
 import { auth } from "@/lib/firebase";
 import { SALIENCY_GRID, computeSaliency, heatColor } from "@/lib/imaging/xray";
 import { analyzeXray } from "@/lib/imaging/imaging.functions";
-import { uploadToCloudinary, getCloudinaryThumbnail, isCloudinaryUrl, normalizeCloudinaryUrl } from "@/lib/cloudinary";
+import {
+  uploadToCloudinary,
+  getCloudinaryThumbnail,
+  isCloudinaryUrl,
+  normalizeCloudinaryUrl,
+} from "@/lib/cloudinary";
 import type { ImagingResult } from "@/lib/agents/types";
 
 export const Route = createFileRoute("/imaging")({
@@ -159,7 +172,7 @@ function ImagingPage() {
     setBusy(true);
     setProgress(0);
     setResult(null);
-    
+
     const commaIdx = dataUrl.indexOf(",");
     const meta = commaIdx !== -1 ? dataUrl.slice(0, commaIdx) : "";
     const rawBase64 = commaIdx !== -1 ? dataUrl.slice(commaIdx + 1) : dataUrl;
@@ -486,7 +499,8 @@ function ImagingPage() {
                 <p className="text-xs text-muted-foreground">No studies saved yet.</p>
               ) : (
                 studies.map((s) => {
-                  const isCloud = s.storageProvider === "cloudinary" || isCloudinaryUrl(s.imageDataUrl);
+                  const isCloud =
+                    s.storageProvider === "cloudinary" || isCloudinaryUrl(s.imageDataUrl);
                   const rawImage = s.thumbnailUrl || s.imageDataUrl;
                   const displayImage = isCloud ? normalizeCloudinaryUrl(rawImage) : rawImage;
                   return (
