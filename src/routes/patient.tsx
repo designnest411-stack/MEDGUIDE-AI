@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { query, orderBy, addDoc, updateDoc, doc, deleteDoc } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -34,6 +34,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { getCollections, useTypedCollection, type PatientRecord, type PatientDocument } from "@/lib/db";
 import { auth } from "@/lib/firebase";
 import { uploadToCloudinary, getCloudinaryThumbnail } from "@/lib/cloudinary";
+import { seedIndianClinicalCohort } from "@/lib/clinical-seed-data";
 
 export const Route = createFileRoute("/patient")({
   head: () => ({
@@ -95,6 +96,19 @@ function PatientPage() {
   const [uploadingDoc, setUploadingDoc] = useState(false);
   const photoInputRef = useRef<HTMLInputElement>(null);
   const docInputRef = useRef<HTMLInputElement>(null);
+  const autoSeededRef = useRef(false);
+
+  // Auto-initialize realistic Indian clinical cases if a logged-in clinician's directory is empty
+  useEffect(() => {
+    if (user && !patientsLoading && patients.length === 0 && !autoSeededRef.current) {
+      autoSeededRef.current = true;
+      seedIndianClinicalCohort(user.uid)
+        .then(() => {
+          toast.info("Initialized clinical directory with verified cases");
+        })
+        .catch(() => {});
+    }
+  }, [user, patientsLoading, patients.length]);
 
   const save = async () => {
     if (!form.name.trim()) {
